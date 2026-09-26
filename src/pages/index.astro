@@ -35,7 +35,7 @@ const websiteSchema = {
         <h1 class="hero-label">Free construction calculators for home projects</h1>
         <p class="hero-title">Less guesswork.<br /><span>More getting it done.</span></p>
         <p class="hero-description">Find the right amount of concrete, gravel, flooring, and more—before you head to the store.</p>
-      <div class="directory-controls no-print" data-directory-controls hidden data-tools-json={JSON.stringify(tools.map(t => ({
+      <div class="directory-controls no-print" data-directory-controls inert data-tools-json={JSON.stringify(tools.map(t => ({
         slug: t.slug,
         name: t.name,
         category: t.category,
@@ -50,6 +50,7 @@ const websiteSchema = {
             <input
               id="tool-search"
               type="search"
+              disabled
               placeholder={`Search ${tools.length} calculators (concrete, deck, mulch…)`}
               role="combobox"
               aria-label="Find a construction calculator"
@@ -176,7 +177,6 @@ const dropdownHeader = document.querySelector<HTMLElement>('#dropdown-header');
 const dropdownList = document.querySelector<HTMLElement>('#dropdown-list');
 
 if (controls && search && status && dropdown && dropdownList) {
-  controls.hidden = false;
   const toolsData: SearchableItem[] = JSON.parse(controls.dataset.toolsJson || '[]');
   const directory = document.querySelector<HTMLElement>('#directory-boards');
   const categoryIndex = document.querySelector<HTMLElement>('.category-index');
@@ -380,6 +380,10 @@ if (controls && search && status && dropdown && dropdownList) {
       search.select();
     }
   });
+
+  // Keep the search space in the initial layout; enable it once handlers are ready.
+  search.disabled = false;
+  controls.inert = false;
 }
 </script>
 <style>
