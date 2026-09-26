@@ -1,0 +1,74 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/carpet';
+import { fmt } from '../lib/format';
+
+const rooms: [number, number][] = [[10, 10], [10, 12], [12, 12], [12, 14], [12, 16], [14, 16], [15, 20]];
+const table = rooms.map(([l, w]) => ({ l, w, a: l * w, yd: (l * w) / 9, yd10: (l * w * 1.1) / 9 }));
+---
+
+<CalcPage
+  slug="carpet-calculator"
+  def={def}
+  title="Carpet Calculator: Square Yards & Feet for Any Room"
+  description="Free carpet calculator. Enter your room size to get square yards and square feet of carpet with waste, the length off a 12 ft roll, carpet pad, and cost."
+  h1="Carpet Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Work out how many square yards of carpet and pad you need for a room or a whole floor, plus the length off a 12-foot
+    roll.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate carpet in square yards</h2>
+  <p>
+    Multiply the room's length by its width for square feet, add about 10% for seams and trimming, then divide by 9.
+    A <strong>12 × 14 ft room is 168 square feet, or about 20.5 square yards</strong> with 10% extra.
+  </p>
+  <p class="formula">square yards = length (ft) × width (ft) × 1.10 ÷ 9</p>
+
+  <h2 id="table">Carpet for common room sizes</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Room</th><th class="num">Sq ft</th><th class="num">Sq yd (exact)</th><th class="num">Sq yd with 10%</th></tr></thead>
+      <tbody>{table.map((r) => <tr><td>{r.l} × {r.w} ft</td><td class="num">{r.a}</td><td class="num">{fmt(r.yd, 1)}</td><td class="num">{fmt(r.yd10, 1)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="roll-width">Why roll width matters</h2>
+  <p>
+    Broadloom carpet comes in rolls, most often 12 feet wide, sometimes 13.5 or 15 feet. A room 12 feet wide or less can
+    be covered by one piece cut to length. Wider rooms need a seam, and the installer may order extra so the pile runs the
+    same direction on both sides. That is why an installer's measure can come in higher than a simple area calculation.
+  </p>
+
+  <h2 id="pad">How much carpet pad do you need?</h2>
+  <p>
+    Pad is cut to fit the room and seamed without regard to direction, so you need about the room's area with little
+    waste. The calculator shows it separately.
+  </p>
+
+  <p>
+    Tiling the bathroom or entry instead? The <a href="/tile-calculator/">tile calculator</a> counts tiles by size and grout joint.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How do I convert square feet to square yards?</h3>
+  <p>Divide by 9, since a square yard is 3 × 3 feet. 180 square feet is 20 square yards.</p>
+  <h3>Should I measure closets and stairs?</h3>
+  <p>
+    Yes. Add closets as separate rectangles. Stairs are usually priced per step; a typical step takes a piece about as
+    wide as the stair and 18 to 24 inches long to cover the tread and riser.
+  </p>
+  <p>
+    Comparing with hard flooring? Try the <a href="/flooring-calculator/">flooring calculator</a> or the
+    <a href="/square-footage-calculator/">square footage calculator</a> for irregular rooms.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Carpet = area × (1 + waste %) ÷ 9 for square yards.</li>
+    <li>Roll length = carpet square feet ÷ roll width, assuming pieces can be seamed.</li>
+    <li>Pad = room area ÷ 9, with no waste added.</li>
+  </ul>
+</CalcPage>

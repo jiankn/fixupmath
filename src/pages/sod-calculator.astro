@@ -1,0 +1,89 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/sod';
+import { fmt, int, ceilCount } from '../lib/format';
+
+const lawns = [500, 1000, 2000, 3000, 5000, 10000].map((a) => {
+  const need = a * 1.05;
+  return { a, need, pallets: ceilCount(need / 450), slabs: ceilCount(need / 2.667) };
+});
+---
+
+<CalcPage
+  slug="sod-calculator"
+  def={def}
+  title="Sod Calculator: Square Feet, Pallets & Pieces of Sod"
+  description="Free sod calculator. Measure your lawn by shape to get the square footage, pallets, and slabs or rolls of sod to order, with extra for cuts."
+  h1="Sod Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Work out how much sod to order: square feet, full pallets, and slabs or rolls, with a little extra for curves and cuts.
+  </Fragment>
+
+  <h2 id="how-to">How much sod do I need?</h2>
+  <ol>
+    <li>Measure the lawn area in square feet. Split odd shapes into rectangles, circles, and triangles and add them to a project.</li>
+    <li>Add 5% for straight edges, or 10% if you have curved beds, trees, or lots of cuts.</li>
+    <li>Divide by your supplier's pallet coverage, usually 400–500 square feet, and round up.</li>
+  </ol>
+
+  <h2 id="example">Example: a 30 × 20 ft backyard</h2>
+  <p>
+    30 × 20 = 600 square feet. With 5% extra that is 630 square feet: 2 pallets at 450 square feet each (1.4 pallets
+    exactly), or 237 slabs of 16 × 24 inches. Many farms sell partial pallets, so ask before paying for a full second
+    one.
+  </p>
+
+  <h2 id="pallet">How much does a pallet of sod cover?</h2>
+  <p>
+    Most pallets cover <strong>400 to 500 square feet</strong>, depending on the farm, grass type, and piece size. A
+    450-square-foot pallet of 16 × 24 inch slabs holds about 170 pieces. Always confirm with your supplier and enter their
+    number in the calculator.
+  </p>
+
+  <h2 id="table">Sod needed for common lawn sizes</h2>
+  <p>With 5% extra, 450 sq ft pallets, and 16 × 24 in slabs.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Lawn area</th><th class="num">Sq ft to order</th><th class="num">Pallets</th><th class="num">Slabs</th></tr></thead>
+      <tbody>{lawns.map((l) => <tr><td>{int(l.a)} sq ft</td><td class="num">{int(l.need)}</td><td class="num">{l.pallets}</td><td class="num">{int(l.slabs)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="prep">Preparing the ground</h2>
+  <p>
+    Sod roots best into 4–6 inches of loose, level topsoil. Remove the old grass, rake out rocks, and bring in soil where
+    the grade is low; the <a href="/topsoil-calculator/">topsoil calculator</a> sizes that order. Lay the sod the day it
+    arrives, stagger the seams like bricks, and water it deeply right away.
+  </p>
+
+  <p>
+    Comparing sod with seed? The <a href="/grass-seed-calculator/">grass seed calculator</a> gives pounds of seed for the same area,
+    usually for a fraction of the cost but with a longer wait.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many square feet is a roll of sod?</h3>
+  <p>
+    A standard slab is 16 × 24 inches, or 2.67 square feet. Rolls are larger, often 2 × 5 feet (10 square feet), and big
+    rolls for commercial jobs are larger still. Pick your size in the calculator.
+  </p>
+  <h3>How much extra sod should I order?</h3>
+  <p>
+    5% covers a simple rectangle. Go to 10% for curved beds, lots of trees, or narrow strips, where more pieces end up
+    trimmed.
+  </p>
+  <h3>How long can sod sit before it's laid?</h3>
+  <p>
+    Not long. Sod stacked on a pallet heats up and starts to yellow within a day or two, sooner in hot weather. Plan to
+    install it the same day it's delivered.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Area comes from the shape you choose; project totals add every saved area.</li>
+    <li>Sod to order = area × (1 + extra %). Pieces and pallets always round up.</li>
+    <li>Default sizes: 16 × 24 in slabs (2.67 sq ft) and 450 sq ft pallets. Change them to match your supplier.</li>
+  </ul>
+</CalcPage>

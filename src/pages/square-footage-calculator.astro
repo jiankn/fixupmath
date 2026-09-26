@@ -1,0 +1,117 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/square-footage';
+import { ft2To } from '../lib/units';
+import { fmt } from '../lib/format';
+
+const rooms: [number, number][] = [
+  [10, 10],
+  [10, 12],
+  [12, 12],
+  [12, 14],
+  [12, 16],
+  [14, 16],
+  [16, 20],
+  [20, 20],
+];
+---
+
+<CalcPage
+  slug="square-footage-calculator"
+  def={def}
+  title="Square Footage Calculator: Feet & Inches, Any Shape"
+  description="Free square footage calculator. Enter measurements in feet and inches for rectangles, circles, and triangles, add rooms together, and convert to square yards, meters, and acres."
+  h1="Square Footage Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Find the area of a room, floor, yard, or lot in square feet, with measurements in feet and inches. Add several areas to
+    a project for L-shaped rooms or a whole house, and convert to square yards, square meters, or acres.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate square footage</h2>
+  <p>
+    For a rectangle, multiply length by width in feet: a 12 × 15 ft room is <strong>180 square feet</strong>. For a
+    circle, multiply π by the radius squared. For a triangle, multiply the base by the height and divide by 2.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Shape</th><th>Formula</th></tr></thead>
+      <tbody>
+        <tr><td>Rectangle or square</td><td><code>length × width</code></td></tr>
+        <tr><td>Circle</td><td><code>π × (diameter ÷ 2)²</code></td></tr>
+        <tr><td>Triangle</td><td><code>base × height ÷ 2</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="feet-and-inches">How to calculate square feet with feet and inches</h2>
+  <p>
+    Convert the inches to a decimal of a foot by dividing by 12, then multiply. A room that measures 10 ft 9 in by
+    12 ft 3 in is 10.75 × 12.25 = <strong>131.69 square feet</strong>. In the calculator, choose <em>ft + in</em> as the
+    unit and type the inches in the second box.
+  </p>
+
+  <h2 id="irregular">Irregular and L-shaped rooms</h2>
+  <p>
+    Split the space into rectangles, work out each one, and add them. An L-shaped room made of a 12 × 15 ft section and an
+    8 × 6 ft alcove is 180 + 48 = 228 square feet. Use <strong>Add to project</strong> to keep a running total, and add a
+    triangle or circle for angled walls and bay windows.
+  </p>
+
+  <h2 id="room-sizes">Square footage of common room sizes</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Room size</th><th class="num">Square feet</th><th class="num">Square yards</th><th class="num">Square meters</th></tr></thead>
+      <tbody>
+        {
+          rooms.map(([l, w]) => (
+            <tr><td>{l} × {w} ft</td><td class="num">{l * w}</td><td class="num">{fmt(ft2To(l * w, 'yd2'), 1)}</td><td class="num">{fmt(ft2To(l * w, 'm2'), 1)}</td></tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="conversions">Square foot conversions</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>To convert</th><th>Do this</th></tr></thead>
+      <tbody>
+        <tr><td>Square feet → square yards</td><td>Divide by 9</td></tr>
+        <tr><td>Square feet → square meters</td><td>Multiply by 0.0929</td></tr>
+        <tr><td>Square meters → square feet</td><td>Multiply by 10.764</td></tr>
+        <tr><td>Square feet → acres</td><td>Divide by 43,560</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Buying for the room? Take the area to the <a href="/flooring-calculator/">flooring calculator</a> for boxes,
+    <a href="/tile-calculator/">the tile calculator</a> for tile counts, <a href="/carpet-calculator/">the carpet calculator</a> for square yards, or
+    <a href="/wallpaper-calculator/">work out wallpaper rolls</a> for the walls.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many square feet are in an acre?</h3>
+  <p>43,560 square feet, about the size of a 208 × 208 ft square.</p>
+  <h3>How do I find the square footage of a house?</h3>
+  <p>
+    Measure each room or section of finished living space and add them up. Appraisers generally measure finished area
+    from the outside walls and leave out garages, unfinished basements, and open porches, so your room-by-room total will
+    come in a little lower than a listing.
+  </p>
+  <h3>How much extra should I buy for flooring?</h3>
+  <p>
+    Add 5–10% for straight layouts and 10–15% for diagonal or herringbone patterns. Pouring a slab instead? Take the area
+    to the <a href="/concrete-calculator/">concrete calculator</a>; covering a yard, try the
+    <a href="/sod-calculator/">sod calculator</a>.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Every measurement is converted to feet before multiplying, so you can mix units.</li>
+    <li>Project totals add the square footage of each saved area.</li>
+    <li>Conversions: 1 yd² = 9 ft², 1 m² = 10.7639 ft², 1 acre = 43,560 ft².</li>
+  </ul>
+</CalcPage>

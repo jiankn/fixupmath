@@ -1,0 +1,9 @@
+# Cloudflare Workers 静态资源部署（Pages 已并入 Workers）。纯静态站，不需要数据库；
+# 以后要存用户数据时在这里加 D1 绑定。
+name = "home-calc"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "./dist"
+not_found_handling = "404-page"
+html_handling = "auto-trailing-slash"

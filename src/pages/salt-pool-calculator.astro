@@ -1,0 +1,109 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/salt-pool';
+import { saltPounds } from '../lib/pool';
+import { int, ceilCount } from '../lib/format';
+
+const pools = [5000, 10000, 15000, 20000, 25000, 30000].map((g) => ({
+  g,
+  full: saltPounds(g, 0, 3200),
+  topup: saltPounds(g, 2700, 3200),
+}));
+---
+
+<CalcPage
+  slug="salt-pool-calculator"
+  def={def}
+  title="Salt Pool Calculator: How Much Salt for a Saltwater Pool"
+  description="Free salt pool calculator. Enter your pool size or gallons and your current and target salt levels to get the pounds and 40-lb bags of salt to add."
+  h1="Salt Pool Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Find how many pounds and bags of salt to add to your saltwater pool. Enter your pool's dimensions or gallons, then your
+    current and target salt level in ppm.
+  </Fragment>
+
+  <h2 id="how-much">How much salt does my pool need?</h2>
+  <p>
+    To raise the salt level, multiply the pool's gallons by the increase in ppm and by 8.34 (pounds per gallon of water),
+    then divide by 1,000,000. Filling a new <strong>10,000-gallon pool to 3,200 ppm takes about 267 pounds</strong> of
+    salt, roughly seven 40-lb bags.
+  </p>
+  <p class="formula">pounds of salt = gallons × (target ppm − current ppm) × 8.34 ÷ 1,000,000</p>
+
+  <h2 id="table">Salt needed by pool size</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pool size</th><th class="num">New fill, 0 → 3,200 ppm</th><th class="num">40-lb bags</th><th class="num">Top-up, 2,700 → 3,200 ppm</th></tr></thead>
+      <tbody>
+        {pools.map((p) => <tr><td>{int(p.g)} gal</td><td class="num">{int(p.full)} lb</td><td class="num">{ceilCount(p.full / 40)}</td><td class="num">{int(p.topup)} lb</td></tr>)}
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="volume">How to find your pool's gallons</h2>
+  <p>
+    The <a href="/pool-volume-calculator/">pool volume calculator</a> works this out from your pool's shape, or use the
+    formulas below.
+    Multiply the pool's volume in cubic feet by 7.48 gallons. Use the average depth: for a pool that runs from 3.5 feet
+    to 6 feet, that is 4.75 feet.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Shape</th><th>Gallons</th></tr></thead>
+      <tbody>
+        <tr><td>Rectangle</td><td><code>length × width × average depth × 7.48</code></td></tr>
+        <tr><td>Round</td><td><code>π × (diameter ÷ 2)² × depth × 7.48</code>, about diameter² × depth × 5.9</td></tr>
+        <tr><td>Oval</td><td><code>length × width × average depth × 5.9</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="target">What salt level should a saltwater pool be?</h2>
+  <p>
+    Most salt chlorine generators accept roughly <strong>2,700 to 3,400 ppm</strong>, and many recommend about 3,200 ppm.
+    The range varies by brand, so check the manual or the label on your salt cell and use that as your target.
+  </p>
+
+  <h2 id="how-to-add">How to add salt to a pool</h2>
+  <ol>
+    <li>Test the current level with salt test strips or a digital meter; your generator's reading can drift.</li>
+    <li>Use plain pool salt, which is at least 99% sodium chloride. Skip salt with anti-caking agents or iodine.</li>
+    <li>Turn the generator off, run the pump, and pour the salt around the shallow end.</li>
+    <li>Brush undissolved salt toward the main drain and let the pump run for about 24 hours.</li>
+    <li>Retest before adding the rest. Adding in stages keeps you from overshooting.</li>
+  </ol>
+
+  <h2 id="too-much">What if there's too much salt?</h2>
+  <p>
+    Salt doesn't evaporate, so the only fix is dilution: drain part of the water and refill with fresh water. To go from
+    4,000 to 3,200 ppm, replace about 20% of the pool. The calculator works this out when your current level is above the
+    target.
+  </p>
+
+  <p>
+    The salt system takes care of chlorine, but you still balance alkalinity, stabilizer, and calcium; the
+    <a href="/pool-calculator/">pool chemical calculator</a> doses those.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How long does pool salt take to dissolve?</h3>
+  <p>Usually about 24 hours with the pump running. Brushing speeds it up. Wait for a full day of circulation before retesting.</p>
+  <h3>Why does my salt level drop?</h3>
+  <p>
+    Splash-out, backwashing, and rain dilution remove salty water. Evaporation does not remove salt; it concentrates it
+    until you top up with fresh water.
+  </p>
+  <p>
+    Setting up an above-ground pool? The <a href="/sand-calculator/">sand calculator</a> sizes the sand base under the
+    liner.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Gallons = cubic feet × 7.48052, using the average of the shallow and deep ends.</li>
+    <li>Salt (lb) = gallons × 8.3454 × ppm increase ÷ 1,000,000; bags round up.</li>
+    <li>If the current level is above target, the calculator shows the share of water to replace instead.</li>
+  </ul>
+</CalcPage>

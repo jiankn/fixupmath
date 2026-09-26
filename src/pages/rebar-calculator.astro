@@ -1,0 +1,83 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/rebar';
+import { rebarGrid, REBAR } from '../lib/framing';
+import { int } from '../lib/format';
+
+const slabs = [[10, 10], [12, 12], [16, 20], [20, 20], [24, 24], [30, 30]].map(([l, w]) => ({
+  l,
+  w,
+  ...rebarGrid({ lengthFt: l, widthFt: w, spacingIn: 12, edgeIn: 3, size: '#4', stockFt: 20, lapDiameters: 40, wastePct: 0 }),
+}));
+---
+
+<CalcPage
+  slug="rebar-calculator"
+  def={def}
+  title="Rebar Calculator: Bars, Linear Feet & Weight for a Slab"
+  description="Free rebar calculator for concrete slabs. Enter slab size, grid spacing, and bar size to get the number of bars, linear feet, lap splices, and weight of #3, #4, #5, or #6 rebar."
+  h1="Rebar Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Lay out a rebar grid for a concrete slab: bars in each direction, linear feet, lap splices, bars to buy, and total
+    weight.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate rebar for a slab</h2>
+  <ol>
+    <li>Subtract the edge distance from each side so bars stay inside the concrete.</li>
+    <li>Bars running the length = (slab width − 2 × edge) ÷ spacing + 1. Do the same the other way.</li>
+    <li>Each bar is the slab dimension minus 2 × edge. If that's longer than a stock bar, add lap splices.</li>
+    <li>Multiply linear feet by the bar's weight per foot for total pounds.</li>
+  </ol>
+
+  <h2 id="example">Example: a 20 × 20 ft slab, #4 bar at 12 in</h2>
+  <p>
+    With 3 in edge distance, each bar is 19 ft 6 in. (240 − 6) ÷ 12 + 1 = 20 bars each way, 40 bars in all, or 780 linear
+    feet. Each bar comes from one 20 ft stick, so you buy 40 bars. At 0.668 lb per foot, the steel weighs 521 lb.
+  </p>
+
+  <h2 id="table">Rebar for common slab sizes</h2>
+  <p>#4 bar, 12 in grid, 3 in edge distance, 20 ft bars, no waste.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Slab</th><th class="num">Bars (both ways)</th><th class="num">Linear ft</th><th class="num">20 ft bars to buy</th><th class="num">Weight</th></tr></thead>
+      <tbody>{slabs.map((s) => <tr><td>{s.l} × {s.w} ft</td><td class="num">{s.alongLength.count + s.alongWidth.count}</td><td class="num">{int(s.totalFt)}</td><td class="num">{s.sticks}</td><td class="num">{int(s.weightLb)} lb</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="sizes">Rebar sizes and weights</h2>
+  <p>The bar number is its diameter in eighths of an inch.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Bar</th><th class="num">Diameter</th><th class="num">Weight per foot</th><th class="num">20 ft bar</th></tr></thead>
+      <tbody>{REBAR.map((b) => <tr><td>{b.size}</td><td class="num">{b.diaIn} in</td><td class="num">{b.lbPerFt} lb</td><td class="num">{(b.lbPerFt * 20).toFixed(1)} lb</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <p>
+    Ordering the base under the slab too? <a href="/gravel-calculator/">Estimate the gravel base</a> in tons, or
+    <a href="/cubic-yard-calculator/">convert any fill to cubic yards</a>.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>What spacing should rebar be in a slab?</h3>
+  <p>
+    Residential slabs and driveways commonly use #3 or #4 bar at 12 to 18 inches on center each way, but the right size
+    and spacing depend on the load, soil, and slab thickness. Follow your plans or local code.
+  </p>
+  <h3>How much should rebar overlap?</h3>
+  <p>
+    A common rule of thumb is 40 bar diameters: 20 inches for #4 bar. Structural drawings may specify a different lap, and
+    engineered values take priority.
+  </p>
+  <p>Size the pour itself with the <a href="/concrete-calculator/">concrete calculator</a>.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Bars per direction = floor((dimension − 2 × edge) ÷ spacing) + 1.</li>
+    <li>Short bars are cut several to a stick; long runs use n bars with (n − 1) lap splices.</li>
+    <li>Weights use ASTM A615 unit weights. Chairs, ties, and dowels are not included.</li>
+  </ul>
+</CalcPage>

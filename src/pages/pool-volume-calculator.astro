@@ -1,0 +1,91 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/pool';
+import { poolGallons } from '../lib/pool';
+import { int } from '../lib/format';
+
+const ft = (value: number) => ({ value, unit: 'ft' as const });
+const round = [12, 15, 18, 21, 24, 27, 30].map((d) => ({ d, g48: poolGallons('round', { diameter: ft(d), depth: ft(4) }), g52: poolGallons('round', { diameter: ft(d), depth: { value: 52, unit: 'in' as const } }) }));
+const rect: [number, number][] = [[12, 24], [14, 28], [16, 32], [18, 36], [20, 40]];
+const rectRows = rect.map(([w, l]) => ({ w, l, g: poolGallons('rectangle', { length: ft(l), width: ft(w), shallow: ft(3.5), deep: ft(6) }) }));
+---
+
+<CalcPage
+  slug="pool-volume-calculator"
+  def={def}
+  title="Pool Volume Calculator: How Many Gallons Is Your Pool?"
+  description="Free swimming pool volume calculator. Find how many gallons are in your pool, rectangular, round, or oval, plus liters, fill time, and water weight."
+  h1="Pool Volume Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Find how many gallons your pool holds, how long it takes to fill with a hose, and how much the water weighs, for
+    rectangular, round, and oval pools.
+  </Fragment>
+
+  <h2 id="how-many-gallons">How many gallons are in my pool?</h2>
+  <p>
+    Multiply length × width × average depth in feet, then multiply by 7.48 gallons per cubic foot. For round and oval
+    pools use 5.9 instead of 7.48. A <strong>16 × 32 ft pool averaging 4.75 ft deep holds about 18,200 gallons</strong>;
+    a 24 ft round above-ground pool with 4 ft of water holds about 13,500.
+  </p>
+
+  <h2 id="formulas">Pool volume formulas</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Shape</th><th>Gallons</th></tr></thead>
+      <tbody>
+        <tr><td>Rectangle</td><td><code>length × width × average depth × 7.48</code></td></tr>
+        <tr><td>Round</td><td><code>diameter × diameter × depth × 5.9</code></td></tr>
+        <tr><td>Oval</td><td><code>length × width × average depth × 5.9</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    A cubic foot holds 7.48 gallons. Average depth is (shallow end + deep end) ÷ 2. The 5.9 factor is 7.48 × π ÷ 4, for
+    circles and ovals.
+  </p>
+
+  <h2 id="example">Example: a 16 × 32 ft inground pool, 3½ to 6 ft deep</h2>
+  <p>
+    Average depth is 4.75 ft. 32 × 16 × 4.75 = 2,432 cubic feet × 7.48 = <strong>about 18,200 gallons</strong>. With a
+    garden hose at 8 gallons per minute, filling takes roughly 38 hours.
+  </p>
+
+  <h2 id="round">Gallons in round above-ground pools</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Diameter</th><th class="num">48 in water depth</th><th class="num">52 in water depth</th></tr></thead>
+      <tbody>{round.map((r) => <tr><td>{r.d} ft</td><td class="num">{int(r.g48)} gal</td><td class="num">{int(r.g52)} gal</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="rect">Gallons in rectangular inground pools</h2>
+  <p>3½ ft shallow end, 6 ft deep end.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Size</th><th class="num">Gallons</th></tr></thead>
+      <tbody>{rectRows.map((r) => <tr><td>{r.w} × {r.l} ft</td><td class="num">{int(r.g)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Should I measure to the top of the wall?</h3>
+  <p>
+    Measure the water depth, not the wall height. Above-ground pools are usually filled a few inches below the top, so a
+    52 in wall often holds about 48 in of water.
+  </p>
+  <h3>Why do I need to know my pool's gallons?</h3>
+  <p>
+    Every chemical dose, from chlorine to salt, is based on volume, and so is pump and heater sizing. Take the gallons to
+    the <a href="/pool-calculator/">pool chemical calculator</a> for chlorine, shock, and alkalinity doses, or to the
+    <a href="/salt-pool-calculator/">salt pool calculator</a> for a saltwater system.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Gallons = cubic feet × 7.48052, using the average of the shallow and deep ends.</li>
+    <li>Fill time = gallons ÷ flow rate. Water weight = gallons × 8.34 lb.</li>
+    <li>Freeform and kidney pools can be approximated as an oval of the same length and average width.</li>
+  </ul>
+</CalcPage>

@@ -1,0 +1,56 @@
+---
+// 面包屑：页面上可见的路径 + BreadcrumbList 结构化数据（搜索结果里显示为可读路径）
+interface Crumb {
+  name: string;
+  href?: string;
+}
+const { items } = Astro.props as { items: Crumb[] };
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.name,
+    ...(c.href ? { item: new URL(c.href, Astro.site).href } : {}),
+  })),
+};
+---
+
+<nav class="crumbs small" aria-label="Breadcrumb">
+  <ol>
+    {
+      items.map((c, i) => (
+        <li>
+          {c.href && i < items.length - 1 ? <a href={c.href}>{c.name}</a> : <span aria-current="page">{c.name}</span>}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />
+
+<style>
+  .crumbs ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+    margin: 20px 0 0;
+    color: var(--muted);
+  }
+  .crumbs li + li::before {
+    content: '›';
+    margin-right: 6px;
+    color: var(--muted);
+  }
+  .crumbs a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    color: var(--text);
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,21 @@
+.measurement-diagram{--diagram-top:#e4e9dd;--diagram-side:#bbc9b8;--diagram-front:#d0dbca;--diagram-line:#637263;--diagram-water:#c0e1e7;display:block;width:100%;height:auto;max-width:420px;margin:auto;overflow:visible}
+.measurement-diagram :is(.fill,.top,.siding){fill:var(--diagram-top);stroke:var(--diagram-line);stroke-width:1.3}
+.measurement-diagram :is(.side,.roofside){fill:var(--diagram-side);stroke:var(--diagram-line);stroke-width:1.3}
+.measurement-diagram .front{fill:var(--diagram-front);stroke:var(--diagram-line);stroke-width:1.3}
+.measurement-diagram :is(.opening,.hole){fill:var(--surface);stroke:var(--diagram-line);stroke-width:1.3;stroke-dasharray:3 2}
+.measurement-diagram .water{fill:var(--diagram-water);stroke:var(--diagram-line);stroke-width:1.3}
+.measurement-diagram :is(.post,.rail,.picket,.brickc){fill:var(--diagram-front);stroke:var(--diagram-line);stroke-width:1}
+.measurement-diagram :is(.board,.joist){stroke:var(--diagram-line);stroke-width:1;fill:none}
+.measurement-diagram .joist{stroke-width:2;stroke-dasharray:4 3}
+.measurement-diagram .dim{stroke:var(--diagram-line);stroke-width:1;stroke-dasharray:3 3}
+.measurement path{fill:none;stroke:var(--muted);stroke-width:1.2}
+.measurement text{fill:var(--text);font:600 14px var(--font);paint-order:stroke;stroke:var(--bg);stroke-width:4px;stroke-linejoin:round}
+.measurement.is-active path{stroke:var(--accent-strong);stroke-width:2.5}
+.measurement.is-active text{fill:var(--accent-strong);text-decoration:underline;text-underline-offset:3px}
+.measurement-caption{font-size:12px;line-height:1.6;color:var(--muted);margin:6px 0 0;width:100%;text-align:center}
+:is(.calc,.cc) .shape-head{flex-direction:column;gap:8px}
+:is(.calc,.cc) .shape-head .measurement-diagram,:is(.calc,.cc) .shape-head.solo .measurement-diagram{width:100%;max-width:420px}
+[data-theme=dark] .measurement-diagram{--diagram-top:#425949;--diagram-front:#35493d;--diagram-side:#283a30;--diagram-line:#a2b7a7;--diagram-water:#305963}
+@media(max-width:480px){:is(.calc,.cc) .shape-head{padding:12px 0}.measurement text{font-size:18px}}
+@media print{.measurement-diagram,[data-theme=dark] .measurement-diagram{--diagram-top:#eee;--diagram-front:#ddd;--diagram-side:#ccc;--diagram-line:#333;--diagram-water:#eee}.measurement text{fill:#111;stroke:#fff}.measurement path{stroke:#333}.measurement-caption{color:#333}}
+

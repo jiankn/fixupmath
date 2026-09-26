@@ -1,0 +1,129 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { doseText } from '../calculators/pool-chemical';
+import { CHLORINE_PRODUCTS, chlorineDose, bakingSodaPounds, stabilizerPounds, calciumPounds, fcTargets, CALCIUM_PRODUCTS } from '../lib/pool-chem';
+import { fmt } from '../lib/format';
+
+const sizes = [10000, 15000, 20000, 25000];
+const shown = ['liquid10', 'liquid125', 'bleach825', 'calhypo65', 'dichlor'].map((id) => CHLORINE_PRODUCTS.find((p) => p.id === id)!);
+const cyas = [0, 20, 30, 40, 50, 60, 70, 80].map((c) => ({ c, ...fcTargets(c) }));
+const dry = (lb: number) => doseText({ pounds: lb, ounces: lb * 16, gallons: 0, liquid: false });
+---
+
+<CalcPage
+  slug="pool-calculator"
+  def={def}
+  title="Pool Calculator: Chlorine, Shock, Alkalinity & Stabilizer Doses"
+  description="Free pool chemical calculator. Enter your gallons and test results to get how much liquid chlorine, shock, baking soda, stabilizer, or calcium chloride to add."
+  h1="Pool Chemical Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Work out how much chlorine, shock, baking soda, stabilizer, or calcium chloride to add, from your pool's gallons and
+    your latest test results. Every dose shows the math behind it.
+  </Fragment>
+
+  <h2 id="how-to">How to use the pool calculator</h2>
+  <ol>
+    <li>Know your pool's volume in gallons. If you don't, the <a href="/pool-volume-calculator/">pool volume calculator</a> works it out from the shape.</li>
+    <li>Test the water with a drop-based kit or a reliable strip, and note the current reading.</li>
+    <li>Pick what to adjust, enter the current and target levels, and choose the product you have.</li>
+    <li>Add one chemical at a time with the pump running, then retest before adding anything else.</li>
+  </ol>
+
+  <h2 id="chlorine">How much chlorine to add</h2>
+  <p>
+    To raise free chlorine by 1 ppm in 10,000 gallons you need about <strong>12.8 fl oz of 10% liquid chlorine</strong>,
+    10.2 fl oz of 12.5%, or about 2 oz of 65% cal-hypo. Scale by your gallons and by how many ppm you want to add.
+  </p>
+  <p>Amount to raise free chlorine by 1 ppm:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Product</th>{sizes.map((g) => <th class="num">{(g / 1000).toFixed(0)}k gal</th>)}</tr></thead>
+      <tbody>{shown.map((p) => <tr><td>{p.label}</td>{sizes.map((g) => <td class="num">{doseText(chlorineDose(p, g, 1))}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="fc-cya">How much chlorine does my pool need? It depends on stabilizer</h2>
+  <p>
+    Cyanuric acid (CYA, stabilizer) protects chlorine from sunlight but also makes it weaker, so the right chlorine level
+    rises with CYA. The widely used Trouble Free Pool guideline keeps free chlorine at about 7.5% of CYA as a minimum,
+    and raises it to about 40% of CYA to shock (SLAM) an algae problem.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>CYA</th><th class="num">Minimum FC</th><th class="num">Target FC</th><th class="num">Shock FC</th></tr></thead>
+      <tbody>{cyas.slice(1).map((r) => <tr><td>{r.c} ppm</td><td class="num">{fmt(r.minimum, 1)}</td><td class="num">{fmt(r.target, 1)}</td><td class="num">{fmt(r.shock, 1)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="shock">How much shock do I need?</h2>
+  <p>
+    Many shock bags say one pound treats 10,000 gallons, which with 65% cal-hypo raises chlorine by roughly 8 ppm. Whether
+    that is enough depends on your stabilizer: at 40 ppm CYA a real algae shock needs about 16 ppm. Enter your CYA and the
+    calculator shows the shock level and the dose to reach it. Liquid chlorine shocks without adding calcium or CYA, which
+    is why many pool owners prefer it.
+  </p>
+
+  <h2 id="alkalinity">How much baking soda to raise alkalinity</h2>
+  <p>
+    About <strong>1.4 lb of baking soda per 10,000 gallons raises total alkalinity by 10 ppm</strong>. For a 15,000-gallon
+    pool going from 60 to 90 ppm, that is {dry(bakingSodaPounds(15000, 30))}.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>To raise by</th>{sizes.map((g) => <th class="num">{(g / 1000).toFixed(0)}k gal</th>)}</tr></thead>
+      <tbody>{[10, 20, 30].map((d) => <tr><td>{d} ppm TA</td>{sizes.map((g) => <td class="num">{dry(bakingSodaPounds(g, d))}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="stabilizer">How much stabilizer (CYA) to add</h2>
+  <p>
+    About 13 oz of cyanuric acid raises 10,000 gallons by 10 ppm. It dissolves slowly, so wait several days before
+    retesting, and add it gradually: the only way to lower CYA is to replace water. Salt pools usually run 60–80 ppm,
+    other outdoor pools 30–50 ppm.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>To raise by</th>{sizes.map((g) => <th class="num">{(g / 1000).toFixed(0)}k gal</th>)}</tr></thead>
+      <tbody>{[10, 20, 30].map((d) => <tr><td>{d} ppm CYA</td>{sizes.map((g) => <td class="num">{dry(stabilizerPounds(g, d))}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="calcium">How much calcium chloride to add</h2>
+  <p>
+    To raise calcium hardness by 10 ppm in 10,000 gallons, add about {dry(calciumPounds(10000, 10, CALCIUM_PRODUCTS[0].purity))}
+    of 94–97% calcium chloride, or {dry(calciumPounds(10000, 10, CALCIUM_PRODUCTS[1].purity))} of 77–80% flakes. Plaster
+    pools are commonly kept around 250–350 ppm; vinyl and fiberglass pools can run lower.
+  </p>
+
+  <h2 id="ph">Why the calculator doesn't dose pH</h2>
+  <p>
+    How far a cup of acid moves pH depends on alkalinity and other chemistry, so a single formula can easily overshoot.
+    The safer method: with the pump running, pour a small measured dose of muriatic acid slowly in front of a return jet,
+    for example 8 fl oz of 31.45% acid per 10,000 gallons, wait 30 minutes, retest, and repeat. Always add acid to water,
+    never water to acid, and wear gloves and eye protection. Most pools are kept between pH 7.2 and 7.8.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Can I add chlorine and other chemicals at the same time?</h3>
+  <p>
+    Add them one at a time, well spread out, with the pump running. Never mix chemicals in a bucket or feeder; cal-hypo
+    and trichlor in particular can react violently if they come into contact.
+  </p>
+  <h3>Why does my chlorine keep dropping?</h3>
+  <p>
+    Sun, swimmers, and organic debris use it up. If it drops more than about 1 ppm overnight with the pool covered or the
+    sun down, something is still consuming it, often early algae, and a shock is worth considering.
+  </p>
+  <h3>What about salt pools?</h3>
+  <p>A salt system makes its own chlorine. Use the <a href="/salt-pool-calculator/">salt pool calculator</a> to keep the salt level where the cell needs it.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Doses are linear: gallons × 8.345 lb × 1e-6 × ppm change, divided by the product's strength.</li>
+    <li>Baking soda uses 1.68 lb per lb of alkalinity (as CaCO₃); calcium chloride 1.11, adjusted for purity.</li>
+    <li>Liquid chlorine strengths are pool-trade percentages; bleach labels are by weight, which the calculator converts.</li>
+    <li>FC targets follow the Trouble Free Pool FC/CYA guideline. Always follow the product label and retest after every dose.</li>
+  </ul>
+</CalcPage>

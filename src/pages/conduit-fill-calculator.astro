@@ -1,0 +1,90 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/conduit-fill';
+import { CONDUITS, CONDUIT_SIZES, maxWires, gaugeLabel, type Gauge } from '../lib/electrical';
+
+const gauges: Gauge[] = ['14', '12', '10', '8', '6', '4'];
+const sizes = CONDUIT_SIZES.slice(0, 6);
+---
+
+<CalcPage
+  slug="conduit-fill-calculator"
+  def={def}
+  title="Conduit Fill Calculator: EMT & PVC, NEC Chapter 9"
+  description="Free conduit fill calculator. Enter conduit type and size and the THHN wires inside to get the fill percentage against NEC limits, plus the maximum wires per conduit size."
+  h1="Conduit Fill Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Check whether your wires fit: fill percentage for EMT and PVC conduit against the NEC Chapter 9 limits, the maximum
+    number of THHN wires, and the smallest conduit that works.
+  </Fragment>
+
+  <h2 id="limits">NEC conduit fill limits</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Number of conductors</th><th class="num">Maximum fill</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="num">53%</td></tr>
+        <tr><td>2</td><td class="num">31%</td></tr>
+        <tr><td>3 or more</td><td class="num">40%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Fill is the total cross-sectional area of the wires, including insulation, divided by the inside area of the conduit.
+    Equipment grounding conductors count toward the fill.
+  </p>
+
+  <h2 id="example">Example: four 12 AWG THHN in ¾ in EMT</h2>
+  <p>
+    Each 12 AWG THHN wire is 0.0133 in², so four total 0.0532 in². ¾ in EMT has 0.533 in² inside, making the fill 10%,
+    well under the 40% limit. The same conduit holds up to 16 of these wires.
+  </p>
+
+  <h2 id="emt-table">Maximum THHN wires in EMT</h2>
+  <p>Same-size conductors, using the same method as NEC Annex C, Table C.1.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Wire</th>{sizes.map((s) => <th class="num">{s} in</th>)}</tr></thead>
+      <tbody>{gauges.map((g) => <tr><td>{gaugeLabel(g)}</td>{sizes.map((s) => <td class="num">{maxWires('emt', s, g)}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="pvc-table">Maximum THHN wires in PVC Schedule 40</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Wire</th>{sizes.map((s) => <th class="num">{s} in</th>)}</tr></thead>
+      <tbody>{gauges.map((g) => <tr><td>{gaugeLabel(g)}</td>{sizes.map((s) => <td class="num">{maxWires('pvc40', s, g)}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <p>
+    Long run? <a href="/voltage-drop-calculator/">Check the voltage drop</a> for the wire size you picked.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Does a full conduit mean the wires are properly sized?</h3>
+  <p>
+    No. With more than three current-carrying conductors in one conduit, NEC 310.15(C)(1) requires reducing each wire's
+    ampacity, for example to 80% for four to six conductors. Check sizing with the
+    <a href="/wire-size-calculator/">wire size calculator</a> and apply the adjustment.
+  </p>
+  <h3>Why is PVC smaller inside than EMT of the same size?</h3>
+  <p>
+    Trade size is nominal. PVC walls are thicker, and Schedule 80 thicker still, so they hold fewer wires. Use the
+    conduit you are actually installing.
+  </p>
+  <h3>What about other wire types?</h3>
+  <p>
+    This calculator uses THHN/THWN-2 dimensions, the most common building wire in conduit. XHHW, bare grounds, and
+    others have different areas listed in NEC Chapter 9 Tables 5 and 8.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Conduit areas from NEC Chapter 9 Table 4 (EMT, PVC Schedule 40 and 80); wire areas from Table 5 (THHN/THWN-2).</li>
+    <li>Allowed area is the conduit area at 53%, 31%, or 40% per Table 1, rounded to three decimals as published.</li>
+    <li>For planning only; your inspector and local code have the final word.</li>
+  </ul>
+</CalcPage>

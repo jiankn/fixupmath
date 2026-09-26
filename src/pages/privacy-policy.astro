@@ -1,0 +1,39 @@
+---
+import Page from '../components/Page.astro';
+import { SITE } from '../site';
+const UPDATED = 'September 26, 2026';
+---
+
+<Page title="Privacy Policy" description={`How ${SITE.name} handles data, cookies, and advertising.`}>
+  <p class="muted small">Last updated {UPDATED}</p>
+  <h2>What we collect</h2>
+  <p>
+    The calculators run entirely in your browser. The numbers you type are not sent to our servers. If you use the
+    "Add to project" feature, your project list is saved in your own browser's local storage so it is still there when
+    you come back. You can clear it at any time with the "Clear project" button or by clearing your browser data.
+  </p>
+  <p>
+    Our hosting provider (Cloudflare) processes standard technical data such as IP addresses and request logs to deliver
+    and protect the site.
+  </p>
+  <h2>Advertising and cookies</h2>
+  <p>
+    We use Google AdSense to show ads. Third-party vendors, including Google, use cookies to serve ads based on your
+    prior visits to this and other websites. Google's use of advertising cookies enables it and its partners to serve
+    ads based on your visits to this site and/or other sites on the internet.
+  </p>
+  <p>
+    You can opt out of personalized advertising by visiting
+    <a href="https://adssettings.google.com" rel="nofollow noopener">Google Ads Settings</a>, or opt out of some
+    third-party vendors' use of cookies at <a href="https://www.aboutads.info/choices/" rel="nofollow noopener">aboutads.info</a>.
+    Learn more about <a href="https://policies.google.com/technologies/partner-sites" rel="nofollow noopener">how Google uses data from partner sites</a>.
+  </p>
+  <p>
+    Visitors in the European Economic Area, the UK, and Switzerland are shown a consent message before personalized ads
+    are served, as required by law.
+  </p>
+  <h2>Children</h2>
+  <p>This site is not directed at children under 13, and we do not knowingly collect their personal information.</p>
+  <h2>Contact</h2>
+  <p>Questions about this policy: <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>.</p>
+</Page>

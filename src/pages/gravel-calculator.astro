@@ -1,0 +1,119 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { GRAVEL_MATERIALS } from '../calculators/gravel';
+import { bulkResult, coverageFt2PerYd3 } from '../lib/bulk';
+import { fmt } from '../lib/format';
+
+const ex = bulkResult(10 * 20 * 0.25, 5, 1.4, [0.5]);
+const coverage = [2, 3, 4, 6].map((d) => ({ d, yd: coverageFt2PerYd3(d), ton: coverageFt2PerYd3(d) / 1.4 }));
+---
+
+<CalcPage
+  slug="gravel-calculator"
+  def={def}
+  title="Gravel Calculator: Cubic Yards, Tons & Bags for Any Area"
+  description="Free gravel calculator. Enter the area and depth to get cubic yards, tons, and bags of pea gravel, crushed stone, crusher run, or river rock."
+  h1="Gravel Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Work out how many cubic yards and tons of gravel you need for a driveway, path, patio, or drainage bed, and how many
+    bags if the job is small.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate gravel</h2>
+  <ol>
+    <li>Measure the length and width of the area in feet. For a curved bed, choose Circle or add several shapes to a project.</li>
+    <li>Decide the depth and convert it to feet: 3 inches is 0.25 ft.</li>
+    <li>Multiply length × width × depth to get cubic feet, then divide by 27 for cubic yards.</li>
+    <li>Multiply cubic yards by the weight of your stone, about 1.4 tons per yard for most gravel, to get tons.</li>
+    <li>Add 5–10% and round up to what your supplier sells, usually half yards or half tons.</li>
+  </ol>
+
+  <h2 id="example">Example: a 10 × 20 ft pea gravel patio, 3 inches deep</h2>
+  <p>
+    10 × 20 × 0.25 = 50 cubic feet, or 1.85 cubic yards. With 5% extra that is {fmt(ex.cubicYards)} cubic yards, which
+    weighs about {fmt(ex.tons)} tons at 1.4 tons per yard. Order {fmt(ex.orderYards)} yards or {fmt(ex.orderTons)} tons.
+    In bags, it would take {ex.bags[0].count} half-cubic-foot bags, which is why bulk delivery wins at this size.
+  </p>
+
+  <h2 id="weight">How much does a yard of gravel weigh?</h2>
+  <p>
+    A cubic yard of gravel weighs about <strong>1.4 tons (2,800 lb)</strong>. The real number runs from roughly 1.3 to
+    1.5 tons depending on the stone size, how much fine material is mixed in, and how wet it is. Crusher run and road base
+    are heavier because the fines fill the gaps between stones.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Material</th><th class="num">Typical tons per cubic yard</th><th class="num">Cubic yards per ton</th></tr></thead>
+      <tbody>
+        {GRAVEL_MATERIALS.map((m) => <tr><td>{m.label}</td><td class="num">{m.tonsPerYd3}</td><td class="num">{fmt(1 / m.tonsPerYd3)}</td></tr>)}
+      </tbody>
+    </table>
+  </div>
+  <p>Quarries and landscape yards publish their own weights. If yours does, pick <strong>Custom weight</strong> in the calculator and enter it.</p>
+
+  <h2 id="coverage">How much area does a ton of gravel cover?</h2>
+  <p>
+    At 1.4 tons per yard, one ton of gravel covers about <strong>77 square feet at 3 inches deep</strong> and about 116
+    square feet at 2 inches. A full cubic yard covers 108 square feet at 3 inches.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Depth</th><th class="num">Sq ft per cubic yard</th><th class="num">Sq ft per ton</th></tr></thead>
+      <tbody>{coverage.map((c) => <tr><td>{c.d} in</td><td class="num">{fmt(c.yd, 0)}</td><td class="num">{fmt(c.ton, 0)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="depth">How deep should gravel be?</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Project</th><th>Typical depth</th></tr></thead>
+      <tbody>
+        <tr><td>Garden path or walkway</td><td>2–3 in</td></tr>
+        <tr><td>Pea gravel patio or play area</td><td>3 in</td></tr>
+        <tr><td>Decorative ground cover</td><td>2 in</td></tr>
+        <tr><td>Driveway</td><td>4–6 in, usually a compacted base of larger stone topped with finer gravel</td></tr>
+        <tr><td>Base under pavers or a shed</td><td>4–6 in of compacted crushed stone</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    For a layered driveway, run the calculator once per layer and add each to the project. The bedding layer under pavers
+    is usually sand; the <a href="/sand-calculator/">sand calculator</a> handles that part.
+  </p>
+
+  <h2 id="bags-or-bulk">Bags or bulk delivery?</h2>
+  <p>
+    Bagged gravel usually comes in half-cubic-foot bags of about 50 lb, so a single cubic yard takes 54 bags. Bags make
+    sense for topping up a path or filling a few planters. Past about half a yard, bulk delivery is almost always cheaper,
+    even with a delivery fee.
+  </p>
+
+  <p>
+    Building a paver patio? <a href="/paver-calculator/">Size the pavers, base, and sand in one step</a>. Mixing materials around the yard?
+    <a href="/cubic-yard-calculator/">Convert each area to cubic yards</a>.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many cubic yards are in a ton of gravel?</h3>
+  <p>About 0.71 cubic yards at 1.4 tons per yard. Divide tons by your stone's weight per yard to convert.</p>
+  <h3>Should I order extra for compaction?</h3>
+  <p>
+    Yes for crusher run, road base, and anything you plan to tamp. Compacted base can lose 10–20% of its loose volume,
+    so raise the waste setting to 15–20% for those layers.
+  </p>
+  <h3>Can I use this for rock, stone, or rubble?</h3>
+  <p>
+    Yes. Choose the closest material or enter a custom weight per cubic yard from your supplier. For decorative stone
+    such as river rock or lava rock, the <a href="/landscape-rock-calculator/">landscape rock calculator</a> has those
+    types and depth guidance built in.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Volume = area × depth, converted to cubic yards (27 cubic feet per yard).</li>
+    <li>Weight uses the typical density shown for each material, in US tons of 2,000 lb.</li>
+    <li>Bulk orders round up to the next half yard or half ton; bag counts always round up.</li>
+  </ul>
+</CalcPage>

@@ -1,0 +1,196 @@
+---
+// 混凝土计算器。首屏结果在构建时按默认值算好写进 HTML（搜索引擎和没开 JS 的用户也能看到），
+// 浏览器里由 concrete-client.ts 接管实时计算。
+import ShapeDiagram from './ShapeDiagram.astro';
+import Icon from '../Icon.astro';
+import '../../styles/calc.css';
+import {
+  SHAPES,
+  STAIR_STEPS_DEFAULT,
+  shapeVolumeFt3,
+  concreteResult,
+  readyMixOrder,
+  fmt,
+  type Length,
+} from '../../lib/concrete';
+import { LENGTH_UNITS } from '../../lib/units';
+
+const DEFAULT_WASTE = 10;
+const slab = SHAPES[0];
+const defaultDims = Object.fromEntries(slab.dims.map((d) => [d.key, d.default])) as Record<string, Length>;
+const r = concreteResult(shapeVolumeFt3('slab', defaultDims), DEFAULT_WASTE);
+const bags80 = r.bags.find((b) => b.lb === 80)!.count;
+---
+
+<form id="cc" class="cc" novalidate autocomplete="off">
+  <div class="cc-body">
+    <div class="cc-inputs">
+  <fieldset class="shapes">
+    <legend>What are you pouring?</legend>
+    <div class="shape-list">
+      {
+        SHAPES.map((s, i) => (
+          <label class="shape-opt">
+            <input type="radio" name="shape" value={s.id} checked={i === 0} />
+            <span class="shape-name"><Icon name={s.id === "footing" ? "slab" : s.id} /><span>{s.label}</span></span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+      <p class="input-note" data-input-note>Example dimensions below. Replace them with your measurements.</p>
+      {
+        SHAPES.map((s, i) => (
+          <fieldset class="dims" data-shape={s.id} hidden={i !== 0}>
+            <legend class="visually-hidden">{s.label} dimensions</legend>
+            <div class="shape-head">
+              <ShapeDiagram shape={s.id} />
+              <p class="muted small shape-desc">{s.description}</p>
+            </div>
+            <div class="fields">
+              {s.dims.map((d) => (
+                <div class="field">
+                  <label for={`${s.id}-${d.key}`}>{d.label}</label>
+                  <div class="iu">
+                    <input
+                      id={`${s.id}-${d.key}`}
+                      name={d.key}
+                      type="number"
+                      inputmode="decimal"
+                      min={d.key === "landing" || d.key === "innerDiameter" ? 0 : 0.000001}
+                      step="any"
+                      value={d.default.value}
+                    />
+                    <select name={`${d.key}Unit`} aria-label={`${d.label} unit`}>
+                      {LENGTH_UNITS.map((u) => (
+                        <option value={u.value} selected={u.value === d.default.unit}>
+                          {u.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {d.hint && <small class="muted">{d.hint}</small>}
+                </div>
+              ))}
+              {s.id === 'stairs' && (
+                <div class="field">
+                  <label for="stairs-steps">Number of steps</label>
+                  <input id="stairs-steps" name="steps" type="number" inputmode="numeric" min="1" step="1" value={STAIR_STEPS_DEFAULT} />
+                </div>
+              )}
+            </div>
+          </fieldset>
+        ))
+      }
+
+      <div class="fields opts">
+        <div class="field" data-per-piece>
+          <label for="cc-qty">Quantity</label>
+          <input id="cc-qty" name="quantity" type="number" inputmode="numeric" min="1" step="1" value="1" />
+          <small class="muted">Number of identical pours, e.g. 8 post holes</small>
+        </div>
+        <div class="field">
+          <label for="cc-waste">Extra for waste</label>
+          <select id="cc-waste" name="waste">
+            {[0, 5, 10, 15].map((w) => <option value={w} selected={w === DEFAULT_WASTE}>{w}%</option>)}
+          </select>
+          <small class="muted">5–10% covers spillage and uneven ground</small>
+        </div>
+      </div>
+
+      <details class="prices">
+        <summary>Add prices for a cost estimate <span class="muted">(optional)</span></summary>
+        <div class="fields">
+          <div class="field">
+            <label for="p-rm">Ready-mix, per cubic yard</label>
+            <div class="money"><span>$</span><input id="p-rm" name="priceReadyMix" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 165" /></div>
+          </div>
+          {
+            [80, 60, 40].map((lb) => (
+              <div class="field">
+                <label for={`p-${lb}`}>{lb}-lb bag price</label>
+                <div class="money">
+                  <span>$</span>
+                  <input id={`p-${lb}`} name={`priceBag${lb}`} type="number" inputmode="decimal" min="0" step="any" placeholder={lb === 80 ? 'e.g. 6.50' : ''} />
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        <p class="muted small">Prices vary a lot by region and season. Use a quote from your local plant or store.</p>
+      </details>
+    </div>
+
+    <aside class="results" id="cc-results" aria-live="polite" aria-label="Results">
+      <div class="results-header"><h2>Your estimate</h2><span class="result-badge"><Icon name="check" size={14} /> Live calculation</span></div>
+      <p class="result-invalid" data-result-invalid hidden>Check your measurements to see a valid estimate.</p>
+      <div class="result-content">
+      <p class="res-label" id="r-label">Concrete needed</p>
+      <p class="res-main"><span id="r-yd">{fmt(r.cubicYards)}</span> <span class="res-unit">cubic yards</span></p>
+      <p class="res-sub">
+        <span id="r-ft3">{fmt(r.totalFt3)}</span> ft³ · <span id="r-m3">{fmt(r.cubicMeters)}</span> m³ ·
+        includes <span id="r-waste">{DEFAULT_WASTE}</span>% extra
+      </p>
+      <p class="res-muted" id="r-piece" hidden></p>
+      <div class="res-figure" id="r-figure" hidden></div>
+
+      <div class="res-block">
+        <h3><Icon name="bag" size={19} /> Bagged concrete</h3>
+        <ul class="bags" id="r-bags">
+          {
+            [...r.bags].reverse().map((b) => (
+              <li>
+                <span>{b.lb}-lb bags</span>
+                <strong data-bag={b.lb}>{b.count.toLocaleString('en-US')}</strong>
+                <span class="bag-cost" data-bag-cost={b.lb} />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="purchase-or">or order a delivery</div>
+      <div class="res-block ready-mix">
+        <h3><Icon name="truck" size={19} /> Ready-mix order</h3>
+        <p class="order"><strong id="r-order">{fmt(readyMixOrder(r.cubicYards))}</strong> yd³ <span class="res-muted">rounded up to the next ¼ yd³</span></p>
+        <p class="res-muted" id="r-rm-cost" hidden></p>
+      </div>
+
+      <p class="res-muted weight">Weight: <span id="r-weight">{fmt(r.weightLb, 0)} lb ({fmt(r.weightLb / 2000, 2)} tons)</span></p>
+
+      <p class="advice" id="r-advice">
+        Bags work, but that is {bags80} 80-lb bags to mix. Consider renting a mixer, or ask local plants about short-load delivery.
+      </p>
+
+      <div class="project">
+        <button type="button" class="btn btn-add" id="add-project">+ Add to project</button>
+        <div id="project" hidden>
+          <h3>Project total</h3>
+          <ol id="project-list"></ol>
+          <p class="project-total">Total: <strong id="project-total"></strong></p>
+          <button type="button" class="btn-link" id="clear-project">Clear project</button>
+        </div>
+      </div>
+
+      <div class="actions no-print">
+        <button type="button" class="btn-ghost" id="copy-link"><Icon name="copy" size={16} /> Copy link</button>
+        <button type="button" class="btn-ghost" id="print"><Icon name="print" size={16} /> Print</button>
+      </div>
+      <p class="result-footnote">Planning estimate. Confirm bag yields and order increments with your supplier.</p>
+      </div>
+    </aside>
+  </div>
+</form>
+
+<!-- 手机上结果面板在输入框下方很远，滚动时底部悬浮一条摘要 -->
+<a class="mbar no-print" id="mbar" href="#cc-results" hidden>
+  <span><strong id="mb-yd">{fmt(r.cubicYards)}</strong> yd³ · <strong id="mb-bags">{bags80}</strong> × 80-lb bags</span>
+  <span class="mbar-go">Details ↓</span>
+</a>
+
+<script>
+  import { initConcreteCalculator } from './concrete-client';
+  initConcreteCalculator();
+</script>
+

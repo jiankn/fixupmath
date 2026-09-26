@@ -1,0 +1,17 @@
+---
+// 简单文字页（关于、隐私、条款、联系）的通用外壳
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import { SITE } from '../site';
+const { title, description } = Astro.props as { title: string; description: string };
+---
+
+<Base title={`${title} | ${SITE.name}`} description={description}>
+  <div class="wrap">
+    <Breadcrumbs items={[{ name: 'Home', href: '/' }, { name: title }]} />
+    <article class="prose">
+      <h1>{title}</h1>
+      <slot />
+    </article>
+  </div>
+</Base>

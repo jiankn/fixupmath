@@ -1,0 +1,96 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/voltage-drop';
+import { GAUGES, gaugeLabel, RESISTANCE, voltageDrop, type Gauge } from '../lib/electrical';
+import { fmt } from '../lib/format';
+
+const maxFt = (g: Gauge, amps: number, volts: number) => {
+  const vdPerFt = voltageDrop('cu', g, amps, 1, '1')!;
+  return (volts * 0.03) / vdPerFt;
+};
+const rows = (['14', '12', '10', '8', '6', '4'] as Gauge[]).map((g) => ({ g, a15: maxFt(g, 15, 120), a20: maxFt(g, 20, 120), a30: maxFt(g, 30, 240) }));
+---
+
+<CalcPage
+  slug="voltage-drop-calculator"
+  def={def}
+  title="Voltage Drop Calculator: Copper & Aluminum, 1- and 3-Phase"
+  description="Free voltage drop calculator. Enter wire size, amps, one-way distance, and voltage to get the voltage drop in volts and percent, using NEC Chapter 9 resistance values."
+  h1="Voltage Drop Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Check how much voltage a circuit loses over its length, in volts and percent, for copper or aluminum wire on single- or
+    three-phase circuits.
+  </Fragment>
+
+  <h2 id="formula">Voltage drop formula</h2>
+  <p class="formula">single phase: VD = 2 × L × I × R ÷ 1,000</p>
+  <p class="formula">three phase: VD = 1.732 × L × I × R ÷ 1,000</p>
+  <p>
+    L is the one-way length in feet, I the current in amps, and R the conductor resistance in ohms per 1,000 feet. The
+    single-phase formula uses 2 because current travels out and back.
+  </p>
+
+  <h2 id="example">Example: 12 AWG copper, 20 A, 100 ft, 120 V</h2>
+  <p>
+    12 AWG copper is 1.93 Ω per 1,000 ft. 2 × 100 × 20 × 1.93 ÷ 1,000 = 7.72 V, which is <strong>6.4% of 120 V</strong>,
+    more than double the recommended 3%. Stepping up to 8 AWG (0.764 Ω) brings it to 3.06 V, or 2.5%.
+  </p>
+
+  <h2 id="limits">How much voltage drop is acceptable?</h2>
+  <p>
+    The NEC recommends, in informational notes, no more than 3% on a branch circuit and 5% total for feeder plus branch
+    circuit. These aren't enforceable code limits in most places, but equipment runs better within them. Motors run hot
+    and electronics can reset when voltage sags further.
+  </p>
+
+  <h2 id="table">Maximum run for 3% drop, copper</h2>
+  <p>One-way distance, single phase.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Wire</th><th class="num">15 A at 120 V</th><th class="num">20 A at 120 V</th><th class="num">30 A at 240 V</th></tr></thead>
+      <tbody>{rows.map((r) => <tr><td>{gaugeLabel(r.g)}</td><td class="num">{fmt(r.a15, 0)} ft</td><td class="num">{fmt(r.a20, 0)} ft</td><td class="num">{fmt(r.a30, 0)} ft</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="resistance">Conductor resistance</h2>
+  <p>NEC Chapter 9, Table 8, DC resistance at 75°C, ohms per 1,000 feet.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Size</th><th class="num">Copper</th><th class="num">Aluminum</th></tr></thead>
+      <tbody>{GAUGES.map((g) => <tr><td>{gaugeLabel(g)}</td><td class="num">{RESISTANCE.cu[g]}</td><td class="num">{RESISTANCE.al[g] ?? '—'}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="dc">Voltage drop on DC circuits</h2>
+  <p>
+    DC uses the single-phase formula, because current flows out on one wire and back on the other. Low-voltage systems
+    feel it most: a 0.77 V drop is under 1% at 120 V but 6.4% at 12 V. Choose <em>DC</em> in the calculator for solar,
+    RV, and marine circuits.
+  </p>
+
+  <p>
+    Running several circuits in one pipe? <a href="/conduit-fill-calculator/">Check the conduit fill</a> before you pull wire.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Is the distance one way or round trip?</h3>
+  <p>One way, from the panel to the load. The formula doubles it for single-phase circuits.</p>
+  <h3>How do I reduce voltage drop?</h3>
+  <p>
+    Use a larger wire, shorten the run, or run the load at a higher voltage: a 240 V circuit carries half the current of a
+    120 V circuit for the same power, and its drop is a smaller percentage.
+  </p>
+  <p>
+    To pick a wire that meets both ampacity and voltage drop at once, use the
+    <a href="/wire-size-calculator/">wire size calculator</a>.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Resistance values from NEC Chapter 9 Table 8 (uncoated copper and aluminum, 75°C).</li>
+    <li>DC resistance is used; for AC circuits over about 1/0 AWG, reactance adds slightly to the drop.</li>
+    <li>Results are for planning; confirm designs with your local code and a licensed electrician.</li>
+  </ul>
+</CalcPage>

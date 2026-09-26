@@ -1,0 +1,49 @@
+---
+interface Props { slug: string }
+const { slug } = Astro.props;
+// Each silhouette describes the material or measurement, rather than a generic tool icon.
+const drawings: Record<string, [string, string]> = {
+  concrete: ['M12 35 38 20 70 30 44 47Z M12 35v12l32 12 26-17V30 M44 47v12', 'M17 56 42 66M48 65 72 51M19 53v6m22 4v6'],
+  rebar: ['M12 42 40 18 70 36 42 62Z', 'M20 35 51 54M29 27 60 46M40 18 70 36M22 48 51 25M32 55 61 31'],
+  brick: ['M12 25h56v34H12Z M12 36h56M12 47h56M30 25v11M51 25v11M22 36v11M43 36v11M59 36v11M30 47v12M51 47v12', 'M12 62h56'],
+  paver: ['M9 48 38 22 72 38 43 64Z M18 40 52 56M28 31 62 47M25 55 54 29', 'M9 48v6l34 16 29-26v-6M43 64v6'],
+  gravel: ['m10 54 5-12 12-3 8 10-5 12-13 1Z m26 1 2-13 15-6 11 9-4 15-15 4Z m-13-22 4-12 14-2 8 11-12 9Z', 'm17 46 7 4-4 7m24-9 9-3 3 8M31 25l6 5'],
+  'cubic-yard': ['M17 30 40 17 64 30v27L40 70 17 57Z M17 30l23 14 24-14M40 44v26', 'M10 30v27M7 30h6M7 57h6M22 23l18-10 19 10'],
+  'landscape-rock': ['m10 51 9-17 18-2 11 16-12 15-21-1Z m32-17 10-14 16 4 5 18-13 10-12-4', 'm19 34 9 13 20 1M28 47l-4 15M52 20l5 17 15 5'],
+  mulch: ['m12 45 21-21 9 9-22 22Z m22 13 24-25 11 9-24 24Z m-24 5 14-4 4 8-16 5Z', 'm20 43 13-12m9 23 16-15M51 21l9 4'],
+  topsoil: ['M12 43h56v20H12Z M12 51h56M40 42V28', 'M40 32c-14 0-16-12-16-12 14-2 17 10 16 12Zm0-5c0-12 15-14 15-14s0 13-15 14M20 57h4m9 2h3m16-2h7'],
+  sand: ['M9 60c12-5 17-35 31-35s15 28 31 35Z', 'M32 37c9 2 9 16 20 18M20 57h1m7-6h1m10 8h1m5-12h1m17 12h1'],
+  sod: ['M13 44h36c13 0 20-8 15-18-4-8-21-8-24 1-3 10 13 13 15 4 1-4-5-7-8-3 M13 44v14h39c12 0 17-7 17-16V31', 'M20 42v-9m0 5-5-5m5 3 4-7M31 42v-8M14 52h38'],
+  'grass-seed': ['M17 60h48M26 58V36m0 8-9-9m9 15 10-11M49 58V29m0 10-8-9m8 17 10-13', 'M20 23q-8 8 0 12 8-4 0-12Zm37-7q-8 8 0 12 8-4 0-12Z'],
+  deck: ['M10 34 39 18 71 33 42 50Z M10 34v10l32 16 29-17V33M42 50v10 M18 48v16M62 48v16', 'M20 29 52 45M30 23 62 39'],
+  fence: ['M13 63V24l6-7 6 7v39M34 63V24l6-7 6 7v39M55 63V24l6-7 6 7v39M25 32h9m12 0h9M25 50h9m12 0h9', 'M10 65h60'],
+  stair: ['M13 63V49h14V35h14V21h16v42Z', 'M21 68h43V19M61 23l3-4 3 4M21 65v6'],
+  rafter: ['M10 58 40 18 70 58 M16 58h48M40 18v40', 'M22 51h13V34M45 37l8 11M29 64h22'],
+  'board-foot': ['M10 40 55 19 70 27 25 49Z M10 40v12l15 9 45-22V27M25 49v12', 'M32 60 69 43M13 36 50 19M30 40l22-10'],
+  'square-footage': ['M18 21h44v38H18Z M18 40h44M40 21v38', 'M13 21H8v38h5M18 65v5h44v-5M25 29h6m-3-3v6'],
+  flooring: ['M12 24h56v38H12Z M12 36h56M12 49h56M31 24v12M48 36v13M29 49v13', 'M18 29h7m13 0h20M18 42h22m13 13h9M18 55h5'],
+  carpet: ['M14 37h37c12 0 16-6 13-13-4-8-18-8-20 0-2 7 11 9 12 2M14 37v27h41c10 0 13-6 13-15V27', 'M22 44v14m8-14v14m8-14v14m8-14v14M14 67h42'],
+  tile: ['M14 22h23v18H14Z M43 22h23v18H43Z M14 46h23v18H14Z M43 46h23v18H43Z', 'M20 34l9-7M49 58l9-7'],
+  drywall: ['M18 20h42v45H18Z M25 27h3m22 0h3M25 57h3m22 0h3M40 20v45', 'M13 25H9v35h4M22 70h34'],
+  wallpaper: ['M16 20h36v40H16Z M52 20c14-5 18 3 14 12-2 4-10 6-14 2M52 34v26c14-5 17 4 12 8-3 3-9 3-12 0', 'M24 29l5 5-5 5-5-5Zm15 14 5 5-5 5-5-5Z'],
+  shingle: ['M10 57 29 22h32l10 35Z M17 45h50M23 33h40M38 22l-3 11M49 33l3 12M30 45l-3 12M58 45l3 12', 'M10 62h61'],
+  siding: ['M14 22h52v40H14Z M14 32h52M14 42h52M14 52h52', 'M19 28h42M19 38h42M19 48h42M19 58h42'],
+  'wire-size': ['M14 24c0-8 18-8 18 0v36c0 8-18 8-18 0Z M14 24c0 8 18 8 18 0M43 27c0-5 13-5 13 0v31c0 5-13 5-13 0Z M43 27c0 5 13 5 13 0', 'M63 25v37M60 25h6M60 62h6'],
+  'voltage-drop': ['M12 32h14v25H12Z M17 28h4M54 32h14v25H54Z M59 28h4M26 44h28', 'M18 36v8m-4-4h8M58 44h6M32 23l15 7m-5-7 5 7-8 1'],
+  'conduit-fill': ['M65 42a25 25 0 1 1-50 0 25 25 0 0 1 50 0Z', 'M37 32a7 7 0 1 1-14 0 7 7 0 0 1 14 0Zm20 0a7 7 0 1 1-14 0 7 7 0 0 1 14 0ZM47 51a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z'],
+  btu: ['M18 28 39 15 62 28v33H18Z M27 61V43h17v18', 'M51 33v12a8 8 0 1 0 8 0V33a4 4 0 0 0-8 0ZM55 37v18'],
+  insulation: ['M15 22h50v40H15Z M23 22v40M57 22v40', 'M26 26q27 3 0 9 27 3 0 9 27 3 0 9 27 3 0 6'],
+  pool: ['M10 48q8-6 16 0t16 0M10 58q8-6 16 0t16 0M51 26h13v37H46V32h5Z', 'M49 43h12M52 19h11v7M24 17c-18 20 18 20 0 0Z'],
+  'pool-volume': ['M12 29 42 17 69 30 39 43Z M12 29v24l27 13 30-13V30M39 43v23', 'M18 44q6-4 13 2M45 47l17-7M7 30v23M4 30h6M4 53h6'],
+  'salt-pool': ['M10 48q8-6 16 0t16 0M10 59q8-6 16 0t16 0M51 36l9-5 10 7-7 11-12-3Z', 'm48 18 7-3 5 7-6 5-7-3Zm-12 9 4-3 5 4-3 6-5-1'],
+};
+const drawing = drawings[slug.replace(/-calculator$/, '')];
+---
+{drawing && <span class="tool-illustration" aria-hidden="true"><svg width="72" height="72" viewBox="0 0 80 80" fill="none" stroke-linecap="round" stroke-linejoin="round"><path class="material" d={drawing[0]} /><path class="measurement" d={drawing[1]} /></svg></span>}
+<style>
+.tool-illustration{display:flex;align-items:center;justify-content:center;width:72px;height:72px;flex:0 0 72px;background:var(--surface-2);border-radius:8px;color:var(--muted)}
+svg{display:block;width:100%;height:100%;stroke-width:1.6}.material{stroke:currentColor;fill:var(--illustration-fill,#dfe3d7);fill-opacity:.45}.measurement{stroke:var(--accent);stroke-width:1.8}
+:global([data-theme="dark"]) .tool-illustration{--illustration-fill:#6e856e}
+@media(max-width:1050px){.tool-illustration{width:60px;height:60px;flex-basis:60px}}
+@media(max-width:700px){.tool-illustration{width:52px;height:52px;flex-basis:52px}}
+</style>

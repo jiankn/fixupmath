@@ -1,0 +1,31 @@
+---
+interface Props { name?: string; size?: number; class?: string }
+const { name = 'ruler', size = 24, class: className } = Astro.props;
+const paths: Record<string, string> = {
+  arrow: 'M5 12h14m-6-6 6 6-6 6',
+  search: 'm21 21-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0',
+  ruler: 'm3 16 13-13 5 5L8 21 3 16Zm9-9 2 2m-5 1 2 2m-5 1 2 2',
+  slab: 'm2 10 12-6 8 5-12 6-8-5Zm0 0v5l8 5 12-6V9M10 15v5',
+  bag: 'M8 3h8l-1 5 5 11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2L9 8 8 3Zm1 5h6M9 14h6m-5 3h4',
+  truck: 'M2 7h12v11H2V7Zm12 4h4l4 4v3h-8M6 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4m12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4',
+  grid: 'M3 3h7v7H3V3Zm11 0h7v7h-7V3ZM3 14h7v7H3v-7Zm11 0h7v7h-7v-7Z',
+  leaf: 'M20 3C8 2 2 7 4 15c2 8 18 7 16-12ZM3 22 15 10m-6 6v-5m0 5h5',
+  fence: 'M3 21V5l3-3 3 3v16m6 0V5l3-3 3 3v16M9 9h6M9 16h6',
+  roof: 'm2 12 10-9 10 9M5 10v11h14V10M9 21v-7h6v7',
+  bolt: 'm13 2-9 12h7l-1 8 10-12h-7l1-8Z',
+  water: 'M12 2S4 11 4 16a8 8 0 0 0 16 0c0-5-8-14-8-14Zm-4 14a4 4 0 0 0 4 4',
+  book: 'M12 5C8 2 5 3 2 4v16c4-2 7-1 10 1m0-16c4-3 7-2 10-1v16c-4-2-7-1-10 1V5Z',
+  check: 'm5 12 4 4L19 6',
+  print: 'M6 9V3h12v6M6 17H3V9h18v8h-3M6 14h12v7H6v-7Zm11-2h1',
+  copy: 'M9 8h11v13H9V8ZM5 16H2V3h11v2',
+  plus: 'M12 4v16M4 12h16',
+  column: 'M7 5v15c0 3 10 3 10 0V5M7 5c0-4 10-4 10 0s-10 4-10 0',
+  circle: 'M2 11v4c0 8 20 8 20 0v-4M2 11c0-9 20-9 20 0s-20 9-20 0',
+  tube: 'M6 5v15c0 3 12 3 12 0V5M6 5c0-5 12-5 12 0s-12 5-12 0M9 5h6',
+  stairs: 'M2 21v-6h6V9h6V3h8v18H2Z',
+  sun: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14-1.41 1.41',
+  moon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z',
+};
+---
+<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class={className} aria-hidden="true"><path d={paths[name] ?? paths.ruler} /></svg>
+

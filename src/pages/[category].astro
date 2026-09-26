@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import { SITE } from '../site';
+import { liveCategories, byCategory, type Category } from '../data/calculators';
+export function getStaticPaths() { return liveCategories().map(cat => ({ params: { category: cat.slug }, props: { cat } })); }
+const { cat } = Astro.props as { cat: Category };
+const items = byCategory(cat.slug).filter(c => c.status === 'live');
+const others = liveCategories().filter(c => c.slug !== cat.slug);
+---
+<Base title={`${cat.name} Calculators | ${SITE.name}`} description={cat.description}>
+<div class="wrap">
+  <Breadcrumbs items={[{ name:'Home',href:'/' },{ name:cat.name }]} />
+  <div class="category-header"><div><p class="category-label">{items.length} free {items.length === 1 ? 'calculator' : 'calculators'}</p><h1>{cat.name}</h1><p class="lead">{cat.description}</p></div><Icon name="ruler" size={56} /></div>
+  <div class="category-layout">
+    <section aria-label={`${cat.name} calculators`}><ul class="tool-list">{items.map(c => <li><a href={`/${c.slug}/`}><div><h2>{c.name}</h2><p>{c.summary}</p><span>Calculate quantities <Icon name="arrow" size={16} /></span></div><Icon name="arrow" size={23} /></a></li>)}</ul></section>
+    <aside><h2>A solid start for your project</h2><p>Take your measurements, choose your units, and see an estimate in seconds.</p><ul><li><Icon name="check" size={17} /> No account required</li><li><Icon name="check" size={17} /> Formulas and examples included</li><li><Icon name="check" size={17} /> Results you can print</li></ul><h3>More project categories</h3><nav aria-label="Other categories">{others.map(c => <a href={`/${c.slug}/`}>{c.name}<Icon name="arrow" size={16} /></a>)}</nav></aside>
+  </div>
+</div>
+</Base>
+<style>
+.category-header{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:30px 0 16px}.category-header>svg{color:var(--accent);flex-shrink:0}.category-label{color:var(--accent-strong);font-size:.8125rem;font-weight:600;margin:0}.category-header h1{margin:10px 0 14px}.category-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:44px}
+.tool-list{list-style:none;padding:0;margin:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}.tool-list li+li{border-top:1px solid var(--border)}.tool-list a{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px;text-decoration:none;color:var(--text)}.tool-list a:hover{background:var(--accent-soft)}.tool-list h2{font-size:1.2rem;margin:0 0 8px}.tool-list p{font-size:.9375rem;color:var(--muted);margin:0 0 12px}.tool-list a>svg{color:var(--accent);flex-shrink:0}.tool-list span{display:flex;align-items:center;gap:7px;font-size:.8125rem;font-weight:600;color:var(--accent-strong)}
+aside{align-self:start}aside h2{font-size:1.125rem;margin:0 0 14px}aside p{font-size:.875rem;color:var(--muted)}aside ul{list-style:none;padding:0;font-size:.8125rem}aside li{display:flex;align-items:center;gap:8px;padding:5px 0}aside li svg{color:var(--accent)}aside h3{font-size:.9375rem;border-top:1px solid var(--border);padding-top:24px;margin-top:26px}aside nav a{display:flex;justify-content:space-between;gap:12px;padding:10px 0;color:var(--muted);font-size:.875rem;text-decoration:none}
+@media(max-width:800px){.category-layout{grid-template-columns:1fr;gap:32px}.category-header>svg{display:none}.tool-list a{padding:22px}.category-header{padding-top:20px}}
+</style>

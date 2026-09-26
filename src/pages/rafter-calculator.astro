@@ -1,0 +1,83 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/rafter';
+import { rafter, ftIn } from '../lib/framing';
+import { pitchFactor } from '../lib/finish';
+import { fmt } from '../lib/format';
+import { PITCHES } from '../calculators/shingle';
+
+const spans = [12, 16, 20, 24, 28, 32];
+const pitchesShown = [4, 6, 8, 12];
+---
+
+<CalcPage
+  slug="rafter-calculator"
+  def={def}
+  title="Rafter Calculator: Rafter Length from Span & Pitch"
+  description="Free rafter length calculator. Enter the building span, roof pitch, overhang, and ridge board to get the rafter length, rise, plumb cut angle, and number of rafters."
+  h1="Rafter Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Find the length of common rafters for a gable roof from the building span, pitch, and overhang, plus the rise, the
+    plumb cut angle, and how many rafters to buy.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate rafter length</h2>
+  <ol>
+    <li>Run = half the building span, minus half the ridge board thickness.</li>
+    <li>Multiply the run by the pitch factor, √(1 + (pitch ÷ 12)²), to get the length along the slope.</li>
+    <li>Add the overhang, also multiplied by the pitch factor.</li>
+    <li>Round up to the next standard lumber length.</li>
+  </ol>
+
+  <h2 id="example">Example: 24 ft span, 6/12 pitch, 12 in overhang</h2>
+  <p>
+    The run is 144 − 0.75 = 143.25 in. At 6/12 the pitch factor is 1.118, so the rafter from ridge to wall is 160.2 in;
+    the overhang adds 13.4 in, for 173.6 in, or <strong>14 ft 5⅝ in</strong>. Buy 16 ft boards. The ridge sits 71⅝ in
+    above the wall plates.
+  </p>
+
+  <h2 id="table">Rafter length by span and pitch</h2>
+  <p>With a 12 in level overhang and a 1½ in ridge board.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Span</th>{pitchesShown.map((p) => <th class="num">{p}/12</th>)}</tr></thead>
+      <tbody>{spans.map((s) => <tr><td>{s} ft</td>{pitchesShown.map((p) => <td class="num">{ftIn(rafter(s, p, 12, 1.5).totalIn)}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="factors">Pitch factors and angles</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pitch</th><th class="num">Angle</th><th class="num">Factor</th></tr></thead>
+      <tbody>{PITCHES.map((p) => <tr><td>{p}/12</td><td class="num">{fmt((Math.atan(p / 12) * 180) / Math.PI, 1)}°</td><td class="num">{fmt(pitchFactor(p), 3)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <p>
+    Once you know the rafter length and count, <a href="/board-foot-calculator/">total the lumber in board feet</a>, and
+    <a href="/shingle-calculator/">estimate shingle bundles for the same roof</a> from its span and pitch.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>What size rafters do I need?</h3>
+  <p>
+    That depends on the span, spacing, wood species and grade, and the snow and dead loads where you live. The span
+    tables in the IRC (R802) list allowed spans for each combination. This calculator gives the length, not the lumber
+    size.
+  </p>
+  <h3>What is the plumb cut angle?</h3>
+  <p>
+    The angle of the vertical cut at the ridge, equal to the roof angle. Set a speed square or saw to the angle shown, or
+    mark it with the pitch numbers on a framing square.
+  </p>
+  <p>Planning the roofing too? The <a href="/shingle-calculator/">shingle calculator</a> uses the same pitch.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Run = span ÷ 2 − ridge ÷ 2; length = run × √(1 + (pitch ÷ 12)²) + overhang × the same factor.</li>
+    <li>Rafters per side = building length ÷ spacing + 1, doubled for both slopes.</li>
+    <li>Birdsmouth cuts, fascia, and hip or valley rafters are not included.</li>
+  </ul>
+</CalcPage>

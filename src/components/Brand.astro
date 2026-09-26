@@ -1,0 +1,14 @@
+---
+import { SITE } from '../site';
+---
+<a class="brand" href="/" aria-label={`${SITE.name} home`}>
+  <img class="brand-mark" src="/images/brand/measured-block.png" width="32" height="32" alt="" />
+  <span>FixUp<span class="brand-accent">Math.</span></span>
+</a>
+<style>
+.brand{display:inline-flex;align-items:center;gap:9px;color:var(--text);text-decoration:none;font-size:1.5rem;line-height:1;font-weight:750;letter-spacing:-.045em;flex-shrink:0}
+.brand-accent{color:var(--accent)}.brand:hover{color:var(--text)}
+.brand-mark{width:32px;height:32px;object-fit:contain;flex-shrink:0}
+:global([data-theme="dark"]) .brand-mark{background:#f7f6f2;border-radius:3px;padding:2px}
+@media(max-width:380px){.brand{font-size:1.25rem;gap:6px}}
+</style>

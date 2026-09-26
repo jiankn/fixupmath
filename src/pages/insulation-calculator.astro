@@ -1,0 +1,83 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/insulation';
+import { INSULATION, ATTIC_R_BY_ZONE } from '../lib/hvac';
+import { fmt } from '../lib/format';
+
+const targets = [30, 38, 49, 60];
+---
+
+<CalcPage
+  slug="insulation-calculator"
+  def={def}
+  title="Insulation Calculator: R-Value, Depth & Board Feet"
+  description="Free insulation calculator. Enter the area, target R-value, and existing insulation to get the depth to add, volume, and board feet for batts, blown-in, spray foam, or foam board."
+  h1="Insulation Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Work out how much insulation to add to reach a target R-value: the depth, volume, and board feet for batts, blown-in
+    fiberglass or cellulose, spray foam, and foam board.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate insulation</h2>
+  <ol>
+    <li>Pick a target R-value for the space and your climate zone (see below).</li>
+    <li>Estimate what's already there: old fiberglass is roughly R-3 per inch.</li>
+    <li>Divide the R-value you need to add by the material's R per inch for the depth to add.</li>
+    <li>Multiply by the area for volume, or board feet for spray foam.</li>
+  </ol>
+
+  <h2 id="example">Example: topping up a 1,000 sq ft attic</h2>
+  <p>
+    The attic has about 3½ inches of old batts (R-11), and the target is R-49. Adding R-38 of blown cellulose at about
+    R-3.5 per inch takes <strong>10.9 inches</strong>, or roughly 905 cubic feet.
+  </p>
+
+  <h2 id="r-values">How much insulation does an attic need?</h2>
+  <p>U.S. Department of Energy and ENERGY STAR recommendations for an uninsulated attic:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Climate zone</th><th>Recommended attic R-value</th></tr></thead>
+      <tbody>{ATTIC_R_BY_ZONE.map(([z, r]) => <tr><td>{z}</td><td>{r}</td></tr>)}</tbody>
+    </table>
+  </div>
+  <p>Zone 1 is southern Florida and Hawaii; zones 6–8 are the northern states and Alaska. Most of the country falls in zones 3–5.</p>
+
+  <h2 id="materials">R-value per inch by material</h2>
+  <p>Typical values; the product label gives the exact figure.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Material</th><th class="num">R per inch</th>{targets.map((t) => <th class="num">Inches for R-{t}</th>)}</tr></thead>
+      <tbody>{INSULATION.map((m) => <tr><td>{m.label}</td><td class="num">{m.rPerIn}</td>{targets.map((t) => <td class="num">{fmt(t / m.rPerIn, 1)}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <p>
+    Adding rigid foam to exterior walls during a re-side? The <a href="/siding-calculator/">siding calculator</a> sizes the siding that goes over it.
+    Closing up walls or a ceiling afterward? The <a href="/drywall-calculator/">drywall calculator</a> counts sheets and screws.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many bags of blown insulation do I need?</h3>
+  <p>
+    Each brand prints a coverage chart on the bag listing bags per 1,000 sq ft for each R-value, already allowing for
+    settling. Use the depth from this calculator to check the result, then follow the chart.
+  </p>
+  <h3>What is a board foot of spray foam?</h3>
+  <p>
+    One square foot at one inch thick. Contractors quote spray foam per board foot, so 500 sq ft of wall at 3 inches is
+    1,500 board feet.
+  </p>
+  <p>
+    Better insulation shrinks the cooling load; re-check the size of your AC with the
+    <a href="/btu-calculator/">BTU calculator</a>.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>R to add = target − existing; depth = R to add ÷ R per inch.</li>
+    <li>Volume = area × depth; board feet = area × depth in inches.</li>
+    <li>Blown insulation settles; the bag chart accounts for that and takes priority.</li>
+  </ul>
+</CalcPage>

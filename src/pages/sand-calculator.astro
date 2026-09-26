@@ -1,0 +1,96 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { SAND_MATERIALS } from '../calculators/sand';
+import { bulkResult, coverageFt2PerYd3 } from '../lib/bulk';
+import { fmt } from '../lib/format';
+
+const ex = bulkResult(12 * 12 * (1 / 12), 5, 1.35, [0.5]);
+const coverage = [1, 2, 4, 6].map((d) => ({ d, yd: coverageFt2PerYd3(d), ton: coverageFt2PerYd3(d) / 1.35 }));
+---
+
+<CalcPage
+  slug="sand-calculator"
+  def={def}
+  title="Sand Calculator: Cubic Yards, Tons & Bags for Pavers and More"
+  description="Free sand calculator. Enter the area and depth to get cubic yards, tons, and 50-lb bags of sand for paver bedding, pool bases, sandboxes, and leveling."
+  h1="Sand Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Find how much sand you need in cubic yards, tons, or 50-lb bags for paver bedding, a pool base, a sandbox, or leveling.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate sand</h2>
+  <p>
+    Multiply length × width × depth in feet for cubic feet, divide by 27 for cubic yards, then multiply by about 1.35 for
+    tons of dry sand. Add 5–10%, more for any layer you will compact.
+  </p>
+  <p class="formula">tons = length (ft) × width (ft) × depth (ft) ÷ 27 × 1.35</p>
+
+  <h2 id="example">Example: bedding sand for a 12 × 12 ft paver patio</h2>
+  <p>
+    Pavers sit on a 1-inch screeded sand layer. 12 × 12 × (1 ÷ 12) = 12 cubic feet, or 0.44 cubic yards. With 5% extra
+    that is {fmt(ex.cubicYards)} cubic yards, about {fmt(ex.tons)} tons, or {ex.bags[0].count} bags of 50 lb. The
+    compacted gravel base under the sand is a separate layer; size it with the
+    <a href="/gravel-calculator/">gravel calculator</a>.
+  </p>
+
+  <h2 id="weight">How much does a yard of sand weigh?</h2>
+  <p>
+    A cubic yard of dry sand weighs about <strong>1.35 tons (2,700 lb)</strong>. Damp sand is heavier, around 1.5 to
+    1.7 tons, because water fills the spaces between grains. Suppliers often quote by the ton, so the weight you use
+    changes how much you order.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Material</th><th class="num">Typical tons per cubic yard</th><th class="num">Cubic yards per ton</th></tr></thead>
+      <tbody>{SAND_MATERIALS.map((m) => <tr><td>{m.label}</td><td class="num">{m.tonsPerYd3}</td><td class="num">{fmt(1 / m.tonsPerYd3)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="coverage">How much area does a ton of sand cover?</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Depth</th><th class="num">Sq ft per cubic yard</th><th class="num">Sq ft per ton (dry)</th></tr></thead>
+      <tbody>{coverage.map((c) => <tr><td>{c.d} in</td><td class="num">{fmt(c.yd, 0)}</td><td class="num">{fmt(c.ton, 0)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="depth">How much sand for common projects</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Project</th><th>Typical depth</th></tr></thead>
+      <tbody>
+        <tr><td>Bedding layer under pavers</td><td>1 in, screeded flat</td></tr>
+        <tr><td>Base under an above-ground pool</td><td>About 2 in (follow the pool maker's instructions)</td></tr>
+        <tr><td>Sandbox</td><td>6–12 in</td></tr>
+        <tr><td>Leveling low spots in a lawn</td><td>¼–½ in per pass</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Planning the whole patio? The <a href="/paver-calculator/">paver calculator</a> sizes pavers, base, and bedding sand together. For other fill,
+    <a href="/cubic-yard-calculator/">convert the area to cubic yards</a>.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many 50-lb bags of sand are in a yard?</h3>
+  <p>
+    About 54 bags. A 50-lb bag of sand holds roughly half a cubic foot, and a cubic yard is 27 cubic feet. Past a quarter
+    to half a yard, bulk sand is usually cheaper.
+  </p>
+  <h3>Which sand should I buy?</h3>
+  <p>
+    Coarse concrete sand is the usual choice for paver bedding. Play sand is washed and screened for sandboxes. Polymeric
+    sand for paver joints is sold by the bag with coverage printed on it, so use the maker's coverage rather than volume. Sand for laying brick is usually bought premixed as mortar; the
+    <a href="/brick-calculator/">brick calculator</a> estimates the bags.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Volume = area × depth, converted to cubic yards (27 cubic feet per yard).</li>
+    <li>Weight uses typical densities in US tons; moisture changes the real number.</li>
+    <li>Bulk orders round up to the next half yard or half ton; bag counts always round up.</li>
+  </ul>
+</CalcPage>

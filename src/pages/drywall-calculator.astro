@@ -1,0 +1,80 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/drywall';
+import { wallAreaFt2, unitsForArea } from '../lib/finish';
+
+const rooms: [number, number][] = [[10, 10], [10, 12], [12, 12], [12, 14], [14, 16], [16, 20]];
+const table = rooms.map(([l, w]) => {
+  const area = wallAreaFt2(2 * (l + w), 8, 1, 1) + l * w;
+  return { l, w, area, s8: unitsForArea(area, 10, 32).units, s12: unitsForArea(area, 10, 48).units };
+});
+---
+
+<CalcPage
+  slug="drywall-calculator"
+  def={def}
+  title="Drywall Calculator: Sheets for Walls & Ceilings"
+  description="Free drywall calculator. Enter the room size, doors, and windows to get the number of 4×8, 4×10, or 4×12 drywall sheets and screws for the walls and ceiling."
+  h1="Drywall Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Estimate how many sheets of drywall you need for a room's walls and ceiling, minus doors and windows, in 4×8, 4×10, or
+    4×12 sheets.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate drywall sheets</h2>
+  <ol>
+    <li>Wall area: add the room's four wall lengths and multiply by the wall height.</li>
+    <li>Subtract openings, about 21 sq ft per door and 15 sq ft per window.</li>
+    <li>Add the ceiling: length × width.</li>
+    <li>Add about 10% for cutouts and breakage, divide by the sheet area, and round up.</li>
+  </ol>
+
+  <h2 id="example">Example: a 12 × 12 ft room with 8 ft walls</h2>
+  <p>
+    The walls are 48 × 8 = 384 square feet, minus one door and one window (36 sq ft) = 348. The ceiling adds 144, for
+    492 square feet. With 10% extra that is 541 square feet, or 16.9, so <strong>17 sheets of 4 × 8</strong>.
+  </p>
+
+  <h2 id="table">Drywall sheets for common rooms</h2>
+  <p>Walls and ceiling, 8 ft walls, one door and one window, 10% extra.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Room</th><th class="num">Sq ft</th><th class="num">4 × 8 sheets</th><th class="num">4 × 12 sheets</th></tr></thead>
+      <tbody>{table.map((r) => <tr><td>{r.l} × {r.w} ft</td><td class="num">{r.area}</td><td class="num">{r.s8}</td><td class="num">{r.s12}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="sheet-size">Which sheet size should you use?</h2>
+  <p>
+    4 × 8 sheets are the easiest to carry and fit anywhere. 4 × 12 sheets cover a 12-foot wall in one run and cut the
+    number of seams to tape, but they are heavy and awkward on stairs. Hung horizontally on an 8-foot wall, two rows of
+    4-foot sheets reach 8 feet exactly.
+  </p>
+
+  <p>
+    Open walls are the best time to insulate: <a href="/insulation-calculator/">see how deep to go for your target R-value</a>. For rooms with
+    angled walls, <a href="/square-footage-calculator/">total the area section by section</a>.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many screws per sheet of drywall?</h3>
+  <p>
+    Roughly one per square foot, so about 32 for a 4 × 8 sheet on walls with studs 16 inches on center. Ceilings get
+    screws a little closer together; follow your local code and the board maker's schedule.
+  </p>
+  <h3>Should I subtract doors and windows?</h3>
+  <p>
+    Yes for doors and large windows. Small windows often come out of a full sheet anyway, which is one reason to keep the
+    10% allowance.
+  </p>
+  <p>Papering after the walls are finished? See the <a href="/wallpaper-calculator/">wallpaper calculator</a>.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Wall area = 2 × (length + width) × height − 21 sq ft per door − 15 sq ft per window.</li>
+    <li>Ceiling = length × width, if included.</li>
+    <li>Sheets = total × (1 + waste %) ÷ sheet area, rounded up. Tape, joint compound, and corner bead are not included.</li>
+  </ul>
+</CalcPage>

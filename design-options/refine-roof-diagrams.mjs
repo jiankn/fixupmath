@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+let p='src/components/calc/Diagram.astro',s=fs.readFileSync(p,'utf8');
+s=s.replace("const labels: Record<string, string> = {","const labels: Record<string, string> = {\n 'roof-plan': 'Roof footprint viewed from above: measure length and width including overhangs. Pitch is rise per 12 inches of horizontal run.',");
+s=s.replace("name === 'rect' &&","(name === 'rect' || name === 'roof-plan') &&");
+s=s.replace('const dimensions = {','const dimensions = {"roof-plan":[["length","Roof length",150,16,70,25,230,25],["width","Roof width",280,80,244,30,244,120]],');
+s=s.replace('<line x1="150" y1="30" x2="150" y2="90" class="dim" />','');
+s=s.replace('<line x1="150" y1="90" x2="260" y2="90" class="dim" />','<g class="measurement" data-measure="pitch"><path d="M195 55L225 55L195 39Z" /><text x="238" y="42">Rise</text><text x="214" y="76">12 in</text></g>');
+s=s.replace('"Pitch: rise / 12",160,18,195,55,220,55','"Pitch",170,16,195,39,195,55');
+s=s.replace('height="40" class="opening"','height="37" class="opening"');
+s=s.replace("name === 'deck' ?","name === 'roof-plan' ? ' · Include overhangs in both roof dimensions. Pitch is entered separately.' : name === 'deck' ?");
+fs.writeFileSync(p,s);
+p='src/calculators/shingle.ts';s=fs.readFileSync(p,'utf8').replace("diagram: 'roof'","diagram: 'roof-plan'");fs.writeFileSync(p,s);

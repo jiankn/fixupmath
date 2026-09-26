@@ -1,0 +1,25 @@
+---
+import Page from '../components/Page.astro';
+import { SITE } from '../site';
+---
+
+<Page title="Terms of Use" description={`Terms for using the ${SITE.name} calculators.`}>
+  <p>
+    {SITE.name} calculators are provided free of charge for general planning purposes. By using the site you agree to
+    these terms.
+  </p>
+  <h2>Estimates only</h2>
+  <p>
+    Results are estimates based on the inputs you provide and the stated assumptions. They are not professional
+    engineering, structural, electrical, or legal advice. Always follow local building codes, manufacturer
+    instructions, and any plans prepared by a licensed professional, and confirm quantities with your supplier before
+    ordering.
+  </p>
+  <h2>No warranty</h2>
+  <p>
+    The site is provided "as is" without warranties of any kind. We are not liable for losses arising from the use of
+    any calculation, including material shortages, overages, or project delays.
+  </p>
+  <h2>Changes</h2>
+  <p>We may update calculators and these terms at any time. Continued use of the site means you accept the current version.</p>
+</Page>

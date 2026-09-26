@@ -1,0 +1,130 @@
+---
+// 通用计算器：按 CalculatorDef 渲染输入项和结果。首屏结果在构建时用默认值算好写进 HTML。
+import '../../styles/calc.css';
+import Field from './Field.astro';
+import Icon from '../Icon.astro';
+import Diagram from './Diagram.astro';
+import { defaultValues, fieldVisible, type CalculatorDef } from '../../lib/calc-types';
+import { resultHTML } from '../../lib/render';
+
+interface Props {
+  def: CalculatorDef;
+}
+const { def } = Astro.props;
+const v = defaultValues(def);
+const r = def.compute(v);
+const id = def.id;
+---
+
+<form class="calc" id="calculator" data-calc={id} novalidate autocomplete="off">
+  <div class="calc-body">
+    <div class="calc-inputs">
+  {
+    def.shapes && def.shapes.length > 1 && (
+      <fieldset class="shapes">
+        <legend>{def.shapeLegend ?? 'Shape'}</legend>
+        <div class="shape-list">
+          {def.shapes.map((s, i) => (
+            <label class="shape-opt">
+              <input type="radio" name="shape" value={s.id} checked={i === 0} />
+              <span class="shape-name">{s.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )
+  }
+
+      <p class="input-note" data-input-note>Example inputs below. Adjust them for your project.</p>
+      {
+        def.shapes?.map((s, i) => (
+          <fieldset class="dims" data-shape={s.id} hidden={i !== 0}>
+            <legend class="visually-hidden">{s.label}</legend>
+            {(s.diagram || s.description) && (
+              <div class="shape-head">
+                {s.diagram && <Diagram name={s.diagram} />}
+                {s.description && <p class="muted small shape-desc">{s.description}</p>}
+              </div>
+            )}
+            <div class="fields">
+              {s.fields.map((f) => (
+                <Field field={f} idPrefix={`${id}-${s.id}`} />
+              ))}
+            </div>
+          </fieldset>
+        ))
+      }
+      {
+        def.diagram && (
+          <div class="shape-head solo">
+            <Diagram name={def.diagram} />
+          </div>
+        )
+      }
+      {
+        def.fields.length > 0 && (
+          <div class={def.shapes ? 'fields opts' : 'fields'}>
+            {def.fields.map((f) => (
+              <Field field={f} idPrefix={id} hidden={!fieldVisible(f, v)} />
+            ))}
+          </div>
+        )
+      }
+      {
+        def.priceFields && (
+          <details class="prices">
+            <summary>
+              Add prices for a cost estimate <span class="muted">(optional)</span>
+            </summary>
+            <div class="fields">
+              {def.priceFields.map((f) => (
+                <Field field={f} idPrefix={id} />
+              ))}
+            </div>
+            <p class="muted small">{def.priceNote ?? 'Prices vary by region and season. Use a quote from your local supplier.'}</p>
+          </details>
+        )
+      }
+    </div>
+
+    <aside class="results" id={`${id}-results`} aria-live="polite" aria-label="Results">
+      <div class="results-header"><h2>Your estimate</h2><span class="result-badge"><Icon name="check" size={14} /> Live calculation</span></div>
+      <p class="result-invalid" data-result-invalid hidden>Check your inputs to see a valid estimate.</p>
+      <div class="result-content">
+      <div data-res set:html={resultHTML(r)} />
+      <p class="res-sub" data-piece hidden></p>
+      {
+        def.project && (
+          <div class="project">
+            <button type="button" class="btn" data-add>
+              + Add to project
+            </button>
+            <div data-project hidden>
+              <h3>Project total</h3>
+              <ol data-project-list />
+              <button type="button" class="btn-link" data-clear>
+                Clear project
+              </button>
+            </div>
+          </div>
+        )
+      }
+      <div class="actions no-print">
+        <button type="button" class="btn-ghost" data-copy><Icon name="copy" size={16} /> Copy link</button>
+        <button type="button" class="btn-ghost" data-print><Icon name="print" size={16} /> Print</button>
+      </div>
+      <p class="result-footnote">Planning estimate. Check the assumptions and calculation method below.</p>
+      </div>
+    </aside>
+  </div>
+</form>
+
+<a class="mbar no-print" data-mbar={id} href={`#${id}-results`} hidden>
+  <span data-mbar-text>{r.summary}</span>
+  <span class="mbar-go">Details ↓</span>
+</a>
+
+<script>
+  import { boot } from './calc-client';
+  boot();
+</script>

@@ -1,0 +1,119 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/fence';
+import { fenceMaterials } from '../lib/fence';
+import { int, fmt, ceilCount } from '../lib/format';
+
+const base = {
+  postSpacingFt: 8, heightFt: 6, railsPerSection: 3, picketWidthIn: 5.5, picketGapIn: 0,
+  gates: 0, gateWidthFt: 4, holeDiameterIn: 10, holeDepthFt: 2, postSizeIn: 3.5, wastePct: 5,
+};
+const ex0 = fenceMaterials({ ...base, lengthFt: 100, gates: 1, wastePct: 0 });
+const ex = fenceMaterials({ ...base, lengthFt: 100, gates: 1 });
+const lengths = [50, 100, 150, 200, 300].map((l) => ({ l, ...fenceMaterials({ ...base, lengthFt: l }) }));
+const holes = [8, 10, 12].flatMap((d) =>
+  [2, 2.5, 3].map((depth) => {
+    const r = fenceMaterials({ ...base, lengthFt: 8, holeDiameterIn: d, holeDepthFt: depth });
+    return { d, depth, ft3: r.concreteFt3PerPost, bags80: ceilCount(r.concreteFt3PerPost / 0.6), bags60: ceilCount(r.concreteFt3PerPost / 0.45) };
+  }),
+);
+const perSection = [
+  ['5.5 in, no gap (privacy)', 5.5, 0],
+  ['5.5 in, 2.5 in gap', 5.5, 2.5],
+  ['3.5 in, 2 in gap', 3.5, 2],
+].map(([label, w, g]) => ({ label, n: ceilCount(96 / ((w as number) + (g as number))) }));
+---
+
+<CalcPage
+  slug="fence-calculator"
+  def={def}
+  title="Fence Calculator: Posts, Rails, Pickets & Concrete"
+  description="Free fence calculator. Enter your fence length, height, post spacing, and gates to get the number of posts, rails, pickets, and bags of concrete for the post holes."
+  h1="Fence Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Estimate the posts, rails, pickets, and concrete for a wood picket or privacy fence, including gates.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate fence materials</h2>
+  <ol>
+    <li><strong>Posts:</strong> fence length ÷ post spacing, rounded up, plus one. Add one more for each gate.</li>
+    <li><strong>Rails:</strong> number of sections × rails per section.</li>
+    <li><strong>Pickets:</strong> fence length in inches ÷ (picket width + gap), plus a few extra.</li>
+    <li><strong>Concrete:</strong> volume of each post hole minus the post, times the number of posts.</li>
+  </ol>
+
+  <h2 id="example">Example: 100 ft of 6 ft privacy fence with one 4 ft gate</h2>
+  <p>
+    The gate leaves {fmt(ex.runFt)} feet of fence: {ex.sections} sections at 8 feet. {ex.sections} sections need
+    {ex.sections + 1} posts, and the gate splits the run, adding one more, for <strong>{ex.posts} posts</strong>. Three
+    rails per section is {ex.rails} rails. At 5.5-inch pickets with no gap, {fmt(ex.runFt)} feet takes {ex0.pickets}
+    pickets, or {ex.pickets} with 5% extra. Setting {ex.posts} posts in 10-inch holes 2 feet deep takes
+    {ex.bags[0].count} bags of 80-lb concrete.
+  </p>
+
+  <h2 id="table">Materials for common fence lengths</h2>
+  <p>6 ft privacy fence, 8 ft post spacing, 3 rails, 5.5 in pickets with no gap, no gates, 5% extra pickets.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Fence length</th><th class="num">Posts</th><th class="num">Rails</th><th class="num">Pickets</th><th class="num">80-lb bags</th></tr></thead>
+      <tbody>{lengths.map((r) => <tr><td>{r.l} ft</td><td class="num">{r.posts}</td><td class="num">{r.rails}</td><td class="num">{int(r.pickets)}</td><td class="num">{r.bags[0].count}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="pickets">How many pickets are in an 8 ft section?</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Picket width and gap</th><th class="num">Pickets per 8 ft section</th></tr></thead>
+      <tbody>{perSection.map((p) => <tr><td>{p.label}</td><td class="num">{p.n}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="post-holes">How deep should fence posts be, and how much concrete per post?</h2>
+  <p>
+    A common rule is to bury about one-third of the post's above-ground height, so 2 feet for a 6 ft fence, and to dig
+    below your local frost line where the ground freezes. Holes are usually about three times the post width: 10 to 12
+    inches for a 4×4. Concrete per 4×4 post:
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Hole</th><th class="num">Concrete</th><th class="num">80-lb bags</th><th class="num">60-lb bags</th></tr></thead>
+      <tbody>{holes.map((h) => <tr><td>{h.d} in wide × {h.depth} ft deep</td><td class="num">{fmt(h.ft3)} ft³</td><td class="num">{h.bags80}</td><td class="num">{h.bags60}</td></tr>)}</tbody>
+    </table>
+  </div>
+  <p>
+    Need more detail on concrete, such as a gravel footer or larger piers? Use the
+    <a href="/concrete-calculator/">concrete calculator</a> with the post-hole shape.
+  </p>
+
+  <p>
+    Many builders drop a few inches of <a href="/gravel-calculator/">gravel</a> into each hole for drainage before setting the post. Building a
+    deck along the fence line? The <a href="/deck-calculator/">deck calculator</a> counts boards, joists, and screws.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Should fence posts be 6 or 8 feet apart?</h3>
+  <p>
+    Eight feet is standard for wood fences because rails come in 8 ft lengths. Six feet makes a stiffer fence and suits
+    heavy boards, high-wind areas, and many vinyl panel systems, whose panel width sets the spacing.
+  </p>
+  <h3>How do I handle corners?</h3>
+  <p>
+    The calculator assumes one straight run. For an L- or U-shaped fence, run it once per straight side and subtract one
+    post for each corner, since neighboring sides share the corner post.
+  </p>
+  <h3>Do I need to call before digging post holes?</h3>
+  <p>
+    Yes. In the US, call 811 or file a request online a few days before you dig. Utilities mark buried lines for free,
+    and hitting one is dangerous and expensive.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Gate widths are subtracted from the fence length before counting sections and pickets.</li>
+    <li>Posts = sections + 1 + one per gate, for a single straight run.</li>
+    <li>Concrete per hole = π × radius² × depth − post area × depth; bags are rounded up per hole, then multiplied by the number of posts.</li>
+    <li>Suggested post length = fence height + hole depth, rounded up to a standard 8, 10, or 12 ft post.</li>
+  </ul>
+</CalcPage>

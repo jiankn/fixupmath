@@ -1,0 +1,870 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { CATEGORIES, byCategory, live } from '../data/calculators';
+import { SITE } from '../site';
+
+const tools = live();
+const icons: Record<string, string> = {
+  'concrete-masonry': 'slab',
+  landscaping: 'leaf',
+  'decks-fences-framing': 'fence',
+  'flooring-walls': 'grid',
+  'roofing-siding': 'roof',
+  'electrical-hvac': 'bolt',
+  pool: 'water'
+};
+---
+
+<Base title={`紧凑目录设计方案对比 | ${SITE.name}`} description="FixUpMath 目录区域紧凑化重构方案对比与实时预览">
+  <div class="wrap preview-page">
+    <div class="preview-header">
+      <span class="preview-badge">UI/UX 紧凑化方案预览</span>
+      <h1>计算器目录紧凑化改造方案</h1>
+      <p class="lead">针对原有目录区域过高（PC端占2500px+、移动端单列极长）进行紧凑化设计。以下提供 3 种最佳实践方案，支持在线交互与尺寸切换测试。</p>
+
+      <div class="scheme-switcher" role="tablist">
+        <button class="scheme-tab active" data-target="scheme-2">
+          <strong>方案 2：分段胶囊标签 + 4列微卡片 (推荐)</strong>
+          <span>高度缩减 70%，SaaS/现代工具库风格，移动端水平滑块</span>
+        </button>
+        <button class="scheme-tab" data-target="scheme-1">
+          <strong>方案 1：多列分类看板网格 (全景直呈)</strong>
+          <span>高度缩减 60%，一屏扫视 7 大分类，保留分类结构感</span>
+        </button>
+        <button class="scheme-tab" data-target="scheme-3">
+          <strong>方案 3：侧边快速导览索引 (文档/专业库)</strong>
+          <span>左侧固定分类导航，右侧密集网格，查找速度最快</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== 方案 2 (推荐) ==================== -->
+    <div id="scheme-2" class="scheme-panel active">
+      <div class="scheme-desc-banner">
+        <div>
+          <h3>💡 方案 2 亮点：分段胶囊标签 + 4列微卡片（Modern Clean Pills + Dense Grid）</h3>
+          <p>顶部整合紧凑搜索栏与分类筛选胶囊，下方采用 4 列密集卡片网格（移动端自适应为双列或紧凑单列）。单卡高度从原先的 96px 优化至 64px，单屏信息容量提升 2.5 倍。</p>
+        </div>
+        <span class="height-tag">PC 垂直空间缩减 ~70%</span>
+      </div>
+
+      <section class="compact-s2">
+        <div class="s2-top-bar">
+          <div class="s2-search">
+            <Icon name="search" size={18} class="s-icon" />
+            <input type="text" placeholder="搜索 33 个计算工具（如：concrete, tile, deck...）" />
+            <kbd class="s-kbd">/</kbd>
+          </div>
+          <div class="s2-pills">
+            <button class="s2-pill active" data-s2-filter="all">全部 (33)</button>
+            {CATEGORIES.map(c => {
+              const count = byCategory(c.slug).filter(t => t.status === 'live').length;
+              return (
+                <button class="s2-pill" data-s2-filter={c.slug}>
+                  <Icon name={icons[c.slug]} size={14} />
+                  <span>{c.name}</span>
+                  <span class="pill-count">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div class="s2-grid">
+          {tools.map(tool => {
+            const cat = CATEGORIES.find(c => c.slug === tool.category);
+            return (
+              <a class="s2-card" href={`/${tool.slug}/`} data-category={tool.category}>
+                <div class="s2-card-head">
+                  <span class="s2-title">{tool.name.replace(' Calculator', '')}</span>
+                  <span class="s2-badge">{cat?.name.split(' ')[0]}</span>
+                </div>
+                <p class="s2-summary">{tool.summary}</p>
+                <div class="s2-hover-arrow"><Icon name="arrow" size={14} /></div>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== 方案 1 ==================== -->
+    <div id="scheme-1" class="scheme-panel">
+      <div class="scheme-desc-banner">
+        <div>
+          <h3>💡 方案 1 亮点：多列分类看板网格（Multi-Column Category Cards）</h3>
+          <p>将 7 个分类拆解为 3 列响应式“分类看板”，每个分类有独立的卡片头部与工具紧凑列表。保留全部 7 个类目的平铺展示，但在横向上平铺利用空间，避免原先大块左侧留白。</p>
+        </div>
+        <span class="height-tag">PC 垂直空间缩减 ~60%</span>
+      </div>
+
+      <section class="compact-s1">
+        <div class="s1-controls">
+          <div class="s1-search">
+            <Icon name="search" size={18} class="s-icon" />
+            <input type="text" placeholder="快速筛选计算器..." />
+          </div>
+          <div class="s1-count">共 7 个分类 · 33 个计算工具</div>
+        </div>
+
+        <div class="s1-columns">
+          {CATEGORIES.map(cat => {
+            const catTools = byCategory(cat.slug).filter(t => t.status === 'live');
+            return (
+              <div class="s1-board">
+                <div class="s1-board-header">
+                  <div class="s1-board-title">
+                    <span class="s1-icon"><Icon name={icons[cat.slug]} size={18} /></span>
+                    <a href={`/${cat.slug}/`}>{cat.name}</a>
+                  </div>
+                  <span class="s1-tag">{catTools.length}</span>
+                </div>
+                <div class="s1-list">
+                  {catTools.map(t => (
+                    <a class="s1-item" href={`/${t.slug}/`}>
+                      <div class="s1-item-info">
+                        <span class="s1-name">{t.name.replace(' Calculator', '')}</span>
+                        <span class="s1-sub">{t.summary}</span>
+                      </div>
+                      <Icon name="arrow" size={14} class="s1-arrow" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== 方案 3 ==================== -->
+    <div id="scheme-3" class="scheme-panel">
+      <div class="scheme-desc-banner">
+        <div>
+          <h3>💡 方案 3 亮点：侧边快速导览索引（Master-Detail Quick Rail）</h3>
+          <p>左侧固定/吸顶分类导览（带图标与数量），右侧为密集工具网格。类似于 Stripe Docs 或 Linear 设置面板，分类定位极其迅速，左右结构视觉稳固舒适。</p>
+        </div>
+        <span class="height-tag">左右分栏 · 结构极度规整</span>
+      </div>
+
+      <section class="compact-s3">
+        <div class="s3-sidebar">
+          <div class="s3-rail-title">分类快速导航</div>
+          <nav class="s3-rail">
+            <button class="s3-rail-item active" data-s3-filter="all">
+              <span class="s3-rail-label">全部工具</span>
+              <span class="s3-rail-badge">{tools.length}</span>
+            </button>
+            {CATEGORIES.map(c => {
+              const count = byCategory(c.slug).filter(t => t.status === 'live').length;
+              return (
+                <button class="s3-rail-item" data-s3-filter={c.slug}>
+                  <Icon name={icons[c.slug]} size={16} />
+                  <span class="s3-rail-label">{c.name}</span>
+                  <span class="s3-rail-badge">{count}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div class="s3-content">
+          <div class="s3-search-bar">
+            <Icon name="search" size={18} class="s-icon" />
+            <input type="text" placeholder="在当前分类下搜索或输入关键词..." />
+          </div>
+
+          <div class="s3-grid">
+            {tools.map(tool => {
+              const cat = CATEGORIES.find(c => c.slug === tool.category);
+              return (
+                <a class="s3-card" href={`/${tool.slug}/`} data-category={tool.category}>
+                  <div class="s3-card-main">
+                    <span class="s3-card-name">{tool.name.replace(' Calculator', '')}</span>
+                    <span class="s3-card-cat">{cat?.name}</span>
+                  </div>
+                  <p class="s3-card-desc">{tool.summary}</p>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  // 方案选项卡切换
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.scheme-tab');
+  const panels = document.querySelectorAll<HTMLElement>('.scheme-panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const targetId = tab.dataset.target;
+      if (targetId) {
+        document.getElementById(targetId)?.classList.add('active');
+      }
+    });
+  });
+
+  // 方案 2 胶囊筛选过滤交互
+  const s2Pills = document.querySelectorAll<HTMLButtonElement>('.s2-pill');
+  const s2Cards = document.querySelectorAll<HTMLElement>('.s2-card');
+
+  s2Pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      s2Pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const filter = pill.dataset.s2Filter;
+      s2Cards.forEach(card => {
+        if (filter === 'all' || card.dataset.category === filter) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // 方案 3 侧边栏筛选交互
+  const s3RailItems = document.querySelectorAll<HTMLButtonElement>('.s3-rail-item');
+  const s3Cards = document.querySelectorAll<HTMLElement>('.s3-card');
+
+  s3RailItems.forEach(item => {
+    item.addEventListener('click', () => {
+      s3RailItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      const filter = item.dataset.s3Filter;
+      s3Cards.forEach(card => {
+        if (filter === 'all' || card.dataset.category === filter) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+.preview-page {
+  padding-top: 36px;
+  padding-bottom: 80px;
+}
+.preview-header {
+  margin-bottom: 28px;
+}
+.preview-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(196,66,19,0.2);
+}
+.preview-header h1 {
+  font-size: 2.1rem;
+  margin: 0 0 10px;
+}
+.preview-header .lead {
+  margin: 0 0 24px;
+}
+
+/* 方案切换 Tabs */
+.scheme-switcher {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 30px;
+}
+.scheme-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.scheme-tab strong {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.scheme-tab span {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.scheme-tab:hover {
+  border-color: var(--accent);
+}
+.scheme-tab.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.scheme-tab.active strong {
+  color: var(--accent-strong);
+}
+
+.scheme-panel {
+  display: none;
+}
+.scheme-panel.active {
+  display: block;
+}
+
+.scheme-desc-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 24px;
+}
+.scheme-desc-banner h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: var(--text);
+}
+.scheme-desc-banner p {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.height-tag {
+  flex-shrink: 0;
+  background: var(--accent);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ==================== 方案 2 样式 (Pills + 4列微卡片) ==================== */
+.compact-s2 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.s2-top-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 18px;
+}
+.s2-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 14px;
+  height: 42px;
+}
+.s2-search input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  outline: 0;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+.s-icon {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.s-kbd {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--muted);
+}
+.s2-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.s2-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  font-weight: 550;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+}
+.s2-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+.s2-pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.s2-pill.active .pill-count {
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+}
+.pill-count {
+  font-size: 0.7rem;
+  background: var(--surface-2);
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: var(--muted);
+}
+.s2-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.s2-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 68px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+.s2-card:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+}
+.s2-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+.s2-title {
+  font-size: 0.9375rem;
+  font-weight: 650;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s2-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.s2-card:hover .s2-title {
+  color: var(--accent-strong);
+}
+.s2-summary {
+  margin: 3px 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s2-hover-arrow {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  opacity: 0;
+  color: var(--accent);
+  transition: opacity 0.12s;
+}
+.s2-card:hover .s2-hover-arrow {
+  opacity: 1;
+}
+
+/* ==================== 方案 1 样式 (多列分类看板) ==================== */
+.compact-s1 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.s1-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+.s1-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 14px;
+  height: 40px;
+  max-width: 400px;
+  width: 100%;
+}
+.s1-search input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  outline: 0;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+.s1-count {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.s1-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.s1-board {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.s1-board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.s1-board-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 650;
+  font-size: 0.875rem;
+}
+.s1-board-title a {
+  color: var(--text);
+  text-decoration: none;
+}
+.s1-board-title a:hover {
+  color: var(--accent-strong);
+}
+.s1-icon {
+  color: var(--accent);
+  display: flex;
+}
+.s1-tag {
+  font-size: 0.7rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.s1-list {
+  display: flex;
+  flex-direction: column;
+}
+.s1-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  transition: background 0.12s;
+}
+.s1-item:last-child {
+  border-bottom: 0;
+}
+.s1-item:hover {
+  background: var(--accent-soft);
+}
+.s1-item-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.s1-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s1-item:hover .s1-name {
+  color: var(--accent-strong);
+}
+.s1-sub {
+  font-size: 0.7rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+.s1-arrow {
+  color: var(--muted);
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity 0.12s, color 0.12s;
+}
+.s1-item:hover .s1-arrow {
+  opacity: 1;
+  color: var(--accent-strong);
+}
+
+/* ==================== 方案 3 样式 (侧边快速导览) ==================== */
+.compact-s3 {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.s3-sidebar {
+  border-right: 1px solid var(--border);
+  padding-right: 16px;
+}
+.s3-rail-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+.s3-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.s3-rail-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 0.8125rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.s3-rail-item:hover {
+  background: var(--surface-2);
+}
+.s3-rail-item.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 650;
+}
+.s3-rail-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s3-rail-badge {
+  font-size: 0.7rem;
+  color: var(--muted);
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 8px;
+}
+.s3-rail-item.active .s3-rail-badge {
+  background: var(--accent);
+  color: #fff;
+}
+.s3-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.s3-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 12px;
+  height: 40px;
+}
+.s3-search-bar input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  outline: 0;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+.s3-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.s3-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  text-decoration: none;
+  height: 64px;
+  transition: all 0.12s;
+}
+.s3-card:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.s3-card-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+.s3-card-name {
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s3-card:hover .s3-card-name {
+  color: var(--accent-strong);
+}
+.s3-card-cat {
+  font-size: 0.65rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.s3-card-desc {
+  margin: 3px 0 0;
+  font-size: 0.725rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== 响应式移动端适配 ==================== */
+@media (max-width: 1024px) {
+  .s2-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .s1-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .s3-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .scheme-switcher {
+    grid-template-columns: 1fr;
+  }
+  .scheme-desc-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .s2-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .s2-card {
+    height: 60px;
+    padding: 8px 10px;
+  }
+  .s2-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .s1-columns {
+    grid-template-columns: 1fr;
+  }
+  .compact-s3 {
+    grid-template-columns: 1fr;
+  }
+  .s3-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding-right: 0;
+    padding-bottom: 14px;
+  }
+  .s3-rail {
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .s3-rail-item {
+    flex-shrink: 0;
+  }
+  .s3-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .s2-grid {
+    grid-template-columns: 1fr;
+  }
+  .s2-card {
+    height: 54px;
+  }
+  .s3-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

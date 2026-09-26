@@ -1,0 +1,71 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/siding';
+---
+
+<CalcPage
+  slug="siding-calculator"
+  def={def}
+  title="Siding Calculator: Squares of Siding for Your House"
+  description="Free siding calculator. Enter wall lengths, height, gables, doors, and windows to get the square footage and number of squares of vinyl or other siding to order."
+  h1="Siding Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Estimate how many squares of siding your house needs from the wall lengths, wall height, and gables, with doors and
+    windows taken out.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate siding</h2>
+  <ol>
+    <li>Add the lengths of every wall you are siding and multiply by the wall height.</li>
+    <li>Add each gable, the triangle above the eaves: width × height ÷ 2.</li>
+    <li>Subtract doors and windows, about 21 and 15 square feet each for standard sizes.</li>
+    <li>Add 10–15% for waste and divide by 100 to get squares.</li>
+  </ol>
+
+  <h2 id="example">Example: a ranch house with two gables</h2>
+  <p>
+    140 feet of wall, 9 feet high, is 1,260 square feet. Two doors and ten windows subtract 192, leaving 1,068. Two gables
+    30 feet wide and 8 feet tall add 240. That is 1,308 square feet, or 1,439 with 10% waste:
+    <strong>14.4 squares</strong>. At 2 squares per box, order 8 boxes.
+  </p>
+
+  <h2 id="square">What is a square of siding?</h2>
+  <p>
+    A square is 100 square feet of wall coverage. Siding and roofing are both priced and ordered by the square. Vinyl
+    siding is commonly packed 2 squares per box, but check the product, since some profiles ship differently.
+  </p>
+
+  <h2 id="waste">How much extra siding should I order?</h2>
+  <p>
+    About 10% for a plain rectangular house and 15% for many corners, gables, bump-outs, or dormers, where more pieces are
+    cut short. It is better to return a box than to run short and find a color that no longer matches.
+  </p>
+
+  <p>
+    Walls with odd shapes or bump-outs are easier to total piece by piece in the
+    <a href="/square-footage-calculator/">square footage calculator</a>. Adding rigid foam under the new siding?
+    <a href="/insulation-calculator/">Check the R-value it adds</a>.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Does this include soffit and trim?</h3>
+  <p>
+    No. Soffit is measured by the length and depth of the eaves, and trim pieces such as J-channel, outside corners, and
+    starter strip are sold by the linear foot.
+  </p>
+  <h3>How do I measure a gable?</h3>
+  <p>
+    Measure the width along the eave line and the height from the eave line to the peak. The triangle's area is half of
+    width × height.
+  </p>
+  <p>Replacing the roof too? The <a href="/shingle-calculator/">shingle calculator</a> uses the same squares.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Wall area = total wall length × height − 21 sq ft per door − 15 sq ft per window.</li>
+    <li>Gables = number × width × height ÷ 2.</li>
+    <li>Squares = (walls + gables) × (1 + waste %) ÷ 100; boxes assume 2 squares each.</li>
+  </ul>
+</CalcPage>

@@ -1,0 +1,88 @@
+---
+// 各形状的尺寸示意图。标注文字和输入框名称一致，方便用户对照测量。
+import Measurement from '../calc/Measurement.astro';
+import '../../styles/measurement.css';
+import type { ShapeId } from '../../lib/concrete';
+const { shape } = Astro.props as { shape: ShapeId };
+const dimensions = {"slab":[["length","Length",138,171,65,130,210,152],["width","Width",287,135,225,145,305,89],["thickness","Thickness",42,70,48,93,48,111]],"footing":[["length","Length",127,138,50,131,200,91],["width","Width",40,62,20,70,50,78],["depth","Depth",244,70,212,48,212,82]],"column":[["diameter","Diameter",130,12,100,20,160,20],["height","Height",210,80,177,30,177,120]],"circle":[["diameter","Diameter",130,62,40,70,220,70],["thickness","Thickness",275,124,235,70,235,88]],"tube":[["outerDiameter","Outer diameter",130,12,90,17,170,17],["innerDiameter","Inner diameter",130,65,106,34,154,34],["height","Height",224,84,185,34,185,118]],"stairs":[["run","Tread depth",56,64,30,82,70,82],["rise","Step rise",3,99,20,96,20,120],["landing","Landing",144,13,110,28,170,28],["width","Stair width",240,45,177,35,197,25]]} as Record<string, [string,string,number,number,number,number,number,number][]>;
+---
+
+<svg class="diagram measurement-diagram" viewBox={shape === 'slab' ? '-20 -10 380 200' : '-35 -10 380 180'} role="img" aria-label={`Diagram of a concrete ${shape} with labeled dimensions`}>
+  {
+    shape === 'slab' && (
+      <g>
+        <polygon points="65,93 148,36 293,58 210,115" class="top" />
+        <polygon points="65,93 210,115 210,133 65,111" class="side" />
+        <polygon points="210,115 293,58 293,76 210,133" class="front" />
+        
+        
+        
+        
+      </g>
+    )
+  }
+  {
+    shape === 'footing' && (
+      <g>
+        <polygon points="20,80 170,40 200,48 50,88" class="top" />
+        <polygon points="20,80 50,88 50,122 20,114" class="side" />
+        <polygon points="50,88 200,48 200,82 50,122" class="front" />
+        
+        
+        
+      </g>
+    )
+  }
+  {
+    shape === 'column' && (
+      <g>
+        <path d="M100,30 v90 a30,10 0 0,0 60,0 v-90" class="front" />
+        <ellipse cx="130" cy="30" rx="30" ry="10" class="top" />
+        
+        
+      </g>
+    )
+  }
+  {
+    shape === 'circle' && (
+      <g>
+        <path d="M40,70 v18 a90,26 0 0,0 180,0 v-18" class="front" />
+        <ellipse cx="130" cy="70" rx="90" ry="26" class="top" />
+        
+        
+      </g>
+    )
+  }
+  {
+    shape === 'tube' && (
+      <g>
+        <path d="M90,34 v84 a40,12 0 0,0 80,0 v-84" class="front" />
+        <ellipse cx="130" cy="34" rx="40" ry="12" class="top" />
+        <ellipse cx="130" cy="34" rx="24" ry="7" class="hole" />
+        
+        
+        
+      </g>
+    )
+  }
+  {
+    shape === 'stairs' && (
+      <g>
+        <polygon points="30,120 30,96 70,96 70,72 110,72 110,48 170,48 170,120" class="front" />
+        <polygon points="30,96 50,86 90,86 70,96" class="top" />
+        <polygon points="70,72 90,62 130,62 110,72" class="top" />
+        <polygon points="110,48 130,38 190,38 170,48" class="top" />
+        <polygon points="170,48 190,38 190,110 170,120" class="side" />
+        
+        
+        
+        
+      </g>
+    )
+  }
+{dimensions[shape].map(([field,label,x,y,x1,y1,x2,y2]) => <Measurement field={field} label={label} x={x} y={y} x1={x1} y1={y1} x2={x2} y2={y2} />)}
+</svg>
+<p class="measurement-caption">Not to scale · Dimensions show where to measure.</p>
+<script>import '../calc/measurement-client';</script>
+
+

@@ -1,0 +1,23 @@
+---
+import Page from '../components/Page.astro';
+import { SITE } from '../site';
+---
+
+<Page title="About" description={`What ${SITE.name} is, how the calculators are built, and how to reach us.`}>
+  <p>
+    {SITE.name} publishes free calculators for home improvement, landscaping, and small construction projects. The goal
+    is simple: help you buy the right amount of material the first time, in the units stores and suppliers actually
+    sell.
+  </p>
+  <h2>How the calculators are built</h2>
+  <ul>
+    <li>Every calculator shows the formula it uses and the assumptions behind it, such as bag yields or material density.</li>
+    <li>Formulas are covered by automated tests with hand-checked examples, so a change cannot silently break a result.</li>
+    <li>Quantities are rounded up to whole bags, boards, or ordering increments, because running short costs more than a little leftover.</li>
+  </ul>
+  <h2>Limits</h2>
+  <p>
+    Results are planning estimates. Local codes, engineered plans, and your supplier's product data always take
+    priority. If you spot an error, please <a href="/contact/">tell us</a> and we will fix it.
+  </p>
+</Page>

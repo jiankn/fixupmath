@@ -1,0 +1,89 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { CUBIC_YARD_MATERIALS } from '../calculators/cubic-yard';
+import { coverageFt2PerYd3 } from '../lib/bulk';
+import { fmt, int } from '../lib/format';
+
+const areas: [number, number][] = [[10, 10], [10, 20], [20, 20], [20, 30], [30, 40]];
+const depths = [2, 3, 4, 6];
+---
+
+<CalcPage
+  slug="cubic-yard-calculator"
+  def={def}
+  title="Cubic Yard Calculator: Yards & Tons of Dirt, Gravel, Mulch"
+  description="Free cubic yard calculator. Enter length, width, and depth in feet or inches to get cubic yards, cubic feet, and tons of dirt, gravel, sand, mulch, or concrete."
+  h1="Cubic Yard Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Convert your measurements to cubic yards, the unit dirt, gravel, sand, mulch, and concrete are sold in, plus tons and
+    bags. Mix feet and inches freely.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate cubic yards</h2>
+  <p>
+    Multiply length × width × depth in feet to get cubic feet, then divide by 27, because a cubic yard is 3 × 3 × 3 feet.
+    A <strong>10 × 10 ft area filled 4 inches deep is 33.3 cubic feet, or 1.23 cubic yards</strong>.
+  </p>
+  <p class="formula">cubic yards = length (ft) × width (ft) × depth (in) ÷ 12 ÷ 27</p>
+  <ol>
+    <li>Measure length and width in feet. Convert inches by dividing by 12.</li>
+    <li>Convert the depth to feet: 4 inches is 0.333 ft.</li>
+    <li>Multiply the three for cubic feet and divide by 27.</li>
+    <li>Add 5–10% for settling and uneven ground, then round up to what the supplier sells.</li>
+  </ol>
+
+  <h2 id="table">Cubic yards for common areas and depths</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Area</th>{depths.map((d) => <th class="num">{d} in deep</th>)}</tr></thead>
+      <tbody>{areas.map(([l, w]) => <tr><td>{l} × {w} ft</td>{depths.map((d) => <td class="num">{fmt((l * w * d) / 12 / 27)}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="coverage">How much area does a cubic yard cover?</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Depth</th><th class="num">Square feet per cubic yard</th></tr></thead>
+      <tbody>{[1, 2, 3, 4, 6, 12].map((d) => <tr><td>{d} in</td><td class="num">{fmt(coverageFt2PerYd3(d), 0)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="weight">How much does a cubic yard weigh?</h2>
+  <p>It depends entirely on the material. Typical weights:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Material</th><th class="num">Tons per cubic yard</th><th class="num">Pounds per cubic yard</th></tr></thead>
+      <tbody>{CUBIC_YARD_MATERIALS.map((m) => <tr><td>{m.label}</td><td class="num">{m.tonsPerYd3}</td><td class="num">{int(m.tonsPerYd3 * 2000)}</td></tr>)}</tbody>
+    </table>
+  </div>
+  <p>
+    A small pickup is often rated for well under a ton of payload, so one yard of gravel or dirt can overload it. Ask about
+    delivery if you are ordering more than about half a yard.
+  </p>
+
+  <p>
+    Pouring a slab rather than spreading fill? <a href="/rebar-calculator/">Lay out the rebar grid</a> for the same area before you order.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How big is a cubic yard?</h3>
+  <p>A cube 3 feet on each side: 27 cubic feet, about 0.76 cubic meters, or roughly the size of a standard washing machine.</p>
+  <h3>How many cubic feet are in a cubic yard?</h3>
+  <p>27. Divide cubic feet by 27 to get cubic yards, or multiply cubic yards by 27 to get cubic feet.</p>
+  <h3>How do I convert cubic yards to tons?</h3>
+  <p>Multiply by the material's weight per yard: about 1.4 for gravel, 1.1 for dirt, and 1.35 for sand.</p>
+  <p>
+    For material-specific details, see the <a href="/gravel-calculator/">gravel</a>,
+    <a href="/topsoil-calculator/">topsoil</a>, <a href="/mulch-calculator/">mulch</a>, and
+    <a href="/concrete-calculator/">concrete</a> calculators.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Volume = area × depth, with every measurement converted to feet; cubic yards = cubic feet ÷ 27.</li>
+    <li>Tons use typical densities in US tons of 2,000 lb; pick <em>Custom weight</em> for your supplier's figure.</li>
+    <li>Bulk orders round up to the next half yard or half ton; bags always round up.</li>
+  </ul>
+</CalcPage>

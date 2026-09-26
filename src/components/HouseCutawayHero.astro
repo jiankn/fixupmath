@@ -1,0 +1,44 @@
+---
+const hotspots = [
+  { name: 'Roof & siding', target: 'roofing-siding', x: 58, y: 18, side: 'right' },
+  { name: 'Flooring & walls', target: 'flooring-walls', x: 44, y: 60, side: 'left' },
+  { name: 'Foundation', target: 'concrete-masonry', x: 57, y: 73, side: 'right' },
+  { name: 'Yard & landscape', target: 'landscaping', x: 19, y: 58, side: 'left' },
+  { name: 'Pool', target: 'pool', x: 89, y: 66, side: 'left' },
+];
+---
+<div class="house-scene">
+  <div class="scene-frame">
+    <picture>
+      <source type="image/avif" srcset="/images/home/hero-800.avif 800w, /images/home/hero-1600.avif 1600w" sizes="(min-width:1600px) 1120px, 100vw" />
+      <img src="/images/home/hero-1600.webp" srcset="/images/home/hero-800.webp 800w, /images/home/hero-1600.webp 1600w" sizes="(min-width:1600px) 1120px, 100vw" width="1672" height="941" fetchpriority="high" alt="A realistic cutaway home with exposed timber roof, furnished rooms, concrete foundation, landscaped garden, wooden deck and swimming pool." />
+    </picture>
+    <nav class="scene-hotspots" aria-label="Explore calculators by part of the project">
+      {hotspots.map(h => <a class:list={['hotspot', h.side]} style={`--x:${h.x}%;--y:${h.y}%`} href={`/#directory-${h.target}`}><span class="hotspot-dot" aria-hidden="true"></span><span class="hotspot-label">{h.name}</span></a>)}
+    </nav>
+  </div>
+</div>
+<style>
+.house-scene{max-width:1120px;margin:0 auto}
+.scene-frame{position:relative}
+picture,img{display:block;width:100%;height:auto}
+picture{mask-image:linear-gradient(to bottom,transparent,#000 6%); }
+.scene-hotspots{position:absolute;inset:0;pointer-events:none}
+.hotspot{position:absolute;left:var(--x);top:var(--y);width:44px;height:44px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;pointer-events:auto;text-decoration:none;color:#24312a}
+.hotspot-dot{width:16px;height:16px;background:var(--accent);border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px #0005;flex-shrink:0}
+.hotspot-label{position:absolute;left:42px;white-space:nowrap;padding:7px 10px;border-radius:4px;background:#fbfaf4ed;font-size:12px;font-weight:650;line-height:1.4;box-shadow:0 2px 9px #0002}
+.hotspot-label:before{content:"";position:absolute;width:14px;height:1px;background:#fff;right:100%;top:50%}
+.left .hotspot-label{left:auto;right:42px}
+.left .hotspot-label:before{right:auto;left:100%}
+.hotspot:hover .hotspot-label{background:#fff;color:#a63f1d}
+.hotspot:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:50%}
+@media(max-width:700px){
+ picture{mask-image:none}
+ .scene-hotspots{position:static;display:flex;justify-content:center;flex-wrap:wrap;gap:6px 10px;padding:14px 16px 0}
+ .hotspot{position:static;transform:none;width:auto;height:auto;min-height:44px;gap:7px;padding:0 5px;color:var(--text)}
+ .hotspot-dot{width:12px;height:12px;border-width:2px}
+ .hotspot-label,.left .hotspot-label{position:static;padding:0;background:none;box-shadow:none;color:inherit;font-size:12px}
+ .hotspot-label:before{display:none}
+ .hotspot:hover .hotspot-label{background:none;color:var(--accent)}
+}
+</style>

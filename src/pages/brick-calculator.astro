@@ -1,0 +1,91 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { BRICKS, BRICKS_PER_MORTAR_BAG } from '../calculators/brick';
+import { bricksPerFt2 } from '../lib/finish';
+import { fmt, int, ceilCount } from '../lib/format';
+
+const table = BRICKS.map((b) => {
+  const per = bricksPerFt2(b.l, b.h, 0.375);
+  return { label: b.label, per, per100: ceilCount(100 * per) };
+});
+const walls = [50, 100, 200, 500, 1000].map((a) => {
+  const n = ceilCount(a * bricksPerFt2(7.625, 2.25, 0.375) * 1.05);
+  return { a, n, bags: ceilCount(n / BRICKS_PER_MORTAR_BAG) };
+});
+---
+
+<CalcPage
+  slug="brick-calculator"
+  def={def}
+  title="Brick Calculator: How Many Bricks & Mortar Bags You Need"
+  description="Free brick calculator. Enter the wall size and brick type to get the number of bricks per square foot, total bricks with waste, and bags of mortar mix."
+  h1="Brick Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Count the bricks and mortar for a wall, planter, or veneer from the wall size, brick size, and mortar joint.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate bricks</h2>
+  <ol>
+    <li>Find the wall area in square feet (length × height) and subtract doors and windows.</li>
+    <li>Add the mortar joint to the brick's length and height and multiply: that is the face area one brick covers.</li>
+    <li>Bricks per square foot = 144 ÷ that area. Multiply by the wall area and add about 5%.</li>
+  </ol>
+
+  <h2 id="example">Example: a 20 × 6 ft garden wall in modular brick</h2>
+  <p>
+    The wall is 120 square feet. A modular brick (7⅝ × 2¼ in) with a ⅜-inch joint covers 8 × 2⅝ = 21 square inches, so
+    there are 6.86 bricks per square foot. 120 × 6.86 × 1.05 = <strong>864 bricks</strong>, and about 22 bags of mortar
+    mix for a single-wythe wall.
+  </p>
+
+  <h2 id="per-sqft">How many bricks per square foot?</h2>
+  <p>With a ⅜-inch mortar joint:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Brick</th><th class="num">Bricks per sq ft</th><th class="num">Bricks per 100 sq ft</th></tr></thead>
+      <tbody>{table.map((r) => <tr><td>{r.label}</td><td class="num">{fmt(r.per, 2)}</td><td class="num">{r.per100}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="table">Bricks and mortar for common wall areas</h2>
+  <p>Modular brick, ⅜-inch joint, 5% extra, single wythe.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Wall area</th><th class="num">Bricks</th><th class="num">80-lb mortar bags</th></tr></thead>
+      <tbody>{walls.map((w) => <tr><td>{w.a} sq ft</td><td class="num">{int(w.n)}</td><td class="num">{w.bags}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="mortar">How much mortar do you need?</h2>
+  <p>
+    As a planning figure, an 80-lb bag of premixed mortar lays roughly {BRICKS_PER_MORTAR_BAG} standard-size bricks. Wider
+    joints, larger bricks, and messy work use more, so check the yield on the bag you buy. Large jobs usually switch to
+    masonry cement mixed with sand on site.
+  </p>
+
+  <p>
+    Garden and retaining walls usually sit on a reinforced footing; <a href="/rebar-calculator/">work out the rebar</a> along with the concrete.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>What is a wythe?</h3>
+  <p>
+    One vertical layer of brick. Brick veneer on a house is a single wythe; a freestanding structural wall is often two
+    wythes, which doubles the brick count.
+  </p>
+  <h3>How much extra brick should I order?</h3>
+  <p>About 5% for breakage and cuts, more if you have many corners or openings to cut around.</p>
+  <p>
+    Building on a new footing? Size it with the <a href="/concrete-calculator/">concrete calculator</a>. For a patio
+    instead of a wall, see the <a href="/paver-calculator/">paver calculator</a>.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Bricks per sq ft = 144 ÷ [(brick length + joint) × (brick height + joint)].</li>
+    <li>Bricks = (wall area − openings) × bricks per sq ft × (1 + waste %), rounded up.</li>
+    <li>Mortar bags = bricks ÷ {BRICKS_PER_MORTAR_BAG}, rounded up; an estimate that varies with joint size.</li>
+  </ul>
+</CalcPage>

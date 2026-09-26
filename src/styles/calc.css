@@ -1,0 +1,162 @@
+/* Shared precision-handbook calculator UI. */
+:is(.calc,.cc){padding:0;border:0;background:transparent}
+:is(.calc,.cc) fieldset{border:0;margin:0;padding:0;min-width:0}
+:is(.calc-body,.cc-body){display:grid;grid-template-columns:minmax(0,1fr) 390px;align-items:start;gap:28px}
+:is(.calc-inputs,.cc-inputs){min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+:is(.calc,.cc) .shapes{padding:0 0 22px;margin-bottom:22px;border-bottom:1px solid var(--border)}
+:is(.calc,.cc) .shapes legend{font-weight:650;font-size:.9375rem;margin-bottom:12px}
+.shape-list{display:flex;flex-wrap:wrap;gap:8px}
+.shape-opt{position:relative;flex:1 1 74px;min-width:0}
+.shape-opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.shape-name{display:flex;align-items:center;justify-content:center;gap:7px;flex-direction:column;min-height:50px;height:100%;padding:10px 8px;border:1px solid var(--border);border-radius:5px;background:var(--surface);font-size:.8125rem;line-height:1.3;cursor:pointer;text-align:center;color:var(--muted)}
+.shape-name svg{width:25px;height:25px}
+.shape-opt input:checked+.shape-name{background:var(--accent);border-color:var(--accent);color:var(--button-text);font-weight:600}
+.shape-opt input:focus-visible+.shape-name{outline:3px solid var(--focus);outline-offset:3px}
+.shape-opt:hover .shape-name{border-color:var(--accent)}
+:is(.calc,.cc) .shape-head{display:flex;align-items:center;gap:20px;background:var(--bg);padding:16px;border-radius:6px;margin-bottom:22px}
+:is(.calc,.cc) .shape-head .diagram{width:55%;max-width:310px;flex-shrink:0}
+:is(.calc,.cc) .shape-head.solo .diagram{width:100%;max-width:360px;margin:auto}
+.shape-desc{font-size:.8125rem;margin:0}
+.input-note{font-size:.8125rem;color:var(--muted);margin:0 0 18px}
+:is(.calc,.cc) .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+:is(.calc,.cc) .opts{margin-top:22px;padding-top:22px;border-top:1px solid var(--border)}
+:is(.calc,.cc) .field{min-width:0;display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:.875rem}
+.field small{font-size:.75rem;line-height:1.5}
+:is(.calc,.cc) input,:is(.calc,.cc) select{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;min-height:48px;width:100%;min-width:0;font-variant-numeric:tabular-nums}
+:is(.calc,.cc) input:focus,:is(.calc,.cc) select:focus{outline:2px solid var(--focus);outline-offset:1px;border-color:var(--focus)}
+:is(.calc,.cc) input::placeholder{color:var(--muted)}
+:is(.calc,.cc) input[aria-invalid=true]{border-color:#c53724;outline-color:#c53724}
+.iu{display:flex;min-width:0}.iu input{border-radius:var(--radius-sm) 0 0 var(--radius-sm)}
+.iu input.inch{border-radius:0;border-left:0;flex:.8;min-width:0}
+.iu select{width:auto;max-width:110px;flex-shrink:0;border-left:0;border-radius:0 var(--radius-sm) var(--radius-sm) 0;background:var(--surface-2)}
+.iu.suffixed .suffix{display:flex;align-items:center;padding:0 12px;border:1px solid var(--border);border-left:0;border-radius:0 var(--radius-sm) var(--radius-sm) 0;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.money{display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);padding-left:12px}
+.money input{border:0}
+.prices{margin-top:22px;border-top:1px solid var(--border);padding-top:18px;font-size:.875rem}
+.prices summary{cursor:pointer;padding:4px 0;min-height:36px;font-weight:600}.prices summary span{font-weight:400}
+.prices .fields{margin-top:18px}.prices p{margin-bottom:0}
+.results{min-width:0;background:var(--result-bg);color:var(--result-text);padding:28px;border-radius:var(--radius)}
+.results-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+.results-header h2{font-size:1rem;margin:0;letter-spacing:0}
+.result-badge{display:flex;align-items:center;gap:5px;font-size:.6875rem;color:var(--result-muted)}
+.result-badge svg{color:var(--result-accent)}
+.res-label{margin:0;color:var(--result-muted);font-size:.875rem}
+.res-main{margin:4px 0 0;font-size:3.5rem;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums;letter-spacing:-.03em;overflow-wrap:anywhere}
+.res-unit{font-size:1rem;letter-spacing:0;font-weight:500;color:var(--result-muted)}
+.res-sub,.res-muted{color:var(--result-muted);font-size:.8125rem;line-height:1.6;margin:8px 0 0}
+.res-block{margin-top:22px;padding-top:18px;border-top:1px solid var(--result-border)}
+.res-block h3{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:.875rem;letter-spacing:0;color:var(--result-muted);font-weight:550}
+.bags,.rows{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.bags li,.rows li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:4px 14px;font-size:.875rem}
+.bags strong,.rows strong{font-size:1.125rem;font-variant-numeric:tabular-nums;text-align:right;overflow-wrap:anywhere}
+.bag-cost,.rows .note{grid-column:1/-1;color:var(--result-muted);font-size:.75rem}
+.bag-cost:empty{display:none}
+.order{margin:0;line-height:1.5}.order strong{font-size:1.65rem;font-variant-numeric:tabular-nums}.order .res-muted{display:block}
+.purchase-or{display:flex;gap:12px;align-items:center;color:var(--result-muted);font-size:.75rem;margin-top:20px}
+.purchase-or::before,.purchase-or::after{content:"";height:1px;background:var(--result-border);flex:1}
+.ready-mix{border:0;margin-top:12px;padding-top:0}
+.weight{font-size:.75rem;margin-top:18px}
+.advice{margin:18px 0 0;padding:14px;border-radius:5px;background:#ffffff0b;font-size:.8125rem;line-height:1.6;color:var(--result-muted)}
+.project{margin-top:20px}
+.btn,.btn-ghost,.btn-link{font:inherit;cursor:pointer;border-radius:var(--radius-sm)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;padding:10px 12px;background:var(--result-action);color:var(--result-action-text);border:0;font-weight:650;font-size:.875rem}
+.btn:hover{background:#ffe8d9}
+.btn-ghost{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;background:transparent;color:var(--result-text);border:1px solid var(--result-border);padding:9px 10px;font-size:.8125rem}
+.btn-ghost:hover{background:#ffffff0b}
+.btn-link{background:none;border:0;color:var(--result-muted);text-decoration:underline;padding:8px 0;font-size:.8125rem;min-height:44px}
+.project h3{margin:20px 0 8px;font-size:.875rem;color:var(--result-muted)}
+.project ol{margin:0;padding-left:20px;font-size:.8125rem}
+.project li{margin:8px 0}.project li button{background:none;border:0;color:var(--result-muted);text-decoration:underline;font:inherit;padding:8px;min-height:36px}
+.project-total{font-size:.875rem}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.actions button{flex:1}
+.result-footnote{margin:18px 0 0;font-size:.75rem;line-height:1.6;color:var(--result-muted)}
+.result-invalid{font-size:.9375rem;color:var(--result-text);padding:16px;background:#ffffff0b;border-radius:5px}
+.results[data-invalid=true] .result-content{display:none}
+.field-error,.form-error{color:#b52d1a;font-size:.8125rem;line-height:1.5;margin:3px 0}
+.form-error{padding:12px;background:var(--accent-soft);margin-top:16px}
+.mbar{display:none}
+:root[data-theme="dark"] .field-error,:root[data-theme="dark"] .form-error{color:#ffac95}
+@media(max-width:980px){:is(.calc-body,.cc-body){grid-template-columns:minmax(0,1fr) 330px;gap:18px}:is(.calc-inputs,.cc-inputs){padding:20px}.results{padding:22px}:is(.calc,.cc) .shape-head{gap:12px;padding:10px}.shape-desc{font-size:.75rem}}
+@media(max-width:800px){:is(.calc-body,.cc-body){grid-template-columns:1fr;gap:20px}:is(.calc,.cc) .shape-head .diagram{width:55%;max-width:280px}.results{padding:24px}.shape-opt{flex-basis:85px}.results-header{margin-bottom:20px}.mbar:not([hidden]){position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:20;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-radius:6px;background:var(--result-bg);color:var(--result-text);text-decoration:none;box-shadow:0 2px 8px #0003;font-size:.8125rem;line-height:1.4}.mbar-go{color:var(--result-accent);white-space:nowrap;font-weight:600}}
+@media(max-width:480px){:is(.calc-inputs,.cc-inputs){padding:18px}:is(.calc,.cc) .fields{gap:16px 12px}:is(.calc,.cc) input,:is(.calc,.cc) select{padding:10px 8px;font-size:1rem}.field label{font-size:.8125rem}.iu select{max-width:88px}.shape-opt{flex-basis:75px}.shape-head{flex-direction:column}:is(.calc,.cc) .shape-head .diagram{width:100%;max-width:250px}.shape-desc{text-align:center}.res-main{font-size:2.5rem}}
+.select-wrap{position:relative;min-width:0;max-width:100%}
+.select-value{display:none}
+@media(max-width:600px){
+  :is(.calc,.cc) .fields{grid-template-columns:minmax(0,1fr);gap:18px}
+  :is(.calc,.cc) input,:is(.calc,.cc) select{font-size:16px;max-width:100%;box-sizing:border-box}
+  :is(.calc,.cc) .field label{font-size:.875rem;line-height:1.5;overflow-wrap:anywhere}
+  :is(.calc,.cc) .field small{overflow-wrap:anywhere}
+  :is(.calc,.cc) .iu input{flex:1 1 0;width:0;min-width:0}
+  :is(.calc,.cc) .iu select{flex:0 0 auto;width:auto;min-width:84px;max-width:110px;padding:10px 8px}
+  .select-wrap[data-enhanced] .select-value{display:block;min-height:48px;padding:12px 42px 12px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:16px;line-height:1.5;overflow-wrap:anywhere;box-sizing:border-box}
+  .select-wrap[data-enhanced]::after{content:"";position:absolute;right:17px;top:21px;width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);pointer-events:none}
+  :is(.calc,.cc) .select-wrap[data-enhanced] select{position:absolute;inset:0;width:100%;height:100%;opacity:0;z-index:1;cursor:pointer}
+  .select-wrap[data-enhanced]:focus-within .select-value{outline:2px solid var(--focus);outline-offset:2px;border-color:var(--focus)}
+  .select-wrap[data-enhanced]:has(select:disabled){opacity:.6}
+}
+@media print{.calc-body,.cc-body{display:block}.calc-inputs,.cc-inputs{border:0;padding:0}.shape-list{display:none}.shapes{display:none}.results{border:1px solid #aaa;border-radius:0;margin:20px 0;padding:20px;break-inside:avoid}.results-header{margin-bottom:8px}.result-badge,.project button,.actions,.prices{display:none!important}.results .res-block{border-color:#bbb}.results .advice{background:transparent}.shape-head{max-width:400px}.results input,.results select{color:#111}}
+
+/* 结果面板里按计算结果画的示意图 */
+.res-figure{margin:18px 0 4px}.res-figure svg{display:block;width:100%;height:auto}
+.res-figure .sf{fill:#ffffff14;stroke:#ffffff59;stroke-width:1.2}.res-figure .sl{stroke:var(--result-accent);stroke-width:1.5;stroke-dasharray:5 4;fill:none}
+.res-figure .sd{stroke:#ffffff59;stroke-width:1}.res-figure .st{fill:var(--result-muted);font:600 10px var(--font)}.res-figure .sa{fill:var(--result-accent);font:600 10px var(--font)}
+
+/* Result graphics inherit the card's theme and print tokens. */
+.result-visual{margin:16px 0;padding:16px 0;border-top:1px solid var(--result-border);font-size:.8125rem}
+.visual-heading{font-weight:650;margin:0 0 12px;color:var(--result-text);text-transform:capitalize}
+.visual-pair{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--result-muted)}
+.visual-pair strong{display:block;color:var(--result-text);font-size:1rem;font-variant-numeric:tabular-nums;margin-top:4px}
+.visual-pair>span:last-child{text-align:right}
+.visual-arrow{font-size:1.5rem;color:var(--result-accent)}
+.limit-track{position:relative;height:12px;background:var(--result-border);border:1px solid var(--result-muted);border-radius:3px;margin-top:20px}
+.limit-fill{display:block;height:100%;background:var(--result-accent);border-radius:2px}
+.limit-marker{position:absolute;top:-6px;height:22px;border-left:3px solid var(--result-text);transform:translateX(-50%)}
+.visual-scale{display:flex;justify-content:space-between;margin-top:8px;font-size:.75rem;color:var(--result-muted)}
+.visual-status{margin:12px 0 0;font-weight:650;color:var(--result-text);line-height:1.5}
+.is-over .visual-status{border-left:3px solid var(--result-accent);padding-left:10px}
+.visual-note{font-size:.75rem;line-height:1.6;color:var(--result-muted);margin:10px 0 0}
+.stair-key,.fig-key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px;font-size:.8125rem;color:var(--result-muted)}
+.stair-key strong,.fig-key strong{display:block;color:var(--result-text);font-size:1rem;margin-top:4px}
+.res-figure .st,.res-figure .sa{font-size:16px}
+.res-figure .sd{stroke:var(--result-muted);fill:none;stroke-width:1.5}
+.res-figure .sf{stroke:var(--result-muted)}
+.res-figure .sb{stroke:var(--result-accent);stroke-width:1.5}.res-figure .sk{fill:none;stroke:var(--result-text);stroke-width:3}.res-figure rect.sk{fill:var(--result-bg);stroke-width:1.5}
+.res-figure .sg{fill:none;stroke:var(--result-muted);stroke-width:.75;opacity:.6}
+.res-figure .sh{fill:var(--result-accent);fill-opacity:.22;stroke:var(--result-accent);stroke-width:1.5}
+@media print{.limit-track{background:#fff;border-color:#555}.limit-fill{background:#aaa!important;print-color-adjust:exact}.limit-marker{border-color:#111}.result-visual,.visual-status,.visual-heading,.visual-pair,.visual-note,.visual-scale,.stair-key,.fig-key,.visual-pair strong,.stair-key strong,.fig-key strong{color:#111}.res-figure .sf{fill:#eee;stroke:#444}.res-figure .sd,.res-figure .sl{stroke:#333}.res-figure .st,.res-figure .sa{fill:#111}.res-figure .sb{stroke:#111}.res-figure .sk{stroke:#111}.res-figure rect.sk{fill:#fff}.res-figure .sg{stroke:#555}.res-figure .sh{fill:#ccc;fill-opacity:1;stroke:#111}}
+
+/* 「打印」按钮生成的计算单：屏幕上不显示；打印时只显示它，页面其余部分全部隐藏 */
+.print-sheet{display:none}
+@media print{
+  .printing-sheet body>:not(.print-sheet){display:none!important}
+  .printing-sheet .print-sheet{--result-text:#111;--result-muted:#444;--result-border:#bbb;--result-accent:#111;display:block;color:#111;font-size:10.5pt;line-height:1.45}
+  @page{margin:14mm}
+  .ps-head{display:flex;justify-content:space-between;border-bottom:2px solid #111;padding-bottom:6px;font-size:9.5pt}
+  .print-sheet h1{font-size:18pt;margin:12px 0 4px}
+  /* Let long estimates use the space below inputs instead of moving to a new page. */
+  .print-sheet section{margin-top:10px;break-inside:auto}
+  .print-sheet section>h2{font-size:10pt;text-transform:uppercase;letter-spacing:.06em;color:#444;margin:0 0 6px;padding-bottom:4px;border-bottom:1px solid #bbb}
+  .ps-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px;margin:0}
+  .ps-list div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dotted #ccc;padding:3px 0}
+  .ps-list dt{color:#444}.ps-list dd{margin:0;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+  .ps-results .res-main{font-size:26pt;margin:0}
+  .ps-results .res-block{margin-top:10px;padding-top:8px;border-color:#bbb;break-inside:avoid}
+  .ps-results .res-block h3{margin-bottom:6px;color:#444}
+  .ps-results .rows,.ps-results .bags{gap:3px}
+  .ps-results .rows strong,.ps-results .bags strong{font-size:11pt}
+  .ps-results .advice{background:none;border:1px solid #bbb;padding:8px 10px;color:#333}
+  .ps-results .project h3{margin:10px 0 4px}
+  .ps-results .project{margin-top:10px}
+  .ps-results .project li{margin:4px 0;break-inside:avoid}
+  .ps-list div,.ps-results .res-figure,.ps-results .advice{break-inside:avoid}
+  .ps-results .purchase-or{margin-top:10px}
+  .ps-results .purchase-or::before,.ps-results .purchase-or::after{background:#bbb}
+  .ps-results .res-figure{max-width:340px}
+  .ps-results .res-figure .sf{fill:#f2f2f2;stroke:#555}.ps-results .res-figure .sd{stroke:#555}
+  .ps-results .res-figure .sl,.ps-results .res-figure .sb,.ps-results .res-figure .sk{stroke:#111}.ps-results .res-figure rect.sk{fill:#fff}.ps-results .res-figure .sg{stroke:#555}.ps-results .res-figure .sh{fill:#ddd;fill-opacity:1;stroke:#111}.ps-results .res-figure .st,.ps-results .res-figure .sa{fill:#111}
+  .ps-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-top:18px;padding-top:8px;border-top:1px solid #bbb;font-size:8.5pt;color:#444;break-inside:avoid}
+  .ps-qr svg{display:block;width:25mm;height:25mm}
+  .ps-foot p{margin:0 0 4px}.ps-url{word-break:break-all;color:#111}
+}

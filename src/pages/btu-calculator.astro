@@ -1,0 +1,77 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/btu';
+import { ENERGY_STAR_BTU } from '../lib/hvac';
+
+const rows = ENERGY_STAR_BTU.map(([max, btu], i) => ({ from: i === 0 ? 100 : ENERGY_STAR_BTU[i - 1][0], max, btu }));
+---
+
+<CalcPage
+  slug="btu-calculator"
+  def={def}
+  title="BTU Calculator: Air Conditioner Size for a Room"
+  description="Free BTU calculator. Enter room size, sun exposure, occupants, and whether it's a kitchen to get the air conditioner BTUs and tons you need, using the ENERGY STAR sizing method."
+  h1="BTU Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Size a window, portable, or mini-split air conditioner for a room using the ENERGY STAR method, with a rough heating
+    estimate for your climate.
+  </Fragment>
+
+  <h2 id="how-to">How many BTUs do I need?</h2>
+  <p>
+    Start from the room's square footage in the table below, then adjust: take off 10% for a heavily shaded room, add 10%
+    for a very sunny one, add 600 BTU for each regular occupant beyond two, and add 4,000 BTU for a kitchen. A
+    <strong>400 sq ft room with normal sun needs about 9,000 BTU</strong>.
+  </p>
+
+  <h2 id="table">Air conditioner size by room size</h2>
+  <p>ENERGY STAR guidance for room air conditioners.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Room area</th><th class="num">Cooling capacity</th></tr></thead>
+      <tbody>{rows.map((r) => <tr><td>{r.from}–{r.max.toLocaleString('en-US')} sq ft</td><td class="num">{r.btu.toLocaleString('en-US')} BTU/h</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="tons">BTUs and tons</h2>
+  <p>
+    Central air and heat pumps are sold in tons. One ton of cooling is 12,000 BTU per hour, so a 24,000 BTU system is 2
+    tons. Room units are usually labeled in BTU.
+  </p>
+
+  <h2 id="heating">How many BTUs to heat a room?</h2>
+  <p>
+    A rough rule is 30 to 60 BTU per square foot, higher in colder climates and poorly insulated homes. The calculator
+    shows a range for the climate you pick. Treat it as a starting point for space heaters and small zones, not for a
+    furnace.
+  </p>
+
+  <p>
+    L-shaped room or open plan? <a href="/square-footage-calculator/">Add up the floor area</a> first and enter the total.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Is a bigger air conditioner better?</h3>
+  <p>
+    No. An oversized unit cools the air quickly and shuts off before it removes much humidity, leaving the room cold and
+    damp, and it cycles more often. Choose the size that matches the room.
+  </p>
+  <h3>What about whole-house systems?</h3>
+  <p>
+    Central systems should be sized with a Manual J load calculation, which accounts for insulation, windows, air leakage,
+    and orientation. A contractor can run one; square-footage rules often oversize.
+  </p>
+  <p>
+    Improving the room instead? Better attic insulation cuts the load; see the
+    <a href="/insulation-calculator/">insulation calculator</a>.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Base capacity from the ENERGY STAR room air conditioner sizing table; rooms over 2,500 sq ft are extrapolated.</li>
+    <li>Adjustments: −10% shaded, +10% sunny, +600 BTU per person over two, +4,000 BTU for a kitchen.</li>
+    <li>Heating range = area × 30–60 BTU per sq ft depending on climate. Rough estimate only.</li>
+  </ul>
+</CalcPage>

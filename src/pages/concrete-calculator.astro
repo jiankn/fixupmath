@@ -1,0 +1,214 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import AdSlot from '../components/AdSlot.astro';
+import ConcreteCalculator from '../components/concrete/ConcreteCalculator.astro';
+import { shapeVolumeFt3, concreteResult, BAG_SIZES, CONCRETE_DENSITY_LB_FT3, fmt } from '../lib/concrete';
+
+const UPDATED = '2026-09-26';
+
+// 常见板尺寸的用量表：和计算器用同一个引擎生成，数字永远一致
+const sizes: [number, number][] = [
+  [4, 4],
+  [8, 8],
+  [10, 10],
+  [10, 12],
+  [12, 12],
+  [10, 20],
+  [12, 24],
+  [20, 20],
+  [24, 24],
+];
+const slabRow = (l: number, w: number, t: number) => {
+  const r = concreteResult(
+    shapeVolumeFt3('slab', { length: { value: l, unit: 'ft' }, width: { value: w, unit: 'ft' }, thickness: { value: t, unit: 'in' } }),
+    0,
+  );
+  return { yd: r.cubicYards, bags80: r.bags.find((b) => b.lb === 80)!.count, bags60: r.bags.find((b) => b.lb === 60)!.count };
+};
+const table4 = sizes.map(([l, w]) => ({ l, w, ...slabRow(l, w, 4) }));
+const table6 = sizes.map(([l, w]) => ({ l, w, ...slabRow(l, w, 6) }));
+const coverage = [3, 4, 5, 6, 8].map((t) => ({ t, sqft: 27 / (t / 12) }));
+
+---
+
+<CalcPage
+  slug="concrete-calculator"
+  title="Concrete Calculator: Cubic Yards & Bags for Slabs, Footings, Stairs"
+  description="Free concrete calculator. Enter length, width, and thickness to get cubic yards, 40, 60, and 80-lb bag counts, and a cost estimate for slabs, footings, columns, and stairs."
+  h1="Concrete Calculator"
+  updated={UPDATED}
+>
+  <Fragment slot="lead">
+    Find how many cubic yards of concrete, or how many 40, 60, or 80-lb bags, you need for a slab, footing, column,
+    round pad, tube, or set of stairs. Add several pours to get one project total.
+  </Fragment>
+  <ConcreteCalculator slot="calc" />
+
+      <h2 id="how-to-calculate">How to calculate concrete</h2>
+      <ol>
+        <li>Measure the length, width, and thickness (or depth) of the pour. For a round pour, measure the diameter.</li>
+        <li>Convert every measurement to feet. Divide inches by 12, so a 4-inch slab is 0.333 ft thick.</li>
+        <li>Multiply to get cubic feet: length × width × thickness.</li>
+        <li>Divide cubic feet by 27 to get cubic yards, the unit ready-mix is sold in.</li>
+        <li>Add 5–10% for spillage, uneven subgrade, and form bulging, then round up.</li>
+      </ol>
+      <p>
+        For an L-shaped patio or a slab with thickened edges, split the job into rectangles, calculate each one, and add
+        them together. The <strong>Add to project</strong> button in the calculator does this for you.
+      </p>
+
+      <h2 id="formulas">Concrete volume formulas</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Shape</th><th>Volume in cubic feet</th></tr></thead>
+          <tbody>
+            <tr><td>Slab, footing, or wall</td><td><code>length × width × thickness</code></td></tr>
+            <tr><td>Round column or post hole</td><td><code>π × (diameter ÷ 2)² × height</code></td></tr>
+            <tr><td>Circular slab</td><td><code>π × (diameter ÷ 2)² × thickness</code></td></tr>
+            <tr><td>Tube or ring</td><td><code>π × [(outer ÷ 2)² − (inner ÷ 2)²] × height</code></td></tr>
+            <tr><td>Stairs (n steps)</td><td><code>width × run × rise × n(n + 1) ÷ 2</code>, plus <code>width × landing × rise × n</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Then convert: <code>cubic yards = cubic feet ÷ 27</code>. One cubic meter equals 35.31 cubic feet.</p>
+
+      <h2 id="example">Example: a 10 × 10 ft patio, 4 inches thick</h2>
+      <p>
+        10 ft × 10 ft × (4 ÷ 12) ft = 33.33 cubic feet. Dividing by 27 gives 1.23 cubic yards. With 10% extra that is
+        36.67 cubic feet, or 1.36 cubic yards, which is 62 bags at 80 lb (36.67 ÷ 0.60, rounded up). If you order
+        ready-mix, ask for 1.5 yards.
+      </p>
+
+      <h2 id="bags-per-yard">How many bags of concrete are in a cubic yard?</h2>
+      <p>
+        A cubic yard of concrete takes about <strong>45 bags at 80 lb</strong>, <strong>60 bags at 60 lb</strong>, or
+        <strong>90 bags at 40 lb</strong>. That is based on the typical yields printed on US premix bags: 0.60, 0.45, and
+        0.30 cubic feet per bag. Check your bag, because some mixes yield slightly less.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bag size</th><th class="num">Yield per bag</th><th class="num">Bags per cubic yard</th><th class="num">Bags per 10 ft³</th></tr></thead>
+          <tbody>
+            {
+              [...BAG_SIZES].reverse().map((b) => (
+                <tr>
+                  <td>{b.lb} lb</td>
+                  <td class="num">{b.yieldFt3} ft³</td>
+                  <td class="num">{Math.ceil(27 / b.yieldFt3 - 1e-9)}</td>
+                  <td class="num">{Math.ceil(10 / b.yieldFt3 - 1e-9)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="slab-table">Concrete needed for common slab sizes</h2>
+      <p>Exact volumes with no extra added. Add 5–10% before you buy.</p>
+      <h3>4-inch slab (patios, walkways, shed floors)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Slab size</th><th class="num">Cubic yards</th><th class="num">80-lb bags</th><th class="num">60-lb bags</th></tr></thead>
+          <tbody>
+            {table4.map((r) => (
+              <tr><td>{r.l} × {r.w} ft</td><td class="num">{fmt(r.yd)}</td><td class="num">{r.bags80}</td><td class="num">{r.bags60}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <h3>6-inch slab (driveways, heavier loads)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Slab size</th><th class="num">Cubic yards</th><th class="num">80-lb bags</th><th class="num">60-lb bags</th></tr></thead>
+          <tbody>
+            {table6.map((r) => (
+              <tr><td>{r.l} × {r.w} ft</td><td class="num">{fmt(r.yd)}</td><td class="num">{r.bags80}</td><td class="num">{r.bags60}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="coverage">How many square feet does a yard of concrete cover?</h2>
+      <p>
+        One cubic yard covers <strong>81 square feet at 4 inches thick</strong> and 54 square feet at 6 inches. Divide
+        27 by the thickness in feet to get the coverage for any depth.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Thickness</th><th class="num">Square feet per cubic yard</th></tr></thead>
+          <tbody>
+            {coverage.map((c) => <tr><td>{c.t} in</td><td class="num">{fmt(c.sqft, 1)}</td></tr>)}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="thickness">How thick should a concrete slab be?</h2>
+      <p>
+        Most patios, sidewalks, and shed floors are poured <strong>4 inches</strong> thick. Driveways and garage floors
+        usually run 4 to 6 inches, and anything carrying heavy trucks, RVs, or equipment needs 6 inches or more plus
+        reinforcement; the <a href="/rebar-calculator/">rebar calculator</a> lays out the bar grid. Your local building code and any engineered plans take priority over these rules of thumb.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Project</th><th>Typical thickness</th></tr></thead>
+          <tbody>
+            <tr><td>Sidewalk, walkway, patio</td><td>4 in</td></tr>
+            <tr><td>Shed or hot tub pad</td><td>4 in (thicker under a filled hot tub if the maker requires it)</td></tr>
+            <tr><td>Garage floor</td><td>4–6 in</td></tr>
+            <tr><td>Residential driveway</td><td>4–6 in; 5–6 in is common where heavier vehicles park</td></tr>
+            <tr><td>RV pad, heavy equipment</td><td>6 in or more, reinforced</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="bags-or-ready-mix">Should you use bags or order ready-mix?</h2>
+      <p>
+        Bags make sense for post holes, small pads, and repairs, roughly anything under half a cubic yard. Between about
+        half a yard and a yard and a half, bags still work but the mixing adds up fast, so a rented mixer or a short-load
+        delivery is worth pricing. Above that, order ready-mix: one continuous pour avoids cold joints where a fresh
+        batch meets concrete that has started to set. Many plants charge extra for small loads, so ask about minimum
+        orders when you call.
+      </p>
+
+      <AdSlot />
+
+      <p>
+    Most slabs sit on a compacted base of crushed stone, so work out <a href="/gravel-calculator/">how much gravel base to order</a> at the same
+    time. Setting posts? The <a href="/fence-calculator/">fence calculator</a> counts concrete bags for every post hole, and the
+    <a href="/deck-calculator/">deck calculator</a> handles the framing that goes on top of your footings. Building a brick wall on a new
+    footing, <a href="/brick-calculator/">count the bricks and mortar</a>; for dirt, sand, or other fill, <a href="/cubic-yard-calculator/">convert the area to cubic yards</a>.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+      <h3>How much does a yard of concrete weigh?</h3>
+      <p>
+        About 4,000 pounds, or 2 tons. Normal-weight concrete is roughly {CONCRETE_DENSITY_LB_FT3} lb per cubic foot,
+        which is {fmt(CONCRETE_DENSITY_LB_FT3 * 27, 0)} lb per cubic yard. That weight matters if you plan to haul bags
+        in a pickup.
+      </p>
+      <h3>How much extra concrete should I order?</h3>
+      <p>
+        Add 5% for a flat slab on well-compacted, level ground and up to 10% or more for uneven ground, footings dug by
+        hand, or forms that may bow. Running short mid-pour costs far more than a little leftover.
+      </p>
+      <h3>How many 80-lb bags do I need for a post hole?</h3>
+      <p>
+        A 10-inch hole 3 feet deep holds about 1.64 cubic feet, so plan on 3 bags at 80 lb per hole before subtracting
+        the post. Choose <strong>Column / Post hole</strong> in the calculator and set the quantity to your number of
+        posts.
+      </p>
+      <h3>Is concrete the same as cement?</h3>
+      <p>
+        No. Cement is the powder that binds concrete together. Concrete is cement mixed with sand, gravel, and water.
+        Premixed "concrete mix" bags already contain all the dry ingredients.
+      </p>
+
+      <h2 id="method">How this calculator works</h2>
+      <ul>
+        <li>Volumes use the formulas above, with every dimension converted to feet first.</li>
+        <li>Bag counts use yields of 0.30, 0.45, and 0.60 ft³ for 40, 60, and 80-lb bags and are always rounded up.</li>
+        <li>Ready-mix orders are rounded up to the next quarter yard, a common ordering increment.</li>
+        <li>Weight assumes normal-weight concrete at {CONCRETE_DENSITY_LB_FT3} lb/ft³.</li>
+        <li>Results are estimates for planning. Confirm quantities with your supplier before you order.</li>
+      </ul>
+</CalcPage>

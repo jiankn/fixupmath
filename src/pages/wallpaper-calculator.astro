@@ -1,0 +1,88 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/wallpaper';
+import { wallpaperRolls } from '../lib/finish';
+
+const rooms: [number, number][] = [[10, 10], [10, 12], [12, 12], [12, 14], [14, 16], [16, 20]];
+const table = rooms.map(([l, w]) => ({
+  l,
+  w,
+  plain: wallpaperRolls({ perimeterFt: 2 * (l + w), heightFt: 8, rollWidthIn: 20.5, rollLengthFt: 33, repeatIn: 0, doors: 1 }).rolls,
+  rep: wallpaperRolls({ perimeterFt: 2 * (l + w), heightFt: 8, rollWidthIn: 20.5, rollLengthFt: 33, repeatIn: 21, doors: 1 }).rolls,
+}));
+---
+
+<CalcPage
+  slug="wallpaper-calculator"
+  def={def}
+  title="Wallpaper Calculator: How Many Rolls You Need, with Pattern Repeat"
+  description="Free wallpaper calculator. Enter your room size, roll size, and pattern repeat to get the number of strips and rolls, counted strip by strip the way installers do."
+  h1="Wallpaper Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Find how many rolls of wallpaper to buy. The calculator counts full-height strips, the way installers do, and allows
+    for pattern repeat and trimming.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate wallpaper rolls</h2>
+  <p>
+    Dividing wall area by roll area underestimates, because every strip wastes its offcut and patterned paper wastes more
+    to line up the design. Count strips instead:
+  </p>
+  <ol>
+    <li><strong>Strips needed:</strong> room perimeter in inches ÷ roll width, rounded up. Subtract strips for full-height openings like doors.</li>
+    <li><strong>Cut length:</strong> wall height + pattern repeat + about 4 inches for trimming top and bottom.</li>
+    <li><strong>Strips per roll:</strong> roll length ÷ cut length, rounded down.</li>
+    <li><strong>Rolls:</strong> strips needed ÷ strips per roll, rounded up.</li>
+  </ol>
+
+  <h2 id="example">Example: a 12 × 12 ft room with 8 ft walls</h2>
+  <p>
+    The perimeter is 48 feet, or 576 inches. With 20.5-inch paper that is 28.1, so 29 strips, minus one for the door:
+    28. Each strip is cut 96 + 4 = 100 inches, and a 33-foot roll (396 inches) yields 3 strips. 28 ÷ 3 = 9.3, so buy
+    <strong>10 rolls</strong>.
+  </p>
+
+  <h2 id="table">Rolls for common room sizes</h2>
+  <p>8 ft walls, 20.5 in × 33 ft rolls, one door.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Room</th><th class="num">Plain paper</th><th class="num">21 in pattern repeat</th></tr></thead>
+      <tbody>{table.map((r) => <tr><td>{r.l} × {r.w} ft</td><td class="num">{r.plain}</td><td class="num">{r.rep}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="repeat">What is pattern repeat?</h2>
+  <p>
+    It is the vertical distance before the design starts over, printed on the roll label. Each strip must start at the
+    same point in the pattern, so you lose up to one repeat per strip. Large repeats can drop a roll from four strips to
+    three, which is why patterned paper often needs a roll or two more than plain.
+  </p>
+
+  <p>
+    Papering only an accent wall or around sloped ceilings? <a href="/square-footage-calculator/">Measure the wall area</a> and compare it with
+    the usable area on the roll label.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How much does a roll of wallpaper cover?</h3>
+  <p>
+    A standard US double roll of 20.5 inches by 33 feet is about 56 square feet, but only about 45–50 square feet are
+    usable after trimming, and less with a large repeat. Check the label: many papers are sold priced per single roll but
+    packaged as double rolls.
+  </p>
+  <h3>Why aren't windows subtracted?</h3>
+  <p>
+    You still paper above and below a window, and those short pieces rarely come from scraps. Leaving windows in keeps
+    the estimate safe. Doors are full height, so their strips are subtracted.
+  </p>
+  <p>Patching walls before papering? The <a href="/drywall-calculator/">drywall calculator</a> covers new sheets.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Strips = perimeter ÷ roll width, rounded up, minus the full strips covered by 36-inch doors.</li>
+    <li>Cut length = wall height + pattern repeat + 4 inches; strips per roll are rounded down.</li>
+    <li>Rolls = strips ÷ strips per roll, rounded up.</li>
+  </ul>
+</CalcPage>

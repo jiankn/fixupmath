@@ -1,0 +1,83 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/flooring';
+import { unitsForArea } from '../lib/finish';
+import { fmt } from '../lib/format';
+
+const rooms: [number, number][] = [[10, 10], [10, 12], [12, 12], [12, 15], [14, 16], [16, 20], [20, 24]];
+const table = rooms.map(([l, w]) => ({ l, w, a: l * w, b20: unitsForArea(l * w, 10, 20).units, b24: unitsForArea(l * w, 10, 24).units }));
+---
+
+<CalcPage
+  slug="flooring-calculator"
+  def={def}
+  title="Flooring Calculator: Square Feet & Boxes with Waste"
+  description="Free flooring calculator for laminate, vinyl plank, and hardwood. Enter your room size and box coverage to get square feet to buy and the number of boxes, with waste."
+  h1="Flooring Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Find how many boxes of laminate, vinyl plank, or hardwood flooring to buy. Enter each room, the coverage printed on
+    the box, and a waste allowance.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate flooring</h2>
+  <ol>
+    <li>Measure each room's length and width and multiply for square feet. Add closets and alcoves separately.</li>
+    <li>Add a waste allowance: 5–10% for a straight lay, about 15% for diagonal or herringbone.</li>
+    <li>Divide by the square feet per box and round up to a whole box.</li>
+  </ol>
+  <p class="formula">boxes = room sq ft × (1 + waste %) ÷ sq ft per box, rounded up</p>
+
+  <h2 id="example">Example: a 15 × 12 ft bedroom</h2>
+  <p>
+    15 × 12 = 180 square feet. With 10% waste you need 198 square feet. At 20 square feet per box, that is 9.9 boxes, so
+    buy <strong>10 boxes</strong> and you will have about 2 square feet left over.
+  </p>
+
+  <h2 id="table">Boxes of flooring for common room sizes</h2>
+  <p>With 10% waste.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Room</th><th class="num">Sq ft</th><th class="num">Boxes at 20 sq ft</th><th class="num">Boxes at 24 sq ft</th></tr></thead>
+      <tbody>{table.map((r) => <tr><td>{r.l} × {r.w} ft</td><td class="num">{r.a}</td><td class="num">{r.b20}</td><td class="num">{r.b24}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="waste">How much extra flooring should I buy?</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Layout</th><th>Typical waste</th></tr></thead>
+      <tbody>
+        <tr><td>Straight lay, simple rectangle</td><td>5–7%</td></tr>
+        <tr><td>Straight lay with closets, hallways, or many doorways</td><td>10%</td></tr>
+        <tr><td>Diagonal</td><td>15%</td></tr>
+        <tr><td>Herringbone or chevron</td><td>15–20%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Several rooms? Add each one to a project, or total them first with the
+    <a href="/square-footage-calculator/">square footage calculator</a>. For tile floors use the
+    <a href="/tile-calculator/">tile calculator</a>, and for carpet the <a href="/carpet-calculator/">carpet calculator</a>.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many square feet are in a box of flooring?</h3>
+  <p>
+    It depends on the product. Laminate and vinyl plank boxes commonly hold about 18 to 30 square feet; hardwood varies
+    more. The exact coverage is printed on the box and the product page.
+  </p>
+  <h3>Should I buy an extra box?</h3>
+  <p>
+    Keeping one spare box from the same lot makes future repairs easy, since a new batch may not match. Many stores accept
+    unopened boxes back, so ask about the return policy.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Square feet to buy = floor area × (1 + waste %).</li>
+    <li>Boxes = square feet to buy ÷ coverage per box, rounded up.</li>
+    <li>Underlayment, transitions, and baseboards are not included.</li>
+  </ul>
+</CalcPage>

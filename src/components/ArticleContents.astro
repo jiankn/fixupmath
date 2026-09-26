@@ -1,0 +1,25 @@
+---
+const { target = '#calculator' } = Astro.props as { target?: string };
+---
+<nav class="contents no-print" aria-label="On this page" data-contents>
+  <strong>In this guide</strong>
+  <div data-contents-links></div>
+  <a class="back-to-tool" href={target}>↑ Back to calculator</a>
+</nav>
+<script>
+document.querySelectorAll<HTMLElement>('[data-contents]').forEach(nav => {
+  const article = nav.parentElement?.querySelector('article');
+  const links = nav.querySelector('[data-contents-links]');
+  article?.querySelectorAll('h2').forEach((heading, i) => {
+    if (!heading.id) {
+      let id = 'guide-' + (heading.textContent?.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '') || i);
+      while (document.getElementById(id)) id += '-section';
+      heading.id = id;
+    }
+    const link = document.createElement('a');
+    link.href = '#' + heading.id;
+    link.textContent = heading.textContent;
+    links?.append(link);
+  });
+});
+</script>

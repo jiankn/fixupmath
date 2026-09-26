@@ -1,0 +1,93 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { BASE_TONS_PER_YD3, SAND_TONS_PER_YD3 } from '../calculators/paver';
+import { tilesFor } from '../lib/finish';
+import { bulkResult } from '../lib/bulk';
+import { fmt, int } from '../lib/format';
+
+const sizes: [string, number, number][] = [['4 × 8 in', 8, 4], ['6 × 6 in', 6, 6], ['6 × 9 in', 9, 6], ['12 × 12 in', 12, 12], ['16 × 16 in', 16, 16], ['12 × 24 in', 24, 12]];
+const perSq = sizes.map(([label, l, w]) => ({ label, per: 144 / (l * w) }));
+const patios = [[10, 10], [12, 12], [12, 16], [16, 20], [20, 20]].map(([l, w]) => {
+  const a = l * w;
+  return {
+    l,
+    w,
+    pavers: tilesFor(a, 10, 8, 4, 0).tiles,
+    base: bulkResult((a * 4) / 12, 10, BASE_TONS_PER_YD3, [0.5]).tons,
+    sand: bulkResult(a / 12, 5, SAND_TONS_PER_YD3, [0.5]).tons,
+  };
+});
+---
+
+<CalcPage
+  slug="paver-calculator"
+  def={def}
+  title="Paver Calculator: Pavers, Gravel Base & Sand for a Patio"
+  description="Free paver calculator. Enter your patio or walkway size and paver dimensions to get the number of pavers plus tons of gravel base and bedding sand."
+  h1="Paver Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Plan a paver patio or walkway: the number of pavers, plus the gravel base and bedding sand that go underneath, in one
+    calculation.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate pavers</h2>
+  <ol>
+    <li>Measure the area in square feet. Split curves and L-shapes into simpler shapes and add them to a project.</li>
+    <li>Divide 144 by the paver's face area in square inches to get pavers per square foot.</li>
+    <li>Multiply by the area and add 5–10% for cuts, more for curves and patterns.</li>
+  </ol>
+
+  <h2 id="example">Example: a 12 × 12 ft patio in 4 × 8 in pavers</h2>
+  <p>
+    144 square feet × 4.5 pavers per square foot = 648 pavers, or <strong>713</strong> with 10% extra. Underneath, a
+    4-inch compacted gravel base takes about 2.7 tons, and a 1-inch sand bed about 0.6 tons.
+  </p>
+
+  <h2 id="per-sqft">Pavers per square foot</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Paver size</th><th class="num">Pavers per sq ft</th></tr></thead>
+      <tbody>{perSq.map((r) => <tr><td>{r.label}</td><td class="num">{fmt(r.per, 2)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="table">Materials for common patio sizes</h2>
+  <p>4 × 8 in pavers with 10% extra, 4-inch gravel base, 1-inch sand bed.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Patio</th><th class="num">Pavers</th><th class="num">Gravel (tons)</th><th class="num">Sand (tons)</th></tr></thead>
+      <tbody>{patios.map((p) => <tr><td>{p.l} × {p.w} ft</td><td class="num">{int(p.pavers)}</td><td class="num">{fmt(p.base, 1)}</td><td class="num">{fmt(p.sand, 1)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="base">How deep should the base be?</h2>
+  <p>
+    Walkways and patios typically sit on 4–6 inches of compacted crushed stone, driveways on 8–12 inches, with a 1-inch
+    layer of coarse sand screeded on top. Clay soils, frost, and heavy loads call for more; follow the paver maker's
+    installation guide. For a layer-by-layer order, the <a href="/gravel-calculator/">gravel calculator</a> and
+    <a href="/sand-calculator/">sand calculator</a> go into more detail.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Do I need to account for joints between pavers?</h3>
+  <p>
+    Not usually. Most pavers have spacer nubs and are laid tight, so the count uses the paver's face size. Joint sand is
+    swept in afterward and sold by the bag.
+  </p>
+  <h3>Why add extra gravel?</h3>
+  <p>Crushed stone compacts when you tamp it, so the calculator adds 10% to the base to reach the finished depth.</p>
+  <h3>Can I build a border or seat wall around the patio?</h3>
+  <p>
+    Yes. A low wall of brick is sized by its face area; the <a href="/brick-calculator/">brick calculator</a> counts the
+    bricks and mortar bags for it.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Pavers = area × (1 + waste %) ÷ paver face area, rounded up.</li>
+    <li>Gravel base = area × base depth + 10%, at {BASE_TONS_PER_YD3} tons per cubic yard.</li>
+    <li>Bedding sand = area × sand depth + 5%, at {SAND_TONS_PER_YD3} tons per cubic yard.</li>
+  </ul>
+</CalcPage>

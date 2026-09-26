@@ -1,0 +1,118 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/stair';
+import { stairs, stairFlights, stringerCount, ftIn } from '../lib/framing';
+import { fmt } from '../lib/format';
+
+const land = stairFlights(108, 7.75, 10, true, 36);
+const widths = [36, 42, 48, 60].map((w) => ({ w, n16: stringerCount(w, 16), n12: stringerCount(w, 12) }));
+const heights = [24, 36, 48, 60, 84, 96, 108, 120].map((h) => ({ h, ...stairs(h, 7.75, 10) }));
+---
+
+<CalcPage
+  slug="stair-calculator"
+  def={def}
+  title="Stair Calculator: Stringers, Landings & Diagram"
+  description="Free stair and stringer calculator. Enter the total rise to get risers, treads, total run, stringer length and count, with an optional landing and a diagram drawn to scale."
+  h1="Stair Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Lay out a staircase from its total height: risers, exact riser height, treads, total run, and the stringers to cut,
+    with an optional landing. The results include a side-view diagram drawn to scale and a check against the residential
+    code.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate stairs</h2>
+  <ol>
+    <li>Measure the total rise from finished floor to finished floor.</li>
+    <li>Divide by the maximum riser height (7¾ in under the IRC) and round up: that is the number of risers.</li>
+    <li>Divide the total rise by the number of risers for the exact riser height.</li>
+    <li>Treads = risers − 1, because the top step is the upper floor. Total run = treads × tread depth.</li>
+    <li>Stringer length = √(rise² + run²).</li>
+  </ol>
+
+  <h2 id="example">Example: 9 feet floor to floor</h2>
+  <p>
+    108 ÷ 7.75 = 13.9, so 14 risers of 108 ÷ 14 = 7.71 in (about 7¾ in). That gives 13 treads; at 10 in each the stair
+    runs 130 in, or 10 ft 10 in. The stringer is √(108² + 130²) = 169 in, so a 16 ft board leaves room for the end cuts.
+  </p>
+
+  <h2 id="code">Stair code requirements (IRC)</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Rule</th><th>IRC residential</th></tr></thead>
+      <tbody>
+        <tr><td>Maximum riser height</td><td>7¾ in</td></tr>
+        <tr><td>Minimum tread depth</td><td>10 in (nosing not included)</td></tr>
+        <tr><td>Variation between risers or treads</td><td>No more than ⅜ in in one flight</td></tr>
+        <tr><td>Minimum headroom</td><td>6 ft 8 in</td></tr>
+        <tr><td>Minimum width</td><td>36 in</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Local codes can differ, and commercial stairs follow the stricter IBC (7 in maximum rise, 11 in minimum tread). Check
+    with your building department.
+  </p>
+
+  <h2 id="stringers">Stair stringer calculator: length and how many you need</h2>
+  <p>
+    Each stringer runs the full slope of a flight, so its length is √(rise² + run²). Buy boards at least 6 inches longer
+    for the cuts at the top and bottom; 2×12 lumber is standard because it leaves enough wood behind the notches. For the
+    count, place a stringer at each side and space the rest no more than your tread material allows, commonly 16 inches.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Stair width</th><th class="num">Stringers at 16 in max</th><th class="num">Stringers at 12 in max</th></tr></thead>
+      <tbody>{widths.map((r) => <tr><td>{r.w} in</td><td class="num">{r.n16}</td><td class="num">{r.n12}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="landing">Stairs with a landing</h2>
+  <p>
+    A landing splits the stair into two flights. The IRC requires one when a single flight would rise more than 151 inches
+    (12 ft 7 in), and the landing must be at least as deep as the stair is wide, with a 36-inch minimum. For a 9 ft rise
+    with a 36 in landing halfway, the calculator splits the {land.risers} risers into {land.flights[0].risers} and
+    {land.flights[1].risers}, puts the landing {ftIn(land.landingHeightIn)} up, and the total run grows to
+    {ftIn(land.totalRunIn)}. Each flight gets its own, shorter stringers.
+  </p>
+
+  <h2 id="table">Risers and run by total rise</h2>
+  <p>With a 7¾ in maximum riser and 10 in treads.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Total rise</th><th class="num">Risers</th><th class="num">Riser height</th><th class="num">Treads</th><th class="num">Total run</th></tr></thead>
+      <tbody>{heights.map((r) => <tr><td>{ftIn(r.h)}</td><td class="num">{r.risers}</td><td class="num">{ftIn(r.riserIn)}</td><td class="num">{r.treads}</td><td class="num">{ftIn(r.runIn)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="comfort">What makes stairs comfortable?</h2>
+  <p>
+    A long-used rule of thumb says 2 × riser + tread should land between 24 and 25 inches. A 7-inch riser with an
+    11-inch tread (25 in) feels easier than the code maximums of 7¾ and 10 (25.5 in). Lower the maximum riser in the
+    calculator to see how many more steps a gentler stair takes.
+  </p>
+
+  <p>
+    Pricing the stringer and tread stock? <a href="/board-foot-calculator/">Work out the board feet</a>. A poured pad at the bottom of the
+    stairs takes only a few bags; the <a href="/concrete-calculator/">concrete calculator</a> gives the count.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Why are there fewer treads than risers?</h3>
+  <p>The last riser steps you up onto the upper floor, which acts as the final tread.</p>
+  <h3>How long should stair stringers be?</h3>
+  <p>
+    At least the calculated length, plus a few inches for the cuts where the stringer meets the floor and the header. Buy
+    the next standard lumber length up. Building deck stairs? The <a href="/deck-calculator/">deck calculator</a> handles
+    the decking and joists.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Risers = total rise ÷ maximum riser, rounded up; riser height = total rise ÷ risers.</li>
+    <li>Treads = risers − 1; total run = treads × tread depth.</li>
+    <li>Stringer = √(rise² + run²); angle = arctan(rise ÷ run).</li>
+  </ul>
+</CalcPage>

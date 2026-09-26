@@ -1,0 +1,88 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/tile';
+import { tileFt2 } from '../lib/finish';
+import { fmt, ceilCount } from '../lib/format';
+
+const sizes: [string, number, number, number][] = [
+  ['4 × 4 in', 4, 4, 0.125],
+  ['3 × 6 in subway', 6, 3, 0.0625],
+  ['6 × 6 in', 6, 6, 0.125],
+  ['12 × 12 in', 12, 12, 0.125],
+  ['12 × 24 in', 24, 12, 0.125],
+  ['18 × 18 in', 18, 18, 0.1875],
+  ['24 × 24 in', 24, 24, 0.125],
+  ['6 × 36 in plank', 36, 6, 0.125],
+];
+const table = sizes.map(([label, l, w, j]) => ({ label, j, per: 1 / tileFt2(l, w, j), per100: ceilCount(110 / tileFt2(l, w, j)) }));
+---
+
+<CalcPage
+  slug="tile-calculator"
+  def={def}
+  title="Tile Calculator: How Many Tiles & Boxes You Need"
+  description="Free tile calculator for floors, walls, and backsplashes. Enter the area, tile size, and grout joint to get the number of tiles and boxes, with waste."
+  h1="Tile Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Count the tiles and boxes for a floor, shower wall, or backsplash from the area, tile size, and grout joint width.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate how many tiles you need</h2>
+  <ol>
+    <li>Find the area in square feet. Split L-shaped floors and walls around windows into rectangles.</li>
+    <li>Add the grout joint to each tile dimension and multiply to get the area one tile covers.</li>
+    <li>Divide the area, plus 10–15% waste, by the area per tile and round up.</li>
+  </ol>
+  <p class="formula">tiles = area × (1 + waste %) ÷ [(length + joint) × (width + joint) ÷ 144]</p>
+
+  <h2 id="example">Example: a 10 × 8 ft bathroom floor with 12-inch tile</h2>
+  <p>
+    80 square feet plus 10% is 88 square feet. A 12-inch tile with a ⅛-inch joint covers 12.125 × 12.125 ÷ 144 = 1.02
+    square feet, so you need 88 ÷ 1.02 = 86.2, or <strong>87 tiles</strong>.
+  </p>
+
+  <h2 id="table">Tiles per square foot by size</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tile</th><th class="num">Joint</th><th class="num">Tiles per sq ft</th><th class="num">Tiles for 100 sq ft + 10%</th></tr></thead>
+      <tbody>{table.map((r) => <tr><td>{r.label}</td><td class="num">{fmt(r.j, 4)} in</td><td class="num">{fmt(r.per, 2)}</td><td class="num">{r.per100}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="waste">How much extra tile should I buy?</h2>
+  <p>
+    Plan on 10% for a straight layout in a simple room, 15% for diagonal layouts, large-format tile, or rooms with many
+    corners, and more for intricate patterns. Tile can be discontinued, and a later batch may differ in shade, so an
+    extra box is cheap insurance.
+  </p>
+
+  <p>
+    Measuring an L-shaped bathroom or a floor with an alcove? <a href="/square-footage-calculator/">Total the area piece by piece</a>. Carpeting the
+    rooms next door? The <a href="/carpet-calculator/">carpet calculator</a> works in square yards.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Does the grout joint really change the count?</h3>
+  <p>
+    For small tiles, yes. A ¼-inch joint on 4-inch tile takes up about 11% of the surface, so ignoring it would overbuy
+    noticeably. For large tiles the difference is small.
+  </p>
+  <h3>How do I calculate tile for a shower?</h3>
+  <p>
+    Measure each wall as a rectangle, subtract the niche or window if it's large, and add the walls to a project. Add the
+    floor separately if it uses a different tile.
+  </p>
+  <p>
+    Using wood-look plank or laminate instead? The <a href="/flooring-calculator/">flooring calculator</a> works by the
+    box.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Area per tile = (length + joint) × (width + joint) ÷ 144.</li>
+    <li>Tiles = area × (1 + waste %) ÷ area per tile, rounded up. Boxes use the coverage you enter.</li>
+    <li>Grout, thinset, and trim pieces such as bullnose are not included.</li>
+  </ul>
+</CalcPage>

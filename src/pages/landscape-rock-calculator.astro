@@ -1,0 +1,96 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { ROCK_MATERIALS } from '../calculators/landscape-rock';
+import { bulkResult, coverageFt2PerYd3 } from '../lib/bulk';
+import { fmt, int } from '../lib/format';
+
+const ex = bulkResult(20 * 5 * 0.25, 5, 1.35, [0.5]);
+const depths = [2, 3, 4];
+---
+
+<CalcPage
+  slug="landscape-rock-calculator"
+  def={def}
+  title="Landscape Rock Calculator: Yards & Tons of Decorative Rock"
+  description="Free landscape rock calculator. Enter your bed size and depth to get cubic yards, tons, and bags of river rock, lava rock, pea gravel, marble chips, or decomposed granite."
+  h1="Landscape Rock Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Work out how much decorative rock to order for beds, borders, and dry creek beds: cubic yards, tons, and bags for
+    river rock, lava rock, pea gravel, and more.
+  </Fragment>
+
+  <h2 id="how-to">How much landscape rock do I need?</h2>
+  <p>
+    Multiply the area's length × width × depth in feet, divide by 27 for cubic yards, then multiply by the rock's weight
+    per yard for tons. For most decorative rock that is about 1.35 tons per yard; lava rock is far lighter, about half a
+    ton.
+  </p>
+  <p class="formula">tons = length (ft) × width (ft) × depth (in) ÷ 12 ÷ 27 × tons per cubic yard</p>
+
+  <h2 id="example">Example: a 20 × 5 ft river rock bed, 3 inches deep</h2>
+  <p>
+    20 × 5 × 0.25 = 25 cubic feet, or 0.93 cubic yards. With 5% extra that is {fmt(ex.cubicYards)} cubic yards, about
+    <strong>{fmt(ex.tons)} tons</strong> of river rock, or {ex.bags[0].count} half-cubic-foot bags. Most yards would sell
+    you 1 yard or 1.5 tons.
+  </p>
+
+  <h2 id="coverage">How much does a ton of landscape rock cover?</h2>
+  <p>Square feet covered by one ton, by rock type and depth:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Rock</th><th class="num">Tons per yd³</th>{depths.map((d) => <th class="num">{d} in deep</th>)}</tr></thead>
+      <tbody>{ROCK_MATERIALS.map((m) => <tr><td>{m.label}</td><td class="num">{m.tonsPerYd3}</td>{depths.map((d) => <td class="num">{int(coverageFt2PerYd3(d) / m.tonsPerYd3)} sq ft</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+  <p>
+    Weights are typical; stone density and moisture vary by quarry. If your supplier lists a weight per yard, choose
+    <em>Custom weight</em> in the calculator.
+  </p>
+
+  <h2 id="depth">How deep should landscape rock be?</h2>
+  <p>
+    A common rule is to lay rock about twice as deep as the stones are wide, so the ground doesn't show between them.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Rock size</th><th>Typical depth</th></tr></thead>
+      <tbody>
+        <tr><td>Pea gravel, ⅜ in</td><td>2 in</td></tr>
+        <tr><td>¾–1 in rock</td><td>2–3 in</td></tr>
+        <tr><td>1–3 in river rock</td><td>3–4 in</td></tr>
+        <tr><td>3–5 in cobble</td><td>4–6 in</td></tr>
+        <tr><td>Decomposed granite paths</td><td>2–3 in, compacted</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="bags-or-bulk">Bags or bulk?</h2>
+  <p>
+    Bagged rock is handy for a small bed or topping up, but a cubic yard takes 54 half-cubic-foot bags. Beyond about half
+    a yard, bulk delivery from a landscape supply yard is usually far cheaper. Lay landscape fabric first to keep weeds
+    down and stop the rock sinking into the soil.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Is landscape rock the same as gravel?</h3>
+  <p>
+    Gravel usually means crushed stone used as a base for driveways, paths, and pavers. Landscape rock is decorative
+    stone chosen for its looks. For driveway and base layers use the <a href="/gravel-calculator/">gravel calculator</a>.
+  </p>
+  <h3>Rock or mulch?</h3>
+  <p>
+    Rock lasts for years and won't blow or float away, but it holds heat and doesn't feed the soil. Around shrubs and
+    perennials that like cooler roots, the <a href="/mulch-calculator/">mulch calculator</a> may suit better.
+  </p>
+  <h3>Can I use this for any bulk material?</h3>
+  <p>Yes. For dirt, sand, or concrete, the <a href="/cubic-yard-calculator/">cubic yard calculator</a> has those materials built in.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Volume = area × depth, converted to cubic yards (27 cubic feet per yard).</li>
+    <li>Tons use the typical weight shown for each rock, in US tons of 2,000 lb.</li>
+    <li>Bulk orders round up to the next half yard or half ton; bags always round up.</li>
+  </ul>
+</CalcPage>

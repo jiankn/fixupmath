@@ -1,0 +1,74 @@
+---
+// 计算器页面模板：面包屑、H1、导语、计算器、正文、相关计算器、更新日期、WebApplication 结构化数据
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import AdSlot from './AdSlot.astro';
+import Calculator from './calc/Calculator.astro';
+import ArticleContents from './ArticleContents.astro';
+import Icon from './Icon.astro';
+import { CALCULATORS, categoryOf } from '../data/calculators';
+import type { CalculatorDef } from '../lib/calc-types';
+
+interface Props {
+  slug: string;
+  title: string; // <title>
+  description: string;
+  h1: string;
+  updated: string; // YYYY-MM-DD，内容真正改动时才更新
+  def?: CalculatorDef; // 通用计算器；不传则用 calc 插槽（如混凝土计算器）
+}
+const { slug, title, description, h1, updated, def } = Astro.props;
+const entry = CALCULATORS.find((c) => c.slug === slug)!;
+const cat = categoryOf(slug)!;
+const related = (entry.related ?? [])
+  .map((s) => CALCULATORS.find((c) => c.slug === s))
+  .filter((c): c is NonNullable<typeof c> => !!c && c.status === 'live');
+
+const app = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: entry.name,
+  url: new URL(`/${slug}/`, Astro.site).href,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Web',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@id': new URL('/#organization', Astro.site).href },
+};
+const updatedText = new Date(updated).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(app)} />
+  <div class="wrap">
+    <Breadcrumbs items={[{ name: 'Home', href: '/' }, { name: cat.name, href: `/${cat.slug}/` }, { name: entry.name }]} />
+    <div class="page-heading"><h1>{h1}</h1>
+    <p class="lead"><slot name="lead" /></p></div>
+    <p class="tool-meta"><Icon name="check" size={16} /> Free to use <span>·</span> No sign-up <span>·</span> Print your results</p>
+
+    {def ? <Calculator def={def} /> : <slot name="calc" />}
+
+    <AdSlot />
+
+    <div class="reading-layout">
+    <ArticleContents target={def ? '#calculator' : '#cc'} />
+    <article class="prose">
+      <slot />
+      {
+        related.length > 0 && (
+          <>
+            <h2 id="related">Related calculators</h2>
+            <ul>
+              {related.map((c) => (
+                <li>
+                  <a href={`/${c.slug}/`}>{c.name}</a>: {c.summary}
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+      <p class="muted small">Last updated <time datetime={updated}>{updatedText}</time>.</p>
+    </article>
+    </div>
+  </div>
+</Base>

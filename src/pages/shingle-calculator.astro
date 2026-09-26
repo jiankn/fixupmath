@@ -1,0 +1,87 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { PITCHES } from '../calculators/shingle';
+import { pitchFactor } from '../lib/finish';
+import { fmt, ceilCount } from '../lib/format';
+
+const pitches = PITCHES.map((p) => ({ p, f: pitchFactor(p), deg: (Math.atan(p / 12) * 180) / Math.PI }));
+const houses = [1000, 1500, 2000, 2500, 3000].map((a) => {
+  const sq = (a * pitchFactor(6) * 1.1) / 100;
+  return { a, sq, bundles: ceilCount(sq * 3) };
+});
+---
+
+<CalcPage
+  slug="shingle-calculator"
+  def={def}
+  title="Shingle Calculator: Roofing Squares & Bundles by Pitch"
+  description="Free roofing shingle calculator. Enter the roof footprint and pitch to get the sloped roof area, squares, and bundles of shingles, with waste for hips and valleys."
+  h1="Shingle Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Find how many squares and bundles of shingles your roof needs. Measure the footprint from below, pick the pitch, and
+    the calculator works out the sloped area.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate roofing shingles</h2>
+  <ol>
+    <li>Measure the roof's footprint: the length and width of the house plus the overhangs.</li>
+    <li>Multiply by the pitch factor to convert that flat area to the actual sloped roof area.</li>
+    <li>Add 10% for a simple gable roof, 15% for hips and valleys.</li>
+    <li>Divide by 100 for squares, and multiply by 3 bundles per square for most shingles.</li>
+  </ol>
+
+  <h2 id="example">Example: a 50 × 30 ft roof at 6/12 pitch</h2>
+  <p>
+    The footprint is 1,500 square feet. At 6/12 the pitch factor is 1.118, so the roof is 1,677 square feet. With 10%
+    waste that is 1,845 square feet, or 18.45 squares. At 3 bundles per square you need <strong>56 bundles</strong>.
+  </p>
+
+  <h2 id="pitch">Roof pitch factors</h2>
+  <p>Multiply the flat footprint by the factor to get the sloped area.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pitch</th><th class="num">Angle</th><th class="num">Factor</th></tr></thead>
+      <tbody>{pitches.map((r) => <tr><td>{r.p}/12</td><td class="num">{fmt(r.deg, 1)}°</td><td class="num">{fmt(r.f, 3)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="table">Shingles by roof footprint</h2>
+  <p>6/12 pitch, 10% waste, 3 bundles per square.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Footprint</th><th class="num">Squares</th><th class="num">Bundles</th></tr></thead>
+      <tbody>{houses.map((h) => <tr><td>{h.a.toLocaleString('en-US')} sq ft</td><td class="num">{fmt(h.sq, 1)}</td><td class="num">{h.bundles}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <p>
+    Framing the roof as well? <a href="/rafter-calculator/">Find the rafter length</a> from the same span and pitch.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many bundles of shingles are in a square?</h3>
+  <p>
+    Three for most architectural and 3-tab shingles, each bundle covering about 33.3 square feet. Some heavier or premium
+    shingles take four. The wrapper states the coverage.
+  </p>
+  <h3>How do I find my roof pitch?</h3>
+  <p>
+    Hold a level horizontally against the roof or a rafter, measure 12 inches along it, and measure straight up to the
+    roof surface. That rise in inches is the pitch: 6 inches means 6/12.
+  </p>
+  <h3>What else do I need besides shingles?</h3>
+  <p>
+    Underlayment, starter strip along the eaves, ridge cap for hips and ridges, drip edge, flashing, and roofing nails.
+    Starter and ridge cap are ordered by the linear foot.
+  </p>
+  <p>Residing the walls as well? The <a href="/siding-calculator/">siding calculator</a> also works in squares.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Pitch factor = √(1 + (rise ÷ 12)²).</li>
+    <li>Sloped area = footprint × pitch factor; squares = area × (1 + waste %) ÷ 100.</li>
+    <li>Bundles = squares × bundles per square, rounded up. The roof is assumed to have one pitch throughout.</li>
+  </ul>
+</CalcPage>

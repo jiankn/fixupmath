@@ -1,0 +1,450 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import ToolIllustration from '../components/ToolIllustration.astro';
+import HouseCutawayHero from '../components/HouseCutawayHero.astro';
+import ShapeDiagram from '../components/concrete/ShapeDiagram.astro';
+import { SITE } from '../site';
+import { CATEGORIES, byCategory, live } from '../data/calculators';
+import { concreteResult, shapeVolumeFt3, readyMixOrder, fmt } from '../lib/concrete';
+const tools = live();
+const featuredSlugs = ['concrete-calculator', 'gravel-calculator', 'flooring-calculator', 'deck-calculator'];
+const featured = featuredSlugs.map(slug => tools.find(c => c.slug === slug)).filter(c => !!c);
+const materials = [{ image: 'concrete', summary: 'Slabs, footings, walls' }, { image: 'gravel', summary: 'Driveways, paths, base' }, { image: 'flooring', summary: 'Tile, hardwood, laminate' }, { image: 'deck', summary: 'Posts, beams, boards' }];
+const icons: Record<string, string> = { 'concrete-masonry': 'slab', landscaping: 'leaf', 'decks-fences-framing': 'fence', 'flooring-walls': 'grid', 'roofing-siding': 'roof', 'electrical-hvac': 'bolt', pool: 'water' };
+const example = concreteResult(shapeVolumeFt3('slab', { length: { value: 10, unit: 'ft' }, width: { value: 10, unit: 'ft' }, thickness: { value: 4, unit: 'in' } }), 10);
+---
+<Base title={`Free Construction Calculators for Home Projects | ${SITE.name}`} description="Free construction calculators for home and yard projects: concrete, gravel, lumber, flooring, roofing, and other building materials, with bag counts, cubic yards, and costs.">
+  <section class="home-hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <!-- H1 放页面主关键词（construction calculators），口号只做视觉标题 -->
+        <h1 class="hero-label">Free construction calculators for home projects</h1>
+        <p class="hero-title">Less guesswork.<br /><span>More getting it done.</span></p>
+        <p class="hero-description">Find the right amount of concrete, gravel, flooring, and more—before you head to the store.</p>
+      <div class="directory-controls no-print" data-directory-controls hidden data-tools-json={JSON.stringify(tools.map(t => ({
+        slug: t.slug,
+        name: t.name,
+        category: t.category,
+        categoryName: CATEGORIES.find(c => c.slug === t.category)?.name ?? '',
+        summary: t.summary,
+        keywords: t.keywords ?? [],
+      })))}>
+        <div class="search-field">
+          <label class="search-label" for="tool-search">Find your calculator</label>
+          <div class="search-input-wrap">
+            <Icon name="search" size={18} class="search-icon" />
+            <input
+              id="tool-search"
+              type="search"
+              placeholder={`Search ${tools.length} calculators (concrete, deck, mulch…)`}
+              role="combobox"
+              aria-label="Find a construction calculator"
+              autocomplete="off"
+              spellcheck="false"
+              aria-autocomplete="list"
+              aria-controls="search-dropdown"
+              aria-expanded="false"
+            />
+            <span class="search-hint">Press <kbd>/</kbd> to focus</span>
+            <button type="button" class="search-clear-btn" id="search-clear" aria-label="Clear search" hidden>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="search-dropdown" id="search-dropdown" hidden role="listbox" aria-label="Search suggestions">
+            <div class="dropdown-header" id="dropdown-header"></div>
+            <ul class="dropdown-list" id="dropdown-list"></ul>
+            <div class="dropdown-footer">
+              <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+              <span><kbd>↵</kbd> select</span>
+              <span><kbd>esc</kbd> close</span>
+            </div>
+          </div>
+        </div>
+        <div class="search-meta" aria-label="Calculator directory benefits">
+          <p class="search-meta-count"><strong>{tools.length} calculators</strong><span>across {CATEGORIES.length} categories</span></p>
+          <ul class="search-benefits" role="list">
+            <li><Icon name="check" size={14} />Clear formulas</li>
+            <li><Icon name="check" size={14} />No sign-up</li>
+            <li><Icon name="check" size={14} />Print-ready</li>
+          </ul>
+        </div>
+      </div>
+
+        <noscript><a class="text-link" href="#all-calculators">Browse all calculators <Icon name="arrow" size={18} /></a></noscript>
+      </div>
+    </div>
+    <div class="hero-panorama"><HouseCutawayHero /></div>
+  </section>
+  <div class="wrap">
+    <section class="featured-section" aria-labelledby="start-heading">
+      <div class="section-heading"><div><h2 id="start-heading">Start with your material</h2><p>A practical starting point for your next project.</p></div><a class="text-link" href="#all-calculators">View all calculators <Icon name="arrow" size={18} /></a></div>
+      <div class="featured-tools">
+        {featured.map((c, i) => <a class="featured-tool" href={`/${c.slug}/`}><img class="material-image" src={`/images/home/${materials[i].image}.webp`} width="320" height="320" alt="" loading="lazy" decoding="async" /><div class="material-copy"><h3>{c.name.replace(' Calculator', '')}</h3><p>{materials[i].summary}</p><span class="tool-open"><span class="visually-hidden">Start calculating</span><Icon name="arrow" size={22} /></span></div></a>)}
+      </div>
+    </section>
+    <section id="all-calculators" class="directory" aria-labelledby="directory-heading">
+      <div class="section-heading">
+        <div>
+          <h2 id="directory-heading">Find the right calculator</h2>
+          <p>{tools.length} free tools. From the foundation to the finishing touches.</p>
+        </div>
+        <span class="directory-count">{CATEGORIES.length} project categories</span>
+      </div>
+
+      <nav class="category-index" aria-label="Jump to a calculator category">
+        {CATEGORIES.map(cat => <a href={`#directory-${cat.slug}`}>{cat.name}</a>)}
+      </nav>
+      <div class="directory-feedback no-print" hidden data-directory-feedback>
+        <p id="search-status" role="status" aria-live="polite"></p>
+        <button type="button" data-clear-filters>Clear search</button>
+      </div>
+
+      <div class="directory-search-results board-list" data-search-results hidden aria-label="Calculators ordered by relevance"></div>
+      <div class="directory-boards" id="directory-boards">
+        {CATEGORIES.map((cat, index) => {
+          const catTools = byCategory(cat.slug).filter(t => t.status === 'live');
+          return (
+            <section class="category-board" id={`directory-${cat.slug}`} aria-labelledby={`heading-${cat.slug}`} data-category-group data-category={cat.slug} data-original-count={catTools.length}>
+              <div class="board-header">
+                <span class="board-number">{String(index + 1).padStart(2, '0')} / <Icon name={icons[cat.slug]} size={20} /></span>
+                <h3 class="board-title" id={`heading-${cat.slug}`}><a href={`/${cat.slug}/`}>{cat.name}</a></h3>
+                <span class="board-tag">{catTools.length} calculators</span>
+              </div>
+              <div class="board-list">
+                {catTools.map(t => (
+                  <a
+                    class="board-item"
+                    href={`/${t.slug}/`}
+                    data-tool
+                    data-slug={t.slug}
+                    data-category={cat.slug}
+                    data-search={`${t.name} ${t.summary} ${cat.name} ${(t.keywords ?? []).join(' ')}`.toLowerCase()}
+                  >
+                    <ToolIllustration slug={t.slug} />
+                    <div class="board-item-info">
+                      <span class="board-item-name">{t.name.replace(' Calculator', '')}</span>
+                      <span class="board-item-sub">{t.summary}</span>
+                    </div>
+                    <span class="board-item-arrow" aria-hidden="true">
+                      <Icon name="arrow" size={14} />
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+
+      <div id="no-tools" class="empty-search" hidden>
+        <h3>No matching calculators</h3>
+        <p>Try searching for a material such as “gravel”, or clear your search term.</p>
+        <button type="button" class="button secondary" id="reset-search">Clear filters</button>
+      </div>
+    </section>
+    <section class="example" aria-labelledby="example-heading">
+      <div class="example-copy"><span class="example-label">A little math in action</span><h2 id="example-heading">A patio plan.<br />A clear shopping list.</h2><p>A 10 × 10 ft slab, 4 inches thick, with 10% extra for waste. Here’s what to plan for.</p><a class="text-link" href="/concrete-calculator/?shape=slab&length=10ft&width=10ft&thickness=4in&waste=10">Try this example <Icon name="arrow" size={18} /></a></div>
+      <div class="example-diagram"><ShapeDiagram shape="slab" /><span>10 ft × 10 ft × 4 in</span></div>
+      <div class="example-result"><span>Concrete needed</span><strong>{fmt(example.cubicYards)} <small>yd³</small></strong><p>Includes 10% extra</p><div class="example-options"><div><b>{example.bags.find(b => b.lb === 80)!.count}</b><span>80-lb bags</span></div><span class="or">or</span><div><b>{fmt(readyMixOrder(example.cubicYards))} yd³</b><span>ready-mix order</span></div></div></div>
+    </section>
+    <section class="principles" aria-label="How FixUpMath helps"><div><Icon name="ruler" size={28} /><h3>Measure in your units</h3><p>Use feet, inches, or metric measurements. We handle the conversions.</p></div><div><Icon name="bag" size={28} /><h3>Get quantities you can buy</h3><p>Bags, boards, boxes, and cubic yards—with waste and rounding explained.</p></div><div><Icon name="book" size={28} /><h3>See how it adds up</h3><p>Check the formulas, worked examples, and assumptions behind each answer.</p></div></section>
+  </div>
+</Base>
+<script>
+import { fuzzySearch, type SearchableItem, type FuzzySearchResult } from '../lib/fuzzySearch';
+
+const controls = document.querySelector<HTMLElement>('[data-directory-controls]');
+const search = document.querySelector<HTMLInputElement>('#tool-search');
+const status = document.querySelector<HTMLElement>('#search-status');
+const clearBtn = document.querySelector<HTMLButtonElement>('#search-clear');
+const dropdown = document.querySelector<HTMLElement>('#search-dropdown');
+const dropdownHeader = document.querySelector<HTMLElement>('#dropdown-header');
+const dropdownList = document.querySelector<HTMLElement>('#dropdown-list');
+
+if (controls && search && status && dropdown && dropdownList) {
+  controls.hidden = false;
+  const toolsData: SearchableItem[] = JSON.parse(controls.dataset.toolsJson || '[]');
+  const directory = document.querySelector<HTMLElement>('#directory-boards');
+  const categoryIndex = document.querySelector<HTMLElement>('.category-index');
+  const searchResults = document.querySelector<HTMLElement>('[data-search-results]');
+  const toolLinks = new Map(Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-tool]')).map(link => [link.dataset.slug, link]));
+  const feedback = document.querySelector<HTMLElement>('[data-directory-feedback]');
+  const noTools = document.querySelector<HTMLElement>('#no-tools');
+
+  let activeIndex = -1;
+  let currentResults: FuzzySearchResult<SearchableItem>[] = [];
+
+  const updateActiveOption = (index: number) => {
+    const items = dropdownList.querySelectorAll<HTMLElement>('.dropdown-item');
+    items.forEach((item, i) => {
+      const isSelected = i === index;
+      item.classList.toggle('is-active', isSelected);
+      item.setAttribute('aria-selected', String(isSelected));
+      if (isSelected) {
+        item.scrollIntoView({ block: 'nearest' });
+      }
+    });
+    activeIndex = index;
+    if (index >= 0 && items[index]) {
+      search.setAttribute('aria-activedescendant', `result-opt-${index}`);
+    } else {
+      search.removeAttribute('aria-activedescendant');
+    }
+  };
+
+  const closeDropdown = () => {
+    dropdown.hidden = true;
+    search.setAttribute('aria-expanded', 'false');
+    activeIndex = -1;
+    updateActiveOption(-1);
+  };
+
+  const renderDropdown = (query: string, results: FuzzySearchResult<SearchableItem>[]) => {
+    if (!query) {
+      closeDropdown();
+      return;
+    }
+    dropdown.hidden = false;
+    search.setAttribute('aria-expanded', 'true');
+    activeIndex = -1;
+
+    if (!results.length) {
+      dropdownHeader!.innerHTML = `<span>0 matches</span>`;
+      dropdownList.innerHTML = `
+        <div class="dropdown-empty">
+          <p class="dropdown-empty-title">No calculators matching "<strong>${query.replace(/</g, '&lt;')}</strong>"</p>
+          <p class="dropdown-empty-hint">Try popular project tools:</p>
+          <div class="dropdown-popular-tags">
+            <button type="button" class="popular-tag" data-tag="concrete">Concrete</button>
+            <button type="button" class="popular-tag" data-tag="gravel">Gravel</button>
+            <button type="button" class="popular-tag" data-tag="deck">Deck</button>
+            <button type="button" class="popular-tag" data-tag="flooring">Flooring</button>
+            <button type="button" class="popular-tag" data-tag="drywall">Drywall</button>
+          </div>
+        </div>
+      `;
+      dropdownList.querySelectorAll<HTMLButtonElement>('.popular-tag').forEach(btn => {
+        btn.addEventListener('click', () => {
+          search.value = btn.dataset.tag || '';
+          search.focus();
+          filter();
+        });
+      });
+      return;
+    }
+
+    const topResults = results.slice(0, 5);
+    dropdownHeader!.innerHTML = `<span>Top suggestions (${results.length} found)</span><span>Press Enter to select</span>`;
+
+    dropdownList.innerHTML = topResults.map((r, i) => `
+      <li class="dropdown-item" role="option" id="result-opt-${i}" aria-selected="false" data-index="${i}" data-slug="${r.item.slug}">
+        <a href="/${r.item.slug}/" class="dropdown-link" tabindex="-1">
+          <span class="dropdown-link-main">
+            <span class="dropdown-link-title">${r.highlightedName}</span>
+            <span class="dropdown-link-category">${r.item.categoryName || r.item.category}</span>
+            ${r.matchedKeyword ? `<span class="dropdown-link-tag">Matched: "${r.matchedKeyword}"</span>` : ''}
+          </span>
+          <span class="dropdown-link-desc">${r.highlightedSummary}</span>
+        </a>
+      </li>
+    `).join('');
+
+    dropdownList.querySelectorAll<HTMLElement>('.dropdown-item').forEach((item, i) => {
+      item.addEventListener('mouseenter', () => updateActiveOption(i));
+    });
+  };
+
+  const filter = () => {
+    const rawQuery = search.value.trim();
+    if (clearBtn) clearBtn.hidden = !rawQuery;
+
+    currentResults = rawQuery
+      ? fuzzySearch(rawQuery, toolsData)
+      : [];
+
+    const searching = Boolean(rawQuery);
+    if (directory) directory.hidden = searching;
+    if (categoryIndex) categoryIndex.hidden = searching;
+    if (searchResults) {
+      searchResults.replaceChildren();
+      searchResults.hidden = !searching || currentResults.length === 0;
+      for (const result of currentResults) {
+        const source = toolLinks.get(result.item.slug);
+        if (!source) continue;
+        const link = source.cloneNode(true) as HTMLAnchorElement;
+        link.removeAttribute('data-tool');
+        const category = document.createElement('span');
+        category.className = 'search-result-category';
+        category.textContent = result.item.categoryName || result.item.category;
+        link.querySelector('.board-item-info')?.prepend(category);
+        searchResults.append(link);
+      }
+    }
+    const totalVisible = searching ? currentResults.length : toolsData.length;
+
+    if (feedback) feedback.hidden = !rawQuery;
+    if (status) status.textContent = `${totalVisible} calculator${totalVisible === 1 ? '' : 's'} found`;
+    if (noTools) noTools.hidden = totalVisible !== 0;
+
+    renderDropdown(rawQuery, currentResults);
+  };
+
+  search.addEventListener('input', filter);
+
+  search.addEventListener('focus', () => {
+    if (search.value.trim()) {
+      renderDropdown(search.value.trim(), currentResults);
+    }
+  });
+
+  // Keyboard navigation in search input
+  search.addEventListener('keydown', (e) => {
+    if (dropdown.hidden) {
+      if (e.key === 'ArrowDown' && search.value.trim()) {
+        e.preventDefault();
+        renderDropdown(search.value.trim(), currentResults);
+      }
+      return;
+    }
+
+    const items = dropdownList.querySelectorAll<HTMLElement>('.dropdown-item');
+    if (!items.length) {
+      if (e.key === 'Escape') closeDropdown();
+      return;
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = activeIndex < items.length - 1 ? activeIndex + 1 : 0;
+      updateActiveOption(next);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = activeIndex > 0 ? activeIndex - 1 : items.length - 1;
+      updateActiveOption(prev);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const targetItem = activeIndex >= 0 ? items[activeIndex] : items[0];
+      if (targetItem) {
+        const slug = targetItem.dataset.slug;
+        if (slug) window.location.href = `/${slug}/`;
+      }
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      closeDropdown();
+    }
+  });
+
+  const resetFilters = () => {
+    search.value = '';
+    filter();
+    closeDropdown();
+    search.focus();
+  };
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', resetFilters);
+  }
+
+  document.querySelectorAll('#reset-search, [data-clear-filters]').forEach(button => {
+    button.addEventListener('click', resetFilters);
+  });
+
+  // Close dropdown on click outside
+  document.addEventListener('click', (e) => {
+    const target = e.target as Node;
+    if (!controls.contains(target)) {
+      closeDropdown();
+    }
+  });
+
+  // Global hotkey '/' to focus search
+  window.addEventListener('keydown', (e) => {
+    if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) {
+      e.preventDefault();
+      controls.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' });
+      search.focus();
+      search.select();
+    }
+  });
+}
+</script>
+<style>
+.search-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 14px 34px rgba(0,0,0,0.12);z-index:40;overflow:hidden;display:flex;flex-direction:column}
+:global([data-theme="dark"]) .search-dropdown{box-shadow:0 16px 40px rgba(0,0,0,0.5)}
+.search-dropdown :global(.dropdown-header){padding:8px 14px;background:var(--surface-2);font-size:.75rem;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.search-dropdown :global(.dropdown-list){list-style:none;margin:0;padding:6px;overflow-y:auto;max-height:360px;display:flex;flex-direction:column;gap:4px}
+.search-dropdown :global(.dropdown-item){border-radius:var(--radius-sm);transition:background .12s;list-style:none}
+.search-dropdown :global(.dropdown-link){display:flex;flex-direction:column;gap:5px;padding:10px 14px;text-decoration:none!important;color:var(--text);border-radius:var(--radius-sm);transition:background .12s}
+.search-dropdown :global(.dropdown-item.is-active .dropdown-link),
+.search-dropdown :global(.dropdown-link:hover){background:var(--accent-soft);text-decoration:none!important}
+.search-dropdown :global(.dropdown-link-main){display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.search-dropdown :global(.dropdown-link-title){font-weight:650;font-size:.9375rem;color:var(--text);text-decoration:none}
+.search-dropdown :global(.dropdown-item.is-active .dropdown-link-title),
+.search-dropdown :global(.dropdown-link:hover .dropdown-link-title){color:var(--accent-strong);text-decoration:underline;text-underline-offset:3px}
+.search-dropdown :global(.dropdown-link-category){font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;background:var(--surface-2);color:var(--muted);padding:2px 7px;border-radius:3px}
+.search-dropdown :global(.dropdown-link-tag){font-size:.75rem;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);padding:1px 7px;border-radius:3px;font-weight:550}
+.search-dropdown :global(.dropdown-link-desc){font-size:.8125rem;color:var(--muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-decoration:none}
+.search-dropdown :global(mark){background:rgba(196,66,19,0.18);color:var(--accent-strong);font-weight:700;padding:0 2px;border-radius:2px}
+:global([data-theme="dark"]) .search-dropdown :global(mark){background:rgba(255,150,103,0.3);color:#ffad87}
+.search-dropdown :global(.dropdown-footer){display:flex;gap:14px;padding:8px 14px;background:var(--surface-2);border-top:1px solid var(--border);font-size:.6875rem;color:var(--muted);align-items:center;justify-content:flex-end}
+.search-dropdown :global(.dropdown-footer kbd){background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:.65rem;color:var(--text)}
+.search-dropdown :global(.dropdown-empty){padding:24px 16px;text-align:center}
+.search-dropdown :global(.dropdown-empty-title){margin:0 0 8px;font-size:.9375rem;font-weight:600;color:var(--text)}
+.search-dropdown :global(.dropdown-empty-hint){margin:0 0 12px;font-size:.8125rem;color:var(--muted)}
+.search-dropdown :global(.dropdown-popular-tags){display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.search-dropdown :global(.popular-tag){background:var(--surface-2);border:1px solid var(--border);border-radius:16px;padding:5px 12px;font-size:.75rem;font-weight:550;color:var(--text);cursor:pointer;transition:background .12s,border-color .12s}
+.search-dropdown :global(.popular-tag:hover){background:var(--accent-soft);border-color:var(--accent);color:var(--accent-strong)}
+
+
+.home-hero{position:relative;overflow:hidden;background:var(--bg);border-bottom:1px solid var(--border)}
+.hero-inner{position:relative;z-index:5;padding-top:48px;padding-bottom:0}
+.hero-copy{max-width:900px;margin:0 auto;text-align:center}
+.hero-label,.example-label{font:600 .75rem/1.5 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 22px}
+.hero-copy h1.hero-label{text-wrap:balance}
+.hero-title{font-size:clamp(2.75rem,5.3vw,4.6rem);font-weight:700;line-height:1.03;letter-spacing:-.06em;margin:0 0 20px;text-wrap:initial}
+.hero-title span{color:var(--accent)}
+.hero-description{font-size:1.0625rem;color:var(--muted);line-height:1.7;max-width:62ch;margin:0 auto 24px}
+.hero-panorama{position:relative;z-index:1;margin-top:20px}
+.directory-controls{position:relative;z-index:8;max-width:780px;margin:0 auto;perspective:900px}.search-field{position:relative;text-align:left}.search-label{display:block;margin:0 0 16px 18px;font-size:.75rem;font-weight:650;line-height:1.2;letter-spacing:.02em;transform:translateY(-4px)}
+.search-input-wrap{position:relative;isolation:isolate;display:flex;align-items:center;gap:12px;padding:0 18px;border:1px solid color-mix(in srgb,var(--border) 70%,var(--accent));border-bottom-width:2px;border-radius:12px;background:color-mix(in srgb,var(--surface) 94%,transparent);min-height:68px;transform:perspective(900px) rotateX(4deg) translateY(-3px);transform-origin:center bottom;box-shadow:0 8px 0 -3px var(--accent-soft),0 25px 48px #263b2b2e,0 4px 10px #263b2b1f;backdrop-filter:blur(12px);transition:transform .22s ease,border-color .18s,box-shadow .22s ease}
+.search-input-wrap::after{content:"";position:absolute;z-index:-1;left:6%;right:6%;bottom:-23px;height:24px;border-radius:50%;background:#233d2d33;filter:blur(12px);pointer-events:none}
+.search-input-wrap:hover{transform:perspective(900px) rotateX(2deg) translateY(-6px);box-shadow:0 9px 0 -3px var(--accent-soft),0 31px 58px #263b2b38,0 5px 12px #263b2b24}
+.search-input-wrap:focus-within{outline:3px solid var(--focus);outline-offset:4px;border-color:var(--focus);transform:perspective(900px) rotateX(0) translateY(-8px) scale(1.01);box-shadow:0 9px 0 -3px var(--accent-soft),0 34px 64px #263b2b3d}
+.search-icon{box-sizing:content-box;width:20px;height:20px;padding:10px;border-radius:50%;background:var(--accent-soft);color:var(--accent);flex-shrink:0}.search-field input{width:100%;min-width:0;height:66px;border:0;background:transparent;color:var(--text);font-size:1.0625rem}.search-field input:focus{outline:0}.search-field input::placeholder{color:var(--muted)}
+.search-field input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.search-hint{display:flex;align-items:center;gap:4px;font-size:.6875rem;color:var(--muted);white-space:nowrap}.search-hint kbd{border:1px solid var(--border);padding:0 5px;border-radius:3px;font-family:var(--mono)}
+.search-clear-btn{display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex-shrink:0;background:transparent;border:0;color:var(--muted);border-radius:5px}.search-clear-btn:hover{background:var(--surface-2);color:var(--text)}
+.search-meta{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:18px;margin:14px 18px 0;padding:4px 0;color:var(--muted);font-size:.75rem;line-height:1.5}.search-meta-count{display:flex;align-items:baseline;gap:4px;margin:0;white-space:nowrap}.search-meta-count strong{color:var(--text);font-weight:700}.search-benefits{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px 16px;margin:0;padding:0;list-style:none}.search-benefits li{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.search-benefits svg{color:var(--accent);stroke-width:2}
+.featured-section{padding:32px 0 48px}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:24px}.section-heading h2{margin:0 0 8px;font-size:1.65rem}.section-heading p{color:var(--muted);margin:0;font-size:.9375rem}.section-heading>.text-link{font-size:.8125rem;white-space:nowrap}
+.featured-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.featured-tool{display:flex;flex-direction:column;align-items:start;min-width:0;text-decoration:none;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:border-color .18s,background .18s}.featured-tool:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--text)}
+.tool-category{display:flex;justify-content:space-between;align-items:start;gap:12px;width:100%;color:var(--accent);font:500 .625rem/1.7 var(--mono);text-transform:uppercase;letter-spacing:.06em}.tool-category svg{flex-shrink:0}.featured-tool h3{font-size:1.4rem;margin:28px 0 10px}.featured-tool p{font-size:.875rem;color:var(--muted);margin:0 0 28px}.tool-open{display:flex;align-items:center;gap:8px;margin-top:auto;font-size:.8125rem;font-weight:600;color:var(--accent-strong)}
+.directory{padding:40px 0 48px;border-top:1px solid var(--border);scroll-margin-top:24px}.directory-count{font-size:.8125rem;color:var(--muted)}
+.category-index{display:flex;flex-wrap:wrap;gap:8px 12px;margin:4px 0 28px}.category-index a{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border:1px solid var(--border);border-radius:5px;color:var(--muted);text-decoration:none;font-size:.8125rem;transition:background .18s,border-color .18s}.category-index a:hover{background:var(--accent-soft);color:var(--accent-strong);border-color:var(--accent)}
+.directory-boards{display:flex;flex-direction:column}.category-board{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;padding:28px 0 32px;border-top:1px solid var(--border);scroll-margin-top:28px;min-width:0}.board-header{min-width:0;padding-top:8px}.board-number{display:flex;align-items:center;gap:10px;color:var(--accent);font:.75rem var(--mono);margin-bottom:16px}.board-title{font-size:1.2rem;line-height:1.4;margin:0 0 10px;letter-spacing:-.02em}.board-title a{color:var(--text);text-decoration:none}.board-title a:hover{color:var(--accent);text-decoration:underline}.board-tag{color:var(--muted);font-size:.8125rem}.board-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;align-content:start}.board-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 10px;border-bottom:1px solid var(--border);text-decoration:none;min-height:88px;border-radius:3px;transition:background .18s}.board-item:hover{background:var(--accent-soft)}.board-item-info{min-width:0;flex:1}.board-item-name{display:block;color:var(--text);font-size:1rem;font-weight:600}.board-item-sub{display:block;color:var(--muted);font-size:.875rem;margin-top:5px;line-height:1.55}.board-item-arrow{display:flex;flex-shrink:0;color:var(--accent)}.directory-search-results{border-top:1px solid var(--border)}.directory-search-results :global(.search-result-category){display:block;color:var(--accent-strong);font-size:.75rem;margin-bottom:5px}
+.directory-feedback{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:.875rem;margin-bottom:20px}.directory-feedback p{color:var(--muted);margin:0}.directory-feedback button{min-height:44px;padding:8px;background:transparent;border:0;color:var(--accent-strong);text-decoration:underline}.empty-search{text-align:center;padding:40px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+.example{display:grid;grid-template-columns:1.1fr 1fr .9fr;gap:24px;align-items:center;border:1px solid var(--border);border-radius:var(--radius);padding:32px;background:var(--surface)}.example-copy h2{margin:12px 0;font-size:1.8rem}.example-copy p{font-size:.875rem;color:var(--muted);max-width:35ch}.example-copy a{font-size:.875rem}.example-diagram{text-align:center}.example-diagram span{font-size:.8125rem;color:var(--muted)}.example-result{background:var(--result-bg);color:var(--result-text);padding:24px;border-radius:6px}.example-result>span{font-size:.8125rem;color:var(--result-muted)}.example-result>strong{display:block;font-size:3rem;letter-spacing:-.04em;line-height:1.3;font-variant-numeric:tabular-nums}.example-result small{font-size:1rem;font-weight:500}.example-result p{font-size:.75rem;margin:4px 0 20px;color:var(--result-muted)}.example-options{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--result-border);padding-top:18px}.example-options div{display:flex;flex-direction:column}.example-options b{font-size:1.15rem}.example-options span{font-size:.75rem;color:var(--result-muted)}.example-options .or{font-style:italic}
+.principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:42px;padding-top:36px;margin-top:48px;border-top:1px solid var(--border)}.principles svg{color:var(--accent)}.principles h3{font-size:1rem;margin:14px 0 8px}.principles p{font-size:.875rem;color:var(--muted);margin:0}
+@media(max-width:1050px){.category-board{grid-template-columns:190px minmax(0,1fr);gap:24px}.board-list{gap:0 18px}.featured-tool{padding:20px}.example{grid-template-columns:1fr 1fr}.example-diagram{display:none}}
+@media(max-width:700px){.hero-inner{padding-top:32px;padding-bottom:0}.hero-title{font-size:clamp(2.35rem,11vw,3.4rem)}.hero-label{font-size:.8125rem;margin-bottom:16px}.hero-description{font-size:1rem}.hero-panorama{margin-top:18px}.directory-controls{perspective:700px}.search-label{margin-left:10px;margin-bottom:14px;transform:translateY(-3px)}.search-input-wrap{min-height:60px;padding:0 10px;transform:perspective(700px) rotateX(3deg) translateY(-2px);border-radius:10px;box-shadow:0 7px 0 -3px var(--accent-soft),0 20px 35px #263b2b2b}.search-input-wrap:focus-within{transform:perspective(700px) rotateX(0) translateY(-5px)}.search-field input{height:58px;font-size:1rem}.search-icon{width:18px;height:18px;padding:8px}.search-hint{display:none}.search-meta{align-items:flex-start;flex-direction:column;gap:7px;margin:12px 10px 0;padding:4px 0}.search-benefits{justify-content:flex-start;gap:6px 12px;width:100%}.section-heading{align-items:start;flex-direction:column;gap:12px}.featured-tools{grid-template-columns:1fr 1fr;gap:12px}.featured-tool{padding:18px}.featured-tool h3{font-size:1.2rem}.tool-category svg{display:none}.tool-category{min-height:34px}.featured-tool p{font-size:.8125rem}.tool-open{font-size:.75rem}.featured-section{padding-bottom:32px}.directory{padding:28px 0 32px}.category-board{grid-template-columns:1fr;gap:12px;padding:24px 0}.board-header{padding:0}.board-number{margin-bottom:10px}.board-title{margin-bottom:5px}.board-list{grid-template-columns:1fr}.board-item{padding:14px 8px;min-height:76px}.category-index{gap:8px;margin-bottom:24px}.category-index a{padding:8px 10px;font-size:.75rem}.directory-count{display:none}.example{grid-template-columns:1fr;padding:24px;gap:24px}.example-copy h2 br{display:none}.example-copy p{max-width:none}.principles{grid-template-columns:1fr;gap:28px}.principles h3{margin-top:10px}}
+@media(max-width:380px){.featured-tool{padding:14px}.tool-open{font-size:.6875rem}.search-benefits{gap:6px 9px}.search-meta{font-size:.6875rem}}
+
+/* Photographic scene and material samples share a compact editorial layout. */
+.hero-inner{padding-top:28px}
+.hero-label{margin-bottom:12px}
+.hero-title{font-size:clamp(2.75rem,4.7vw,4rem);margin-bottom:14px}
+.hero-description{margin-bottom:18px}
+.hero-panorama{margin-top:20px}
+.featured-section{padding:20px 0 36px}
+.featured-section .section-heading{margin-bottom:12px}
+.featured-section .section-heading h2{font-size:1rem;margin:0}
+.featured-section .section-heading p{display:none}
+.featured-tools{gap:12px}
+.featured-tool{display:grid;grid-template-columns:42% minmax(0,1fr);align-items:center;gap:10px;padding:12px;min-height:134px;background:transparent}
+.material-image{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain}
+.featured-tool h3{font-size:1.15rem;margin:0 0 5px}
+.featured-tool p{font-size:.8125rem;line-height:1.4;margin:0 0 8px}
+.tool-open{margin:0}
+@media(max-width:1050px){.featured-tools{grid-template-columns:repeat(2,minmax(0,1fr))}.featured-tool{grid-template-columns:110px minmax(0,1fr)}}
+@media(max-width:700px){.hero-inner{padding-top:24px}.hero-panorama{margin-top:20px}.featured-tool{grid-template-columns:minmax(0,1fr);gap:2px;padding:12px;align-content:start}.material-image{height:110px}.featured-tool h3{font-size:1rem}.featured-section .section-heading{flex-direction:row;align-items:center}.featured-section .section-heading>.text-link{font-size:.75rem}.search-meta{font-size:.75rem}}
+</style>

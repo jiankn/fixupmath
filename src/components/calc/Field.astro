@@ -1,0 +1,106 @@
+---
+// 通用输入项：长度（带单位，可选「英尺 + 英寸」）、面积、数字、下拉、价格
+import type { FieldDef } from '../../lib/calc-types';
+import { LENGTH_UNITS, AREA_UNITS } from '../../lib/units';
+
+interface Props {
+  field: FieldDef;
+  idPrefix: string;
+  hidden?: boolean;
+}
+const { field: f, idPrefix, hidden = false } = Astro.props;
+const id = `${idPrefix}-${f.key}`;
+const lengthUnits = [
+  ...LENGTH_UNITS.slice(0, 2),
+  { value: 'ftin', label: 'ft + in' },
+  ...LENGTH_UNITS.slice(2),
+];
+---
+
+<div
+  class="field"
+  data-field={f.key}
+  data-show-key={f.showWhen?.key}
+  data-show-eq={f.showWhen?.equals}
+  hidden={hidden}
+>
+  <label for={id}>{f.label}</label>
+  {
+    f.kind === 'length' && (
+      <div class="iu">
+        <input id={id} name={f.key} type="number" inputmode="decimal" min="0" step="any" value={f.default.value} />
+        <input
+          class="inch"
+          name={`${f.key}In`}
+          type="number"
+          inputmode="decimal"
+          min="0"
+          step="any"
+          placeholder="in"
+          aria-label={`${f.label}, inches`}
+          hidden
+        />
+        <select name={`${f.key}Unit`} aria-label={`${f.label} unit`}>
+          {lengthUnits.map((u) => (
+            <option value={u.value} selected={u.value === f.default.unit}>
+              {u.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    )
+  }
+  {
+    f.kind === 'area' && (
+      <div class="iu">
+        <input id={id} name={f.key} type="number" inputmode="decimal" min="0" step="any" value={f.default.value} />
+        <select name={`${f.key}Unit`} aria-label={`${f.label} unit`}>
+          {AREA_UNITS.map((u) => (
+            <option value={u.value} selected={u.value === f.default.unit}>
+              {u.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    )
+  }
+  {
+    f.kind === 'number' && (
+      <div class={f.suffix ? 'iu suffixed' : undefined}>
+        <input
+          id={id}
+          name={f.key}
+          type="number"
+          inputmode="decimal"
+          min={f.min ?? 0}
+          step={f.step ?? 'any'}
+          value={f.default}
+        />
+        {f.suffix && <span class="suffix">{f.suffix}</span>}
+      </div>
+    )
+  }
+  {
+    f.kind === 'select' && (
+      <div class="select-wrap">
+      <select id={id} name={f.key}>
+        {f.options.map((o) => (
+          <option value={o.value} selected={o.value === f.default}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      <span class="select-value" aria-hidden="true">{f.options.find(o => o.value === f.default)?.label}</span>
+      </div>
+    )
+  }
+  {
+    f.kind === 'money' && (
+      <div class="money">
+        <span>$</span>
+        <input id={id} name={f.key} type="number" inputmode="decimal" min="0" step="any" placeholder={f.placeholder} />
+      </div>
+    )
+  }
+  {f.hint && <small class="muted">{f.hint}</small>}
+</div>

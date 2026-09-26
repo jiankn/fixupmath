@@ -1,0 +1,122 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/deck';
+import { deckMaterials } from '../lib/deck';
+import { int } from '../lib/format';
+
+// 常见露台尺寸：板长取不小于露台长度的标准长度
+const STOCK = [8, 10, 12, 16, 20];
+const sizes: [number, number][] = [
+  [10, 10],
+  [12, 12],
+  [16, 12],
+  [16, 16],
+  [20, 12],
+  [20, 16],
+  [20, 20],
+];
+const rows = sizes.map(([l, w]) => {
+  const board = STOCK.find((s) => s >= l) ?? 20;
+  const r = deckMaterials({ lengthFt: l, widthFt: w, boardWidthIn: 5.5, gapIn: 0.125, boardLengthFt: board, joistSpacingIn: 16, wastePct: 10 });
+  return { l, w, board, ...r };
+});
+---
+
+<CalcPage
+  slug="deck-calculator"
+  def={def}
+  title="Deck Calculator: Boards, Joists & Screws for Your Deck"
+  description="Free deck calculator. Enter your deck size, board width, gap, and joist spacing to get the number of deck boards, joists, rim joists, and deck screws."
+  h1="Deck Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Count the deck boards, joists, rim joists, and screws for a rectangular deck, based on your board size, gap, and joist
+    spacing.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate deck boards</h2>
+  <ol>
+    <li>Find the number of rows: deck width in inches ÷ (board width + gap). Round up; the last board may be ripped narrower.</li>
+    <li>Find boards per row: deck length ÷ board length, rounded up. Longer decks need a butt joint in each row.</li>
+    <li>Multiply rows × boards per row and add about 10% for cuts and rejects.</li>
+    <li>Joists: deck length in inches ÷ joist spacing, plus one.</li>
+  </ol>
+
+  <h2 id="example">Example: a 16 × 12 ft deck</h2>
+  <p>
+    With 5.5-inch boards and a ⅛-inch gap, each row takes 5.625 inches: 144 ÷ 5.625 = 25.6, so 26 rows. One 16 ft board
+    covers each row, and 10% extra brings it to <strong>29 boards</strong>. At 16 inches on center the frame needs 13
+    joists, each 12 ft long, plus two 16 ft rim joists. Two screws per board at every joist is 676 screws.
+  </p>
+
+  <h2 id="table">Deck boards for common deck sizes</h2>
+  <p>5.5 in boards, ⅛ in gap, joists 16 in on center, 10% extra. Board length is the shortest stock length that spans the deck.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Deck size</th><th class="num">Sq ft</th><th class="num">Boards</th><th class="num">Board length</th><th class="num">Joists</th><th class="num">Screws</th></tr></thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr><td>{r.l} × {r.w} ft</td><td class="num">{r.areaFt2}</td><td class="num">{r.boards}</td><td class="num">{r.board} ft</td><td class="num">{r.joists}</td><td class="num">{int(r.screws)}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="board-sizes">Nominal vs. actual deck board sizes</h2>
+  <p>Lumber is sold by nominal size, but the calculator needs the actual width.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Board</th><th>Actual size</th></tr></thead>
+      <tbody>
+        <tr><td>5/4 × 6 decking</td><td>1 × 5.5 in</td></tr>
+        <tr><td>2 × 6</td><td>1.5 × 5.5 in</td></tr>
+        <tr><td>2 × 4</td><td>1.5 × 3.5 in</td></tr>
+        <tr><td>Composite decking</td><td>Usually about 5.5 in wide; check the product sheet</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="joist-spacing">What joist spacing do you need?</h2>
+  <p>
+    Sixteen inches on center is standard under wood boards laid square to the joists. Many composite and PVC boards call
+    for 12 inches, and diagonal decking needs closer spacing too, because the boards span farther between supports. The
+    decking manufacturer's installation guide and your local code set the limit, so check both before you build.
+  </p>
+
+  <h2 id="not-included">What this calculator doesn't include</h2>
+  <p>
+    Posts, beams, ledger board, footings, railings, and stairs depend on your deck's height and local code. For footing
+    holes, the <a href="/concrete-calculator/">concrete calculator</a> has a post-hole mode with bag counts. If you are
+    fencing the yard around the deck, the <a href="/fence-calculator/">fence calculator</a> handles posts and pickets.
+  </p>
+
+  <p>
+    Pricing framing lumber at a yard that sells by volume? <a href="/board-foot-calculator/">Convert it to board feet</a>. For steps down to the
+    yard, <a href="/stair-calculator/">lay out the deck stairs and stringers</a> from the deck height.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many deck screws do I need?</h3>
+  <p>
+    Two per board at every joist. For a deck with 16-inch joist spacing that works out to roughly 350 screws per 100
+    square feet, which is why deck screws are sold in large boxes.
+  </p>
+  <h3>How big a gap should I leave between deck boards?</h3>
+  <p>
+    Kiln-dried and composite boards typically get ⅛ to ¼ inch, per the manufacturer. Wet pressure-treated lumber is often
+    butted tight, because it shrinks and opens a gap as it dries.
+  </p>
+  <h3>Which way should deck boards run?</h3>
+  <p>
+    Perpendicular to the joists, which usually means parallel to the house. Enter the length along the boards as
+    <em>Deck length</em>.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Rows = width ÷ (board width + gap), rounded up. Boards = rows × boards per row, plus the extra you choose.</li>
+    <li>Joists = length ÷ spacing + 1, each as long as the deck is wide. Rim joists are two boards the length of the deck.</li>
+    <li>Screws = rows × joists × 2. Results assume a simple rectangle without picture framing.</li>
+  </ul>
+</CalcPage>

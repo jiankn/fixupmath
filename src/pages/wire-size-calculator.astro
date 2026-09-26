@@ -1,0 +1,116 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/wire-size';
+import { GAUGES, gaugeLabel, usableAmps, sizeWire, type Gauge } from '../lib/electrical';
+
+const table = GAUGES.slice(0, 13).map((g) => ({
+  g,
+  cu60: usableAmps('cu', '60', g as Gauge),
+  cu75: usableAmps('cu', '75', g as Gauge),
+  al60: usableAmps('al', '60', g as Gauge),
+  al75: usableAmps('al', '75', g as Gauge),
+}));
+// 240 V、单相、3% 电压降、60°C：不同负载和距离下需要的铜线线径
+const loads = [15, 20, 30, 40, 50];
+const dists = [25, 50, 100, 150, 200];
+// 12 V 直流（房车、太阳能）：3% 电压降下的铜线线径
+const dcLoads = [5, 10, 20, 30];
+const dcDists = [5, 10, 15, 20, 30];
+const pickDc = (a: number, d: number) => sizeWire({ metal: 'cu', amps: a, oneWayFt: d, volts: 12, phase: 'dc', maxDropPct: 3, column: '60', continuous: false }).pick;
+const pick = (a: number, d: number) => sizeWire({ metal: 'cu', amps: a, oneWayFt: d, volts: 240, phase: '1', maxDropPct: 3, column: '60', continuous: false }).pick;
+---
+
+<CalcPage
+  slug="wire-size-calculator"
+  def={def}
+  title="Wire Size Calculator: AWG by Amps, Distance & Voltage Drop"
+  description="Free wire size calculator. Enter amps, distance, and voltage to find the minimum copper or aluminum AWG wire that meets NEC ampacity and a 3% voltage drop."
+  h1="Wire Size Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Find the smallest copper or aluminum wire that carries your load safely and keeps voltage drop in check over the run,
+    using NEC ampacity tables.
+  </Fragment>
+
+  <h2 id="how">How wire size is chosen</h2>
+  <p>A wire has to pass two separate tests, and the larger of the two answers wins:</p>
+  <ol>
+    <li><strong>Ampacity:</strong> the wire must carry the current without overheating. This comes from NEC Table 310.16,
+      limited for small wires by NEC 240.4(D): 14 AWG copper to 15 A, 12 AWG to 20 A, 10 AWG to 30 A.</li>
+    <li><strong>Voltage drop:</strong> over a long run, wire resistance wastes voltage. The NEC recommends no more than 3%
+      on a branch circuit.</li>
+  </ol>
+  <p>
+    For short runs, ampacity decides. For long runs, voltage drop usually does: a 20 A, 120 V circuit that needs only 12 AWG
+    at the panel needs 8 AWG to stay under 3% at 100 feet.
+  </p>
+
+  <h2 id="ampacity">Wire ampacity chart</h2>
+  <p>NEC Table 310.16, 30°C ambient, up to three current-carrying conductors, with the 240.4(D) small-conductor limits applied.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Size</th><th class="num">Copper 60°C</th><th class="num">Copper 75°C</th><th class="num">Aluminum 60°C</th><th class="num">Aluminum 75°C</th></tr></thead>
+      <tbody>
+        {table.map((r) => <tr><td>{gaugeLabel(r.g)}</td><td class="num">{r.cu60 ?? '—'} A</td><td class="num">{r.cu75 ?? '—'} A</td><td class="num">{r.al60 !== undefined ? `${r.al60} A` : '—'}</td><td class="num">{r.al75 !== undefined ? `${r.al75} A` : '—'}</td></tr>)}
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="distance">Copper wire size by amps and distance at 240 V</h2>
+  <p>Single phase, 3% maximum voltage drop, 60°C terminals. Distance is one way.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Load</th>{dists.map((d) => <th class="num">{d} ft</th>)}</tr></thead>
+      <tbody>{loads.map((a) => <tr><td>{a} A</td>{dists.map((d) => { const g = pick(a, d); return <td class="num">{g ? gaugeLabel(g) : '—'}</td>; })}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="dc">Wire size for 12 V DC: solar, RV, and boat circuits</h2>
+  <p>
+    At 12 volts, 3% is only 0.36 V, so voltage drop decides the wire size almost every time. Choose <em>DC</em> in the
+    calculator and pick 12, 24, or 48 V. Doubling the system voltage halves the current for the same power, which is why
+    larger solar systems run at 24 or 48 V.
+  </p>
+  <p>Copper, 12 V DC, 3% maximum voltage drop. Distance is one way.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Load</th>{dcDists.map((d) => <th class="num">{d} ft</th>)}</tr></thead>
+      <tbody>{dcLoads.map((a) => <tr><td>{a} A</td>{dcDists.map((d) => { const g = pickDc(a, d); return <td class="num">{g ? gaugeLabel(g) : '—'}</td>; })}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <p>
+    Wiring a new mini-split or window unit? <a href="/btu-calculator/">Size the unit in BTUs</a> first; its nameplate then gives the current
+    to enter here.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Should I use the 60°C or 75°C column?</h3>
+  <p>
+    Under NEC 110.14(C), circuits of 100 A or less use the 60°C column unless every terminal, breaker, and device is marked
+    for 75°C. Many modern breakers are, but the safe default for household branch circuits is 60°C.
+  </p>
+  <h3>What counts as a continuous load?</h3>
+  <p>
+    A load expected to run at full current for three hours or more, like EV chargers, water heaters, and some heaters.
+    Conductors for continuous loads are sized at 125% of the current.
+  </p>
+  <h3>What doesn't this calculator cover?</h3>
+  <p>
+    Derating for more than three current-carrying conductors together, high ambient temperatures (attics and rooftops),
+    motor circuits, and service conductors. Those change the answer, so have an electrician confirm anything beyond a
+    simple circuit.
+  </p>
+  <p>
+    Checking an existing run? Use the <a href="/voltage-drop-calculator/">voltage drop calculator</a>. Pulling several
+    wires through a pipe? See the <a href="/conduit-fill-calculator/">conduit fill calculator</a>.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Ampacity from NEC Table 310.16, capped by 240.4(D) for 14–10 AWG; continuous loads are sized at 125%.</li>
+    <li>Voltage drop = 2 × length × current × resistance ÷ 1,000 (single phase) or √3 × length × current × resistance ÷ 1,000 (three phase), using NEC Chapter 9 Table 8 resistance at 75°C.</li>
+    <li>The result is the smallest size, 14 AWG to 500 kcmil, that passes both tests. This is a planning tool, not a substitute for your local code or a licensed electrician.</li>
+  </ul>
+</CalcPage>

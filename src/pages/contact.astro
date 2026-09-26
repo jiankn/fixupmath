@@ -1,0 +1,12 @@
+---
+import Page from '../components/Page.astro';
+import { SITE } from '../site';
+---
+
+<Page title="Contact" description={`How to contact ${SITE.name} about corrections, feedback, or calculator requests.`}>
+  <p>
+    Found a mistake, want a calculator we don't have yet, or have feedback? Email us at
+    <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>. Corrections to formulas or data are our top
+    priority and are usually fixed within a few days.
+  </p>
+</Page>

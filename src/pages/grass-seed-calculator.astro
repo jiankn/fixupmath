@@ -1,0 +1,80 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { GRASS_TYPES } from '../calculators/grass-seed';
+import { fmt } from '../lib/format';
+
+const lawns = [1000, 2500, 5000, 10000, 43560];
+---
+
+<CalcPage
+  slug="grass-seed-calculator"
+  def={def}
+  title="Grass Seed Calculator: Pounds of Seed by Grass Type"
+  description="Free grass seed calculator. Enter your lawn size and grass type to get pounds of seed and bags for a new lawn or overseeding, using typical seeding rates."
+  h1="Grass Seed Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Find how many pounds of grass seed to buy for a new lawn or for overseeding, based on your lawn's size and the grass
+    type.
+  </Fragment>
+
+  <h2 id="how-to">How much grass seed do I need?</h2>
+  <p>
+    Divide the lawn's square footage by 1,000 and multiply by the seeding rate for your grass. For a
+    <strong>2,000 sq ft new lawn of tall fescue at 7 lb per 1,000 sq ft, that is 14 pounds</strong>. Overseeding a thin
+    lawn takes about half the new-lawn rate.
+  </p>
+  <p class="formula">pounds = square feet ÷ 1,000 × seeding rate</p>
+
+  <h2 id="rates">Seeding rates by grass type</h2>
+  <p>Typical rates in pounds per 1,000 square feet. The rate on your seed bag takes priority, especially for mixes.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Grass</th><th>Type</th><th class="num">New lawn</th><th class="num">Overseeding</th></tr></thead>
+      <tbody>{GRASS_TYPES.map((g) => <tr><td>{g.label}</td><td>{g.region}</td><td class="num">{g.newRate}</td><td class="num">{fmt(g.newRate / 2, 2)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="table">Seed needed by lawn size</h2>
+  <p>New lawn rates, in pounds.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Grass</th>{lawns.map((a) => <th class="num">{a === 43560 ? '1 acre' : `${a.toLocaleString('en-US')} sq ft`}</th>)}</tr></thead>
+      <tbody>{GRASS_TYPES.slice(0, 5).map((g) => <tr><td>{g.label}</td>{lawns.map((a) => <td class="num">{fmt((a / 1000) * g.newRate, 1)}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="why-rates-differ">Why do seeding rates differ so much?</h2>
+  <p>
+    Seed size. A pound of Kentucky bluegrass holds far more seeds than a pound of tall fescue or ryegrass, so it covers
+    more ground per pound. Coated seed weighs more per seed and needs a higher rate by weight; the bag will say so.
+  </p>
+
+  <p>
+    Irregular lawn? Add each section in the <a href="/square-footage-calculator/">square footage calculator</a> first, then enter the total here.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>When is the best time to plant grass seed?</h3>
+  <p>
+    Cool-season grasses such as fescue, bluegrass, and ryegrass establish best in early fall, with spring second. Warm-
+    season grasses such as Bermuda, zoysia, and centipede want late spring and early summer, once soil has warmed.
+  </p>
+  <h3>Can I just use more seed for a thicker lawn?</h3>
+  <p>
+    Not really. Seeding far above the recommended rate crowds seedlings, which compete for water and light and can thin
+    out later. Good soil contact and steady watering matter more.
+  </p>
+  <p>
+    Starting from bare ground? Plan the soil with the <a href="/topsoil-calculator/">topsoil calculator</a>, or compare
+    the cost of an instant lawn with the <a href="/sod-calculator/">sod calculator</a>.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Pounds = area ÷ 1,000 × rate. Overseeding uses half the new-lawn rate unless you enter your own.</li>
+    <li>Bags = pounds ÷ bag size, rounded up.</li>
+    <li>Rates are typical values for bare seed; blends and coated seed differ, so check the label.</li>
+  </ul>
+</CalcPage>

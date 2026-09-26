@@ -1,0 +1,76 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/board-foot';
+import { boardFeet } from '../lib/framing';
+import { fmt } from '../lib/format';
+
+const boards: [string, number, number][] = [['1×4', 1, 4], ['1×6', 1, 6], ['2×4', 2, 4], ['2×6', 2, 6], ['2×8', 2, 8], ['2×10', 2, 10], ['2×12', 2, 12], ['4×4', 4, 4]];
+const lengths = [8, 10, 12, 16];
+---
+
+<CalcPage
+  slug="board-foot-calculator"
+  def={def}
+  title="Board Foot Calculator: Lumber Board Feet & Cost"
+  description="Free board foot calculator. Enter thickness, width, length, and quantity to get board feet, cubic feet, and cost. Add different boards to one lumber order."
+  h1="Board Foot Calculator"
+  updated="2026-09-26"
+>
+  <Fragment slot="lead">
+    Convert lumber sizes to board feet for pricing hardwood or checking a lumber order. Add boards of different sizes to a
+    project for one total.
+  </Fragment>
+
+  <h2 id="what">What is a board foot?</h2>
+  <p>
+    A board foot is a volume of wood 12 inches wide, 12 inches long, and 1 inch thick: 144 cubic inches. Hardwood and
+    rough lumber are priced by the board foot, so a price like $6 per BF tells you the cost of any board once you know its
+    board footage.
+  </p>
+  <p class="formula">board feet = thickness (in) × width (in) × length (ft) ÷ 12</p>
+
+  <h2 id="example">Example: five 8/4 × 6 in × 10 ft walnut boards</h2>
+  <p>
+    8/4 means 2 inches thick. 2 × 6 × 10 ÷ 12 = 10 board feet per board, so five boards are 50 board feet. At $12 per
+    board foot, that's $600.
+  </p>
+
+  <h2 id="table">Board feet of common lumber sizes</h2>
+  <p>Using nominal dimensions, as lumberyards do.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Size</th>{lengths.map((l) => <th class="num">{l} ft</th>)}</tr></thead>
+      <tbody>{boards.map(([n, t, w]) => <tr><td>{n}</td>{lengths.map((l) => <td class="num">{fmt(boardFeet(t, w, l), 2)}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="quarters">Hardwood thickness in quarters</h2>
+  <p>
+    Rough hardwood is sold in quarter-inch thicknesses: 4/4 is 1 in, 5/4 is 1¼ in, 6/4 is 1½ in, and 8/4 is 2 in. Board
+    feet are counted on this rough thickness even if the board is surfaced thinner, so enter the quarter size, not the
+    planed size.
+  </p>
+
+  <p>
+    Framing a roof? The <a href="/rafter-calculator/">rafter length calculator</a> gives each rafter's length and the number to buy.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Should I use nominal or actual dimensions?</h3>
+  <p>
+    Use whatever the seller prices by. Dimensional lumber like a 2×4 is billed on nominal size, and hardwood on rough
+    thickness, so nominal is usually right.
+  </p>
+  <h3>How many board feet are in a cubic foot?</h3>
+  <p>Twelve. One cubic foot is 12 × 12 × 12 inches, or twelve 1-inch-thick board feet.</p>
+  <p>
+    Framing a deck or stairs? The <a href="/deck-calculator/">deck calculator</a> and
+    <a href="/stair-calculator/">stair calculator</a> count the pieces for you.
+  </p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Board feet = thickness × width × length (ft) ÷ 12 × quantity.</li>
+    <li>Cubic feet = board feet ÷ 12. Project totals add each saved board.</li>
+  </ul>
+</CalcPage>

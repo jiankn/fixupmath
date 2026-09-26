@@ -1,0 +1,38 @@
+---
+// 广告位：只有配置了 PUBLIC_ADSENSE_CLIENT 才渲染。
+// 预留固定最小高度，避免广告加载时页面跳动（CLS）。不要放在按钮和输入框旁边，防止误点。
+import { ADSENSE_CLIENT } from '../site';
+interface Props {
+  slot?: string; // AdSense 后台建的广告单元 ID；不填则用自动尺寸
+  minHeight?: number;
+}
+const { slot, minHeight = 280 } = Astro.props;
+---
+
+{
+  ADSENSE_CLIENT && (
+    <div class="ad-slot" style={`min-height:${minHeight}px`} aria-label="Advertisement">
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={ADSENSE_CLIENT}
+        data-ad-slot={slot}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+      <script is:inline>(window.adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  )
+}
+
+<style>
+  .ad-slot {
+    margin: 32px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ad-slot ins {
+    width: 100%;
+  }
+</style>
