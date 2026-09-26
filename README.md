@@ -1,4 +1,4 @@
-# 家装计算器站（英文，面向美国市场）
+# FixUpMath 家装计算器站（英文，面向美国市场）
 
 品牌：**FixUpMath**；正式域名：`https://fixupmath.com`；联系邮箱：`hello@fixupmath.com`。
 
@@ -11,8 +11,21 @@ npm run dev      # 本地开发，http://localhost:4321
 npm test         # 跑计算公式的自动测试（改公式后必跑）
 npm run check    # 类型检查
 npm run build    # 生成静态网站到 dist/
-npm run deploy   # 构建并部署到 Cloudflare Pages（首次需 npx wrangler login）
+npm run deploy   # 构建并部署到 Cloudflare Workers Static Assets（首次需 npx wrangler login）
 ```
+
+## 部署
+
+项目名称统一为 `fixupmath`（npm 包名与 Cloudflare Worker 名称）。本项目使用 Astro 静态生成，构建输出为 `dist/`，计算在访客浏览器中运行，不需要服务端 Worker 脚本。
+
+当前部署目标是 **Cloudflare Workers Static Assets**，由 `wrangler.toml` 的 `[assets]` 配置和 `wrangler deploy` 命令确定。Pages 也支持静态网站，但并非本项目当前的部署目标；“静态网站”不代表必须使用 Pages。
+
+- 本地部署：首次执行 `npx wrangler login` 登录，然后执行 `npm run deploy`。
+- 使用 Cloudflare Workers 的 Git 自动部署时：项目名称填 `fixupmath`，构建命令填 `npm run build`，部署命令填 `npx wrangler deploy`；静态目录 `./dist` 已在配置中指定。
+- 部署后，在 `fixupmath` Worker 的 Settings → Domains & Routes 中添加正式自定义域名 `fixupmath.com`。
+- 正式构建使用 `SITE_URL=https://fixupmath.com`（默认值），不要设置 `SITE_PREVIEW=true`，以免禁止搜索引擎索引。
+
+参考：[Cloudflare Workers Static Assets 官方文档](https://developers.cloudflare.com/workers/static-assets/)。
 
 ## 目录
 
@@ -55,6 +68,6 @@ npm run deploy   # 构建并部署到 Cloudflare Pages（首次需 npx wrangler 
 
 - [x] 品牌 FixUpMath、正式域名 fixupmath.com
 - [x] 联系邮箱 hello@fixupmath.com
-- [ ] 在 Cloudflare Pages 绑定域名，在 Search Console 提交站点地图 `/sitemap-index.xml`
+- [ ] 在 Cloudflare Worker `fixupmath` 绑定域名，在 Search Console 提交站点地图 `/sitemap-index.xml`
 - [ ] 页面满约 20 个后申请 AdSense，拿到 ID 后设置 `PUBLIC_ADSENSE_CLIENT`
 - [ ] 面向欧盟 / 英国访客的广告同意弹窗（在 AdSense 后台开启 Google 的同意管理）

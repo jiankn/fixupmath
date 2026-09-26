@@ -13,8 +13,21 @@ const featured = featuredSlugs.map(slug => tools.find(c => c.slug === slug)).fil
 const materials = [{ image: 'concrete', summary: 'Slabs, footings, walls' }, { image: 'gravel', summary: 'Driveways, paths, base' }, { image: 'flooring', summary: 'Tile, hardwood, laminate' }, { image: 'deck', summary: 'Posts, beams, boards' }];
 const icons: Record<string, string> = { 'concrete-masonry': 'slab', landscaping: 'leaf', 'decks-fences-framing': 'fence', 'flooring-walls': 'grid', 'roofing-siding': 'roof', 'electrical-hvac': 'bolt', pool: 'water' };
 const example = concreteResult(shapeVolumeFt3('slab', { length: { value: 10, unit: 'ft' }, width: { value: 10, unit: 'ft' }, thickness: { value: 4, unit: 'in' } }), 10);
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE.url}/#website`,
+  name: SITE.name,
+  url: `${SITE.url}/`,
+  inLanguage: 'en',
+  publisher: { '@id': `${SITE.url}/#organization` },
+};
 ---
-<Base title={`Free Construction Calculators for Home Projects | ${SITE.name}`} description="Free construction calculators for home and yard projects: concrete, gravel, lumber, flooring, roofing, and other building materials, with bag counts, cubic yards, and costs.">
+<Base
+  title={`Free Construction Calculators for Home Projects | ${SITE.name}`}
+  description="Free construction calculators for concrete, gravel, lumber, and flooring. Estimate material quantities, bag counts, cubic yards, and project costs."
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(websiteSchema)} />
   <section class="home-hero">
     <div class="wrap hero-inner">
       <div class="hero-copy">

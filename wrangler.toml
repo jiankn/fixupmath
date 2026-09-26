@@ -1,6 +1,6 @@
-# Cloudflare Workers 静态资源部署（Pages 已并入 Workers）。纯静态站，不需要数据库；
+# Cloudflare Workers Static Assets 部署。纯静态站，不需要 Worker 脚本或数据库；
 # 以后要存用户数据时在这里加 D1 绑定。
-name = "home-calc"
+name = "fixupmath"
 compatibility_date = "2026-09-01"
 
 [assets]
