@@ -1,0 +1,40 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/fertilizer';
+import { fertilizerAmount } from '../lib/fertilizer';
+import { fmt } from '../lib/format';
+const analyses = [10, 16, 20, 29];
+---
+<CalcPage slug="fertilizer-calculator" def={def}
+  title="Fertilizer Calculator: Amount to Apply and Bags"
+  description="Calculate how much fertilizer to apply from area, a nitrogen target or product rate, and the N-P-K label. See product weight, nutrients, and bags to buy."
+  h1="Fertilizer Calculator" updated="2026-10-24">
+  <Fragment slot="lead">Calculate the fertilizer product weight needed for one application. Enter a nitrogen target or the product's application rate, your treatment area, and the fertilizer analysis to see how much to apply and how many bags to buy.</Fragment>
+
+  <h2 id="rate">Which rate should you enter?</h2>
+  <p>Choose <strong>Target nitrogen</strong> when your recommendation gives a weight of nitrogen per unit area. Choose <strong>Product application rate</strong> when the label specifies the weight of the whole fertilizer product per unit area. The tool converts that supplied rate; it does not prescribe a feeding schedule.</p>
+
+  <h2 id="formula">How to calculate fertilizer quantity</h2>
+  <p class="formula">nitrogen needed = area ÷ rate's reference area × nitrogen rate</p>
+  <p class="formula">fertilizer product weight = nitrogen needed ÷ (label N percent ÷ 100)</p>
+  <p>For a product application rate, multiply the rate directly by the number of reference-area units. Nitrogen percentage is not used as a divisor in that mode.</p>
+
+  <h2 id="example">Example: 5,000 ft² and a 20-0-10 product</h2>
+  <p>Suppose the recommendation for this application is 0.5 lb N per 1,000 ft². The nitrogen target is 5 × 0.5 = 2.5 lb. A 20-0-10 fertilizer contains 20% nitrogen, so 2.5 ÷ 0.20 = <strong>12.5 lb of product</strong>. A 40 lb bag covers that amount, leaving 27.5 lb for another application.</p>
+  <p>That 12.5 lb of product supplies 2.5 lb N, zero phosphate, and 1.25 lb potash. The example rate illustrates the arithmetic; use the recommendation for your lawn or planting.</p>
+
+  <h2 id="table">Product weight for the same nitrogen target</h2>
+  <div class="table-wrap"><table>
+    <caption>5,000 ft² at an example 0.5 lb N per 1,000 ft²</caption>
+    <thead><tr><th scope="col">Nitrogen on label</th><th scope="col" class="num">Product to apply</th></tr></thead>
+    <tbody>{analyses.map(n => <tr><th scope="row">{n}% N</th><td class="num">{fmt(fertilizerAmount(5000, 0.5, 'lb-1000', 'nitrogen', n, 0, 0, 40).productLb, 2)} lb</td></tr>)}</tbody>
+  </table></div>
+
+  <h2 id="npk">What do the three fertilizer numbers mean?</h2>
+  <p>The U.S. label analysis gives nitrogen (N), phosphate (P₂O₅), and potash (K₂O) percentages by weight. The tool reports phosphate and potash on that label basis; they are not elemental phosphorus and potassium weights.</p>
+  <p>See <a href="https://extension.wsu.edu/pnw-gardeners-handbook/chapter-4-plant-mineral-nutrition-and-fertilizers/">Washington State University's fertilizer-label explanation</a> and <a href="https://extension.psu.edu/calculations-used-to-determine-the-amount-of-fertilizer-needed-to-treat-turf">Penn State's fertilizer calculation method</a>, checked October 24, 2026.</p>
+
+  <h2 id="bags">Do you apply every bag the tool says to buy?</h2>
+  <p>No. The application weight is the amount to spread. Bag count rounds the purchase up, and the result shows the remainder. No waste allowance is added to the fertilizer dose. Follow the product label and your soil-test or local extension recommendation.</p>
+  <p>Measuring a new lawn? The <a href="/grass-seed-calculator/">grass seed calculator</a> calculates seed separately, and the <a href="/square-footage-calculator/">square footage calculator</a> helps measure the area.</p>
+</CalcPage>

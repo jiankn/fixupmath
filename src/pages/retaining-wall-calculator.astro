@@ -1,0 +1,49 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/retaining-wall';
+import { retainingWall } from '../lib/retaining-wall';
+import { fmt } from '../lib/format';
+const estimate = (lengthFt: number) => retainingWall({ lengthFt, visibleHeightFt: 3, buriedDepthFt: 0.5,
+  blockLengthIn: 12, blockHeightIn: 6, capLengthIn: 12, baseWidthFt: 2, baseDepthFt: 0.5,
+  drainageWidthFt: 1, coreFillFt3: 0, wastePct: 5 });
+const example = estimate(20);
+---
+<CalcPage slug="retaining-wall-calculator" def={def}
+  title="Retaining Wall Calculator: Blocks, Caps and Rock"
+  description="Estimate retaining wall blocks, caps, base aggregate, drainage rock, and material cost for a straight segmental block wall using your plan dimensions."
+  h1="Retaining Wall Calculator" updated="2026-10-24">
+  <Fragment slot="lead">Estimate materials for a straight segmental block retaining wall. Enter the wall and block dimensions, buried depth, and aggregate zones from your plan to get blocks, caps, and cubic yards of rock.</Fragment>
+
+  <h2 id="measure">What measurements do you need?</h2>
+  <p>Measure wall length and visible block height, excluding the separate cap. Add the specified buried depth. Use the block's face length and course height, then enter the base width, base depth, and drainage-zone width required by the wall system.</p>
+  <p>The starting dimensions are examples. For hollow units, enter the manufacturer's core-fill volume per block; leaving that value at zero excludes core fill.</p>
+
+  <h2 id="formula">How the quantities are calculated</h2>
+  <ul>
+    <li>Courses = round up [(visible height + buried depth) ÷ block height].</li>
+    <li>Blocks per course = round up [wall length ÷ block face length].</li>
+    <li>Blocks to buy = round up [courses × blocks per course × (1 + waste)].</li>
+    <li>Caps are calculated separately from wall length and cap length.</li>
+    <li>Base volume = wall length × base width × base depth.</li>
+    <li>Drainage volume = wall length × rounded block height × drainage width.</li>
+  </ul>
+  <p>All dimensions are converted to feet before volume calculations. Divide cubic feet by 27 for cubic yards. Core fill uses the installed block count, excluding spare blocks.</p>
+
+  <h2 id="example">Example: a 20 ft wall with 3 ft visible block height</h2>
+  <p>With 6 in of burial and 12 × 6 in block faces, the wall has {example.courses} courses and {example.perCourse} blocks per course: {example.installed} installed blocks. Adding 5% gives <strong>{example.blocks} blocks</strong> and <strong>{example.caps} caps</strong> of 12 in length.</p>
+  <p>A 24 in wide, 6 in deep base uses {fmt(example.baseFt3 / 27)} yd³. A 12 in drainage zone behind the rounded block height uses {fmt(example.drainageFt3 / 27)} yd³. The total is {fmt(example.rockYd3)} yd³ before any supplier allowance for loose delivery or compaction.</p>
+
+  <h2 id="table">Example material quantities by wall length</h2>
+  <div class="table-wrap"><table>
+    <caption>Same block, height, burial, and 5% block/cap waste as the example; core fill excluded</caption>
+    <thead><tr><th scope="col">Length</th><th scope="col" class="num">Blocks</th><th scope="col" class="num">Caps</th><th scope="col" class="num">Base + drainage</th></tr></thead>
+    <tbody>{[10, 20, 40].map(l => { const r = estimate(l); return <tr><th scope="row">{l} ft</th><td class="num">{r.blocks}</td><td class="num">{r.caps}</td><td class="num">{fmt(r.rockYd3)} yd³</td></tr>; })}</tbody>
+  </table></div>
+
+  <h2 id="cost">What does the cost estimate include?</h2>
+  <p>Enter prices for blocks, caps, and aggregate. The tool adds only the prices entered, so the subtotal can be partial. Allow separately for labor, delivery, drain pipe, geogrid, excavation, disposal, and tax. Use the <a href="/gravel-calculator/">gravel calculator</a> if your supplier sells aggregate by weight.</p>
+
+  <h2 id="scope">Scope and source</h2>
+  <p>This tool counts a straight, uniform wall on level grade. Courses and blocks are rounded conservatively; it does not optimize half blocks, curves, corners, or stepped bases. It does not check sliding, overturning, soil pressure, or reinforcement.</p>
+  <p>The <a href="https://new.allanblock.com/installation/residential-installation/basic-installation">Allan Block installation guide</a>, checked October 24, 2026, identifies base aggregate, drainage rock, and core fill as separate material components. Follow your selected system's approved design for dimensions and drainage. For mortared concrete masonry instead, use the <a href="/cinder-block-calculator/">cinder block calculator</a>.</p>
+</CalcPage>

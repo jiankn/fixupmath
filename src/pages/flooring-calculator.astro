@@ -14,7 +14,7 @@ const table = rooms.map(([l, w]) => ({ l, w, a: l * w, b20: unitsForArea(l * w, 
   title="Flooring Calculator: Square Feet & Boxes with Waste"
   description="Free flooring calculator for laminate, vinyl plank, and hardwood. Enter your room size and box coverage to get square feet to buy and the number of boxes, with waste."
   h1="Flooring Calculator"
-  updated="2026-09-26"
+  updated="2026-10-24"
 >
   <Fragment slot="lead">
     Find how many boxes of laminate, vinyl plank, or hardwood flooring to buy. Enter each room, the coverage printed on
@@ -75,6 +75,7 @@ const table = rooms.map(([l, w]) => ({ l, w, a: l * w, b20: unitsForArea(l * w, 
   </p>
 
   <h2 id="method">How this calculator works</h2>
+  <p>Estimating a separate epoxy coating? Use the <a href="/epoxy-calculator/">epoxy calculator</a> with your measured area, planned thickness, and product volume ratio.</p>
   <ul>
     <li>Square feet to buy = floor area × (1 + waste %).</li>
     <li>Boxes = square feet to buy ÷ coverage per box, rounded up.</li>

@@ -3,6 +3,14 @@ interface Props { slug: string }
 const { slug } = Astro.props;
 // Each silhouette describes the material or measurement, rather than a generic tool icon.
 const drawings: Record<string, [string, string]> = {
+  'joist-span': ['M10 29h60v10H10Z M13 39v23h7V39M60 39v23h7V39', 'M20 56h40m-40-4v8m40-8v8'],
+  'rafter-span-chart': ['M10 49 65 20l5 9-55 29Z M18 55v9M60 35v29', 'M18 68h42m-42-4v8m42-8v8'],
+  plywood: ['M11 30 49 15l22 17-38 18Z M11 30v9l22 18 38-18v-7M33 50v7', 'M13 44l20 17 36-17M13 49l20 17 36-17'],
+  grout: ['M13 19h23v19H13Zm31 0h23v19H44ZM13 47h23v19H13Zm31 0h23v19H44Z', 'M40 14v57M8 42h64'],
+  'retaining-wall': ['M12 23h56v38H12ZM12 36h56M12 48h56M30 23v13M49 23v13M22 36v12M42 36v12M60 36v12M30 48v13M49 48v13', 'M8 66h64M7 56h5m56 0h5'],
+  fertilizer: ['M21 20h38l5 45H16ZM21 20v-6h38v6', 'M40 53V34m0 9c-12 0-13-10-13-10 11 0 13 7 13 10Zm0-6c0-8 11-11 11-11s0 10-11 11'],
+  epoxy: ['M12 34h22v30H12Zm35-9h22v39H47ZM16 25h14v9M51 16h14v9', 'M16 45h14M51 37h14M16 52h8M51 45h8'],
+  countertop: ['M12 23h56v18H31v24H12ZM12 65v5h19v-5M31 41h37v5H31', 'M42 28h17v8H42ZM18 29h7'],
   concrete: ['M12 35 38 20 70 30 44 47Z M12 35v12l32 12 26-17V30 M44 47v12', 'M17 56 42 66M48 65 72 51M19 53v6m22 4v6'],
   rebar: ['M12 42 40 18 70 36 42 62Z', 'M20 35 51 54M29 27 60 46M40 18 70 36M22 48 51 25M32 55 61 31'],
   brick: ['M12 25h56v34H12Z M12 36h56M12 47h56M30 25v11M51 25v11M22 36v11M43 36v11M59 36v11M30 47v12M51 47v12', 'M12 62h56'],

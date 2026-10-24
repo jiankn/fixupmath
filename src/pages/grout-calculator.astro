@@ -1,0 +1,40 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/grout';
+import { GROUT_PRODUCTS, GROUT_TILES, GROUT_JOINTS, MAPEI_SOURCE, LATICRETE_SOURCE, groutCoverage, groutBags } from '../lib/grout';
+import { fmt } from '../lib/format';
+const ex = groutBags(600, groutCoverage('mapei-25', '12x24', '1/8')!, 25, 10);
+---
+<CalcPage slug="grout-calculator" def={def}
+  title="Grout Calculator: Estimate Tile Grout and Bags"
+  description="Calculate tile grout quantity and whole bags using published MAPEI or LATICRETE coverage, or custom tile dimensions and a product-specific yield."
+  h1="Grout Calculator" updated="2026-10-24">
+  <Fragment slot="lead">Estimate the grout needed for your tiled area. Choose a published product profile, or enter custom tile dimensions and your grout's mixed yield. Results include a waste allowance and whole bags to buy.</Fragment>
+
+  <h2 id="choose">Choose a coverage method</h2>
+  <p><strong>Published product coverage</strong> uses the exact tile profile, joint width, and bag size in the selected manufacturer's chart. <strong>Custom tile dimensions</strong> estimates joint volume, then divides by the mixed yield you provide.</p>
+  <p>For custom dimensions, measure the depth actually filled with grout. The example yield is not a manufacturer specification. Use product data or a product-specific estimate before ordering.</p>
+
+  <h2 id="example">Example: 600 ft² of 12×24 tile</h2>
+  <p>At 3/8 in depth and 1/8 in joints, MAPEI's 25 lb Ultracolor Plus FA chart lists 518 ft² per bag. With 10% extra: 600 × 1.10 ÷ 518 = {fmt(ex.equivalentBags, 3)} bags, or about {fmt(ex.pounds, 2)} lb of dry grout. Buy <strong>{ex.bags} whole bags</strong>.</p>
+
+  <h2 id="coverage">Published coverage used by this tool</h2>
+  <p>Square feet per selected package, before additional waste. Match all three tile dimensions, including depth.</p>
+  {GROUT_PRODUCTS.map(product => <>
+    <h3>{product.label}</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Tile profile</th>{GROUT_JOINTS.map(j => <th scope="col" class="num">{j.label} joint</th>)}</tr></thead>
+      <tbody>{GROUT_TILES.map(tile => <tr><th scope="row">{tile.label}</th>{GROUT_JOINTS.map(j => <td class="num">{groutCoverage(product.value, tile.value, j.value)}</td>)}</tr>)}</tbody>
+    </table></div>
+  </>)}
+
+  <h2 id="formula">How custom dimensions are calculated</h2>
+  <p>For a repeating rectangular tile grid, the grout fraction is the part of each tile-and-joint module left outside the tile face. This counts joint intersections once.</p>
+  <p class="formula">joint fraction = 1 − (L × W) ÷ [(L + J) × (W + J)]</p>
+  <p class="formula">joint volume = tiled area × filled depth × joint fraction</p>
+  <p>Use consistent units, add waste to that volume, divide by mixed yield per bag, and round up. Irregular mosaics, bevels, and changing joint depth need a separate product-specific estimate.</p>
+
+  <h2 id="sources">Product sources and scope</h2>
+  <p>Sources checked October 24, 2026: <a href={MAPEI_SOURCE}>MAPEI Ultracolor Plus FA TDS</a>, edition August 28, 2026, coverage pages 7–9; and <a href={LATICRETE_SOURCE}>LATICRETE grout coverage card DS254.3-1123</a>. MAPEI's 10 lb and 25 lb charts are kept separate. LATICRETE PERMACOLOR values do not apply to PERMACOLOR Select.</p>
+  <p>Site conditions and installation losses affect coverage. This is a quantity estimate; follow the selected product's preparation and mixing instructions. To calculate the number of tiles separately, use the <a href="/tile-calculator/">tile calculator</a>.</p>
+</CalcPage>

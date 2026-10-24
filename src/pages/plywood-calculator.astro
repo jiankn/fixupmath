@@ -1,0 +1,38 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/plywood';
+import { plywoodSheets } from '../lib/plywood';
+const areas = [100, 200, 300, 500, 1000];
+---
+<CalcPage slug="plywood-calculator" def={def}
+  title="Plywood Calculator: Sheets Needed for Your Area"
+  description="Use the plywood calculator to estimate whole sheets from your project area, sheet dimensions, and waste allowance. Add a sheet price for material cost."
+  h1="Plywood Calculator" updated="2026-10-24">
+  <Fragment slot="lead">Estimate how many whole plywood sheets to buy for a measured area. Set the sheet dimensions, allow for cuts, and enter your supplier's sheet price for a material estimate.</Fragment>
+
+  <h2 id="how">How many plywood sheets do you need?</h2>
+  <p>Divide the area including your waste allowance by the area of one sheet, then round up to a whole sheet. An 8 ft × 4 ft sheet covers 32 square feet before cuts.</p>
+  <p class="formula">sheets = round up [area × (1 + waste ÷ 100) ÷ (sheet length × sheet width)]</p>
+  <p>Use matching units for sheet length and width. The tool converts the length and area units you select before calculating.</p>
+
+  <h2 id="example">Example: cover 500 square feet</h2>
+  <p>With 10% extra, plan for 500 × 1.10 = 550 ft². Divide by 32 ft² per 4×8 sheet: 17.1875 sheets. Round up to <strong>18 sheets</strong>, giving 576 ft² of purchased material. At an example price of $38 per sheet, the material cost is $684.</p>
+
+  <h2 id="table">4×8 plywood sheet quantities</h2>
+  <div class="table-wrap"><table>
+    <caption>Whole sheets, calculated by area with a 10% waste allowance</caption>
+    <thead><tr><th scope="col">Net area</th><th scope="col" class="num">4×8 sheets</th><th scope="col" class="num">4×10 sheets</th></tr></thead>
+    <tbody>{areas.map(a => <tr><th scope="row">{a} ft²</th><td class="num">{plywoodSheets(a, 8, 4, 10).sheets}</td><td class="num">{plywoodSheets(a, 10, 4, 10).sheets}</td></tr>)}</tbody>
+  </table></div>
+
+  <h2 id="waste">What waste allowance should you enter?</h2>
+  <p>Use your cutting plan to choose the allowance. Many short strips, staggered joints, grain-direction constraints, and openings can leave offcuts that cannot fill another part of the surface. The 10% starting value is an example, not a guarantee that every layout will fit.</p>
+  <p>Need several rooms or wall sections? Calculate each section and select <strong>Add to project</strong>. The tool sums the net areas before applying the current sheet size and waste allowance once.</p>
+
+  <h2 id="layout">Does this calculate a cutting layout?</h2>
+  <p>No. It estimates material by area. Two layouts with the same area may need different sheet counts because their cuts and seams differ. Check the actual layout before placing an order.</p>
+  <p>Use the panel thickness, grade, span rating, and fastening detail specified for your application. Thickness does not change this area calculation. For individual lumber pieces instead of sheets, use the <a href="/board-foot-calculator/">board foot calculator</a>.</p>
+
+  <h2 id="method">Calculation method</h2>
+  <p>Sheet count is rounded up after waste is added; cost uses that whole-sheet count. Purchased area minus net project area includes both the chosen allowance and rounding. The estimate excludes fasteners, adhesives, delivery, labor, and tax.</p>
+</CalcPage>

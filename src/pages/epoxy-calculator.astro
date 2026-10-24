@@ -1,0 +1,39 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/epoxy';
+import { epoxyVolume } from '../lib/epoxy';
+import { fmt } from '../lib/format';
+const example = epoxyVolume(8, 0.125, 10, 1, 1, 1);
+---
+<CalcPage slug="epoxy-calculator" def={def}
+  title="Epoxy Calculator: Volume, Resin and Hardener"
+  description="Estimate epoxy volume from area and layer thickness. Add waste, split resin and hardener by the product's volume ratio, and calculate combined kits to buy."
+  h1="Epoxy Calculator" updated="2026-10-24">
+  <Fragment slot="lead">Estimate mixed epoxy volume for a coating or pour. Enter the area and layer thickness, then use your product's volume ratio to split the total into resin and hardener.</Fragment>
+
+  <h2 id="formula">How much epoxy do you need?</h2>
+  <p>Multiply the area by the intended epoxy thickness. The result is the combined volume of resin and hardener. Add an allowance for mixing cups, surface irregularities, and handling before dividing by kit size.</p>
+  <p class="formula">mixed US gallons = area (ft²) × 144 × thickness (in) ÷ 231</p>
+  <p>There are 231 cubic inches in a U.S. gallon. One U.S. gallon is 3.785411784 liters. The tool retains the unrounded quantities for component splits and package rounding.</p>
+
+  <h2 id="example">Example: a 4×2 ft surface with a 1/8 in layer</h2>
+  <p>The surface is 8 ft². A 1/8 in layer needs 8 × 144 × 0.125 = 144 in³, or {fmt(example.netGal, 3)} U.S. gal. With 10% extra, plan for <strong>{fmt(example.totalGal, 3)} U.S. gal ({fmt(example.liters, 3)} L)</strong> mixed.</p>
+  <p>For a product specifying 1:1 by volume, that is {fmt(example.liters / 2, 3)} L of resin and the same volume of hardener. The example thickness does not establish a product's permitted pour depth.</p>
+
+  <h2 id="table">Mixed volume by area and thickness</h2>
+  <div class="table-wrap"><table>
+    <caption>U.S. gallons before waste; geometric volume only</caption>
+    <thead><tr><th scope="col">Area</th><th scope="col" class="num">1/16 in</th><th scope="col" class="num">1/8 in</th><th scope="col" class="num">1/4 in</th></tr></thead>
+    <tbody>{[4, 8, 16, 32].map(area => <tr><th scope="row">{area} ft²</th>{[0.0625, 0.125, 0.25].map(d => <td class="num">{fmt(epoxyVolume(area, d, 0, 1, 1, 1).totalGal, 3)}</td>)}</tr>)}</tbody>
+  </table></div>
+
+  <h2 id="ratio">How are resin and hardener split?</h2>
+  <p class="formula">resin volume = mixed volume × resin parts ÷ (resin parts + hardener parts)</p>
+  <p>The remainder is hardener. A 2:1 volume ratio means two volume units of resin for every one of hardener. Copy the ratio from the instructions for your exact product and hardener.</p>
+  <p>Volume ratios and weight ratios can differ because the components have different densities. This tool calculates volume only. See <a href="https://support.totalboat.com/hc/en-us/articles/27800508684059-Mixing-Any-Epoxy-by-Weight-Explained">TotalBoat's explanation of mixing by weight</a>, checked October 24, 2026.</p>
+
+  <h2 id="kits">What kit size should you enter?</h2>
+  <p>Enter the combined mixed yield of the resin and hardener kit. A kit labeled with a total of 1 gallon is different from 1 gallon of resin plus a separate hardener container. Package count rounds up; the component split still describes the planned quantity, not every container purchased.</p>
+  <p>Follow your product's maximum layer depth, batch size, temperature, and curing instructions. A large project total may require several separate batches or layers.</p>
+  <p>For an L-shaped or U-shaped surface, use the <a href="/countertop-calculator/">countertop calculator</a> to get its area, then select <strong>I know the area</strong> here.</p>
+</CalcPage>

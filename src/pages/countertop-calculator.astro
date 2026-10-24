@@ -1,0 +1,47 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/countertop';
+import { countertopArea } from '../lib/countertop';
+import { fmt } from '../lib/format';
+const cases = [
+  { label: 'Rectangle: 8 ft long', shape: 'rectangle', back: 8, left: 0, right: 0 },
+  { label: 'L shape: 8 ft + 6 ft outside runs', shape: 'l', back: 8, left: 6, right: 0 },
+  { label: 'U shape: 10 ft back + two 6 ft returns', shape: 'u', back: 10, left: 6, right: 6 },
+];
+---
+<CalcPage slug="countertop-calculator" def={def}
+  title="Countertop Calculator: Surface Area and Cost"
+  description="Calculate countertop square footage for rectangular, L-shaped, or U-shaped tops. Count shared corners once, deduct optional cutouts, and add your quoted rate."
+  h1="Countertop Calculator" updated="2026-10-24">
+  <Fragment slot="lead">Calculate the surface area of a rectangular, L-shaped, or U-shaped countertop. Enter the finished dimensions, deduct cutouts if needed, and add a square-foot price for an area-based estimate.</Fragment>
+
+  <h2 id="measure">How to measure a countertop</h2>
+  <p>Measure the finished top, including its overhang. For L and U shapes, measure each full run along the outside edges and use the common countertop depth. The tool subtracts the shared corner areas so they are counted once.</p>
+  <p>Add a separate island or another section with <strong>Add to project</strong>. For different depths, split the top into non-overlapping rectangles and add their net areas as separate items.</p>
+
+  <h2 id="formula">Square-footage formulas</h2>
+  <ul>
+    <li>Rectangle: length × depth.</li>
+    <li>L shape: (back run + return run) × depth − depth².</li>
+    <li>U shape: (back + left + right runs) × depth − 2 × depth².</li>
+  </ul>
+  <p>Convert all dimensions to feet, then subtract any cutout area you choose to deduct. The U-shaped back run must be at least twice the depth so the returns do not overlap.</p>
+
+  <h2 id="example">Example: an 8 ft × 6 ft L-shaped top</h2>
+  <p>At 2 ft depth, the area is (8 + 6) × 2 − 2² = <strong>24 ft²</strong>. Deducting a 3 ft² opening leaves <strong>21 ft²</strong>. At an illustrative supplied rate of $65 per square foot, that net-area estimate is $1,365.</p>
+  <p>If your fabricator charges for material at the sink opening, leave the cutout deduction at zero. The same rate would then apply to 24 ft².</p>
+
+  <h2 id="table">Countertop area examples</h2>
+  <div class="table-wrap"><table>
+    <caption>2 ft common depth, before any cutout deductions</caption>
+    <thead><tr><th scope="col">Layout</th><th scope="col" class="num">Surface area</th></tr></thead>
+    <tbody>{cases.map(c => <tr><th scope="row">{c.label}</th><td class="num">{fmt(countertopArea(c.shape, c.back, c.left, c.right, 2, 0).grossFt2, 2)} ft²</td></tr>)}</tbody>
+  </table></div>
+
+  <h2 id="price">What does the price estimate cover?</h2>
+  <p>It multiplies the net area by the rate you enter. Use the scope of your actual quote: a material-only rate and an installed rate include different work. Confirm how the supplier treats openings, seams, edge profiles, backsplash, removal, delivery, and tax.</p>
+
+  <h2 id="slabs">Can square footage tell you how many slabs to buy?</h2>
+  <p>No. Slab dimensions, grain direction, seam positions, and cutout placement affect the fabrication layout. This calculator measures the finished surface; it does not nest parts on slabs or promise a slab count.</p>
+  <p>For a resin finish on the measured surface, use the <a href="/epoxy-calculator/">epoxy calculator</a> with this area and the intended coating thickness. For a rectangular panel substrate, the <a href="/plywood-calculator/">plywood calculator</a> estimates sheets.</p>
+</CalcPage>

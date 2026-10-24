@@ -1,0 +1,39 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/rafter-span';
+import { MEMBER_SIZES, SPACINGS, RAFTER_SOURCES, rafterSpanIn, spanText } from '../lib/spans';
+const cases = [{ load: '20' as const, table: 17 }, { load: '40' as const, table: 19 }];
+const shortSpan = (n: number) => `${Math.floor(n / 12)}′ ${n % 12}″${n === 312 ? '*' : ''}`;
+const example = rafterSpanIn('20', '2x8', 16)!;
+---
+<CalcPage slug="rafter-span-chart" def={def}
+  title="Rafter Span Chart: Southern Pine No. 2 Reference"
+  description="Read the rafter span chart for Southern Pine No. 2 at 12, 16, or 24 inches on center. Compare published spans for two roof snow-load cases."
+  h1="Rafter Span Chart" updated="2026-10-24">
+  <Fragment slot="lead">Find the maximum horizontal supported span for Southern Pine No. 2 rafters. Use the lookup above the tables to compare a planned span, or <a href="#chart">go straight to the charts</a>.</Fragment>
+
+  <h2 id="chart">Southern Pine No. 2 rafter span tables</h2>
+  <p>Entries are feet and inches, measured horizontally between the inside faces of bearings.</p>
+  {cases.map(c => <>
+    <h3>{c.load} psf roof live/snow load + 10 psf dead load</h3>
+    <div class="table-wrap"><table>
+      <caption>SFPA Table {c.table} · dry service · L/240 · snow duration factor 1.15</caption>
+      <thead><tr><th scope="col">Size</th>{SPACINGS.map(s => <th scope="col" class="num">{s}″ o.c.</th>)}</tr></thead>
+      <tbody>{MEMBER_SIZES.map(size => <tr><th scope="row">{size}</th>{SPACINGS.map(s => <td class="num">{shortSpan(rafterSpanIn(c.load, size, s)!)}</td>)}</tr>)}</tbody>
+    </table></div>
+    <p class="small">Source: <a href={RAFTER_SOURCES[c.load]}>SFPA 2013, Table {c.table} PDF</a>. *26 ft is the source's stock-availability cap.</p>
+  </>)}
+
+  <h2 id="read">How to read the chart</h2>
+  <p>Match the grade, load case, rafter size, and spacing. Do not substitute ground snow load for the roof load or interpolate an unsupported case. These charts use No. 2 Southern Pine; another grade or species needs its own table.</p>
+
+  <h2 id="example">Example: 2×8 rafters at 16 in on center</h2>
+  <p>At 20 psf live/snow and 10 psf dead load, the No. 2 entry is <strong>{spanText(example)}</strong>. Increasing the live/snow load to 40 psf changes the entry to <strong>{spanText(rafterSpanIn('40', '2x8', 16)!)}</strong>.</p>
+
+  <h2 id="horizontal">Is rafter span the same as board length?</h2>
+  <p>No. The chart gives horizontal support distance. The board follows the roof slope and can extend beyond the wall. Once the supported span is established, the <a href="/rafter-calculator/">rafter length calculator</a> uses pitch and overhang to calculate the sloped cutting length.</p>
+
+  <h2 id="source">Source and scope</h2>
+  <p>Prepared from the <a href="https://www.southernpine.com/resources/span-tables/joists-rafters/">Southern Forest Products Association span-table library</a>, checked October 24, 2026. Tables 17 and 19 use the 2013 design-value edition. The values are published lookups, with no interpolation.</p>
+  <p>Wind uplift, concentrated loads, connections, and other roof-design checks are outside these tables. Confirm the applicable load, deflection criterion, adopted code, and complete roof design with your local building authority or designer.</p>
+</CalcPage>

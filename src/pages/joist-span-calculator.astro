@@ -1,0 +1,44 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/joist-span';
+import { DECK_SOURCE, DECK_SPECIES, MEMBER_SIZES, SPACINGS, deckSpanIn, spanText } from '../lib/spans';
+const shortSpan = (n: number) => `${Math.floor(n / 12)}′ ${n % 12}″`;
+const example = deckSpanIn('southern-pine', '2x10', 16)!;
+---
+<CalcPage slug="joist-span-calculator" def={def}
+  title="Joist Span Calculator: Check a Deck Joist Span"
+  description="Use the joist span calculator to look up deck joist spans by wood species, size, and spacing, then compare your clear span with AWC Table 2."
+  h1="Joist Span Calculator" updated="2026-10-24">
+  <Fragment slot="lead">Look up a deck joist's maximum supported span and compare it with your proposed clear span. Select the wood species group, nominal size, and spacing for No. 2 lumber.</Fragment>
+
+  <h2 id="use">How to check your joist span</h2>
+  <ol>
+    <li>Find the species and grade on the lumber stamp.</li>
+    <li>Choose the nominal size and center-to-center spacing.</li>
+    <li>Enter the clear distance between support faces, leaving out the overhang.</li>
+    <li>Compare your measurement with the tabulated maximum.</li>
+  </ol>
+  <p>The result checks one span against a published entry. It does not select a complete deck frame.</p>
+
+  <h2 id="chart">Deck joist span reference</h2>
+  <p>Feet and inches. These values use the same lookup as the tool.</p>
+  {DECK_SPECIES.map(species => <>
+    <h3>{species.label}</h3>
+    <div class="table-wrap"><table>
+      <caption>No. 2 grade · 40 psf live + 10 psf dead · wet service · L/360</caption>
+      <thead><tr><th scope="col">Size</th>{SPACINGS.map(s => <th scope="col" class="num">{s}″ o.c.</th>)}</tr></thead>
+      <tbody>{MEMBER_SIZES.map(size => <tr><th scope="row">{size}</th>{SPACINGS.map(s => <td class="num">{shortSpan(deckSpanIn(species.value, size, s)!)}</td>)}</tr>)}</tbody>
+    </table></div>
+  </>)}
+
+  <h2 id="example">Example: a 2×10 Southern Pine joist at 16 in on center</h2>
+  <p>The lookup returns <strong>{spanText(example)}</strong>. A proposed 13 ft clear span is below that entry; 14 ft 1 in exceeds it. Compare the unrounded measurement, not just the displayed whole feet.</p>
+
+  <h2 id="meaning">Does the span include the overhang?</h2>
+  <p>No. Measure between the faces of the supports. Check cantilevers separately. After settling the frame layout, use the <a href="/deck-calculator/">deck material calculator</a> to count boards, joists, and fasteners.</p>
+
+  <h2 id="conditions">Source and conditions</h2>
+  <p>Data: <a href={DECK_SOURCE}>American Wood Council DCA 6-15, Table 2, page 4</a> (2018 PDF), checked October 24, 2026. Incising is assumed for the DF-L / Hem-Fir / SPF group; the source applies northern-species values to Ponderosa and Red Pine. The table caps spans at 18 ft.</p>
+  <p>For 2×6 joists, the source still requires a minimum 2×8 ledger and minimum 2×8 joists/rim joists at guard-post attachments. Floor joists, engineered lumber, heavier loads, and other grades require different data. Confirm local requirements and the full guide before construction.</p>
+  <p>Checking the roof instead? The <a href="/rafter-span-chart/">rafter span chart</a> uses separate roof-framing data.</p>
+</CalcPage>

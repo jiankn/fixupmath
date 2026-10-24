@@ -4,3 +4,4 @@ dist/
 .wrangler/
 .env
 .indexnow-state.json
+.firecrawl/

@@ -23,22 +23,22 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'concrete-masonry',
     name: 'Concrete & Masonry',
-    description: 'Concrete, asphalt, rebar, brick, block, and paver quantities for slabs, driveways, walls, and walkways.',
+    description: 'Concrete, asphalt, rebar, brick, block, retaining wall, and paver quantities for home projects.',
   },
   {
     slug: 'landscaping',
     name: 'Landscaping & Yard',
-    description: 'Gravel, mulch, topsoil, fill dirt, sand, sod, and grass seed for beds, paths, and lawns.',
+    description: 'Gravel, mulch, topsoil, fill dirt, sand, sod, grass seed, and fertilizer for beds, paths, and lawns.',
   },
   {
     slug: 'decks-fences-framing',
     name: 'Decks, Fences & Framing',
-    description: 'Decking, fence posts and pickets, stairs, rafters, and lumber estimates.',
+    description: 'Decking, fences, stairs, rafters, lumber, plywood sheets, and supported-span references.',
   },
   {
     slug: 'flooring-walls',
     name: 'Flooring & Walls',
-    description: 'Square footage, flooring, carpet, tile, drywall, and wallpaper.',
+    description: 'Square footage, flooring, carpet, tile, grout, countertops, epoxy, drywall, and wallpaper.',
   },
   {
     slug: 'roofing-siding',
@@ -58,6 +58,14 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const CALCULATORS: CalculatorEntry[] = [
+  { slug: 'joist-span-calculator', name: 'Joist Span Calculator', category: 'decks-fences-framing', status: 'live', summary: 'Published deck joist spans by species, size, and spacing.', related: ['deck-calculator', 'rafter-span-chart'], keywords: ['deck joist span', 'joist spacing', 'clear span'] },
+  { slug: 'grout-calculator', name: 'Grout Calculator', category: 'flooring-walls', status: 'live', summary: 'Tile grout bags using product coverage or custom dimensions.', related: ['tile-calculator', 'countertop-calculator'], keywords: ['tile grout', 'mapei', 'laticrete', 'joint fill'] },
+  { slug: 'plywood-calculator', name: 'Plywood Calculator', category: 'decks-fences-framing', status: 'live', summary: 'Whole plywood sheets from area, sheet size, and waste.', related: ['board-foot-calculator', 'flooring-calculator'], keywords: ['sheet count', '4x8 sheets', 'panel area'] },
+  { slug: 'retaining-wall-calculator', name: 'Retaining Wall Calculator', category: 'concrete-masonry', status: 'live', summary: 'Blocks, caps, base, and drainage rock for a segmental wall.', related: ['cinder-block-calculator', 'gravel-calculator'], keywords: ['segmental wall', 'retaining blocks', 'wall caps'] },
+  { slug: 'fertilizer-calculator', name: 'Fertilizer Calculator', category: 'landscaping', status: 'live', summary: 'Fertilizer weight from area and a supplied application rate.', related: ['grass-seed-calculator', 'sod-calculator', 'square-footage-calculator'], keywords: ['nitrogen', 'npk', 'fertiliser', 'lawn feed'] },
+  { slug: 'rafter-span-chart', name: 'Rafter Span Chart', category: 'decks-fences-framing', status: 'live', summary: 'Southern Pine No. 2 horizontal rafter spans from published tables.', related: ['rafter-calculator', 'joist-span-calculator'], keywords: ['rafter span table', 'roof span', 'southern pine rafters'] },
+  { slug: 'epoxy-calculator', name: 'Epoxy Calculator', category: 'flooring-walls', status: 'live', summary: 'Mixed epoxy volume and resin/hardener parts by volume.', related: ['countertop-calculator', 'square-footage-calculator'], keywords: ['resin volume', 'hardener', 'epoxy pour', 'epoxy coating'] },
+  { slug: 'countertop-calculator', name: 'Countertop Calculator', category: 'flooring-walls', status: 'live', summary: 'Countertop area for rectangular, L-shaped, or U-shaped tops.', related: ['epoxy-calculator', 'plywood-calculator', 'tile-calculator'], keywords: ['countertop square footage', 'worktop area', 'kitchen counter'] },
   { slug: 'concrete-calculator', name: 'Concrete Calculator', category: 'concrete-masonry', status: 'live', summary: 'Cubic yards and bags for slabs, footings, columns, and stairs.', related: ['gravel-calculator', 'rebar-calculator', 'fence-calculator', 'deck-calculator', 'sand-calculator'], keywords: ['cement', 'ready mix', 'slab', 'footing', 'quikrete', 'pour', 'yardage', 'post hole', 'patio', 'driveway'] },
   { slug: 'rebar-calculator', name: 'Rebar Calculator', category: 'concrete-masonry', status: 'live', summary: 'Rebar length and bar count for a slab grid.', related: ['concrete-calculator', 'gravel-calculator'], keywords: ['reinforcing steel', 'grid', 'slab', 'mesh', 'concrete reinforcement', 're-bar', 'bar count'] },
   { slug: 'brick-calculator', name: 'Brick Calculator', category: 'concrete-masonry', status: 'live', summary: 'Bricks and mortar for a wall.', related: ['cinder-block-calculator', 'concrete-calculator', 'paver-calculator'], keywords: ['masonry', 'mortar', 'brick wall', 'brickwork', 'brick veneer'] },
