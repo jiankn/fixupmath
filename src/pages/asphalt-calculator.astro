@@ -1,0 +1,118 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { COLD_PATCH_BAG_LB } from '../calculators/asphalt';
+import { asphaltResult, asphaltFt2PerTon, ASPHALT_MATERIALS } from '../lib/sitework';
+import { fmt, ceilCount } from '../lib/format';
+
+const HMA = ASPHALT_MATERIALS[0].lbPerFt3;
+const ex = asphaltResult(40 * 12, 3, HMA, 5);
+const coverage = [1.5, 2, 3, 4].map((t) => ({ t, ft2: asphaltFt2PerTon(t, HMA) }));
+const driveways = [
+  { name: 'Single car, 10 × 20 ft', a: 200 },
+  { name: 'Single car, 12 × 40 ft', a: 480 },
+  { name: 'Two car, 20 × 24 ft', a: 480 },
+  { name: 'Two car, 24 × 40 ft', a: 960 },
+  { name: 'Long drive, 12 × 100 ft', a: 1200 },
+].map((d) => ({ ...d, t2: asphaltResult(d.a, 2, HMA, 5).tons, t3: asphaltResult(d.a, 3, HMA, 5).tons }));
+const patch = asphaltResult(4 * 4, 2, HMA, 0);
+---
+
+<CalcPage
+  slug="asphalt-calculator"
+  def={def}
+  title="Asphalt Calculator: Tons of Asphalt for a Driveway or Patch"
+  description="Free asphalt calculator. Enter the area and compacted thickness to get tons of hot mix asphalt, cubic yards, cold patch bags, and the gravel base for a new driveway."
+  h1="Asphalt Calculator"
+  updated="2026-10-24"
+>
+  <Fragment slot="lead">
+    Work out how many tons of asphalt you need for a driveway, parking pad, or overlay, plus the crusher run base if you are
+    building one from scratch.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate asphalt tonnage</h2>
+  <ol>
+    <li>Measure the length and width of the area in feet and multiply for square feet. For a curved apron, add several shapes to a project.</li>
+    <li>Convert the compacted thickness to feet: 3 inches is 0.25 ft.</li>
+    <li>Multiply area × thickness for cubic feet.</li>
+    <li>Multiply by the asphalt weight, about {HMA} lb per cubic foot for compacted hot mix, and divide by 2,000 for tons.</li>
+    <li>Add about 5% for uneven base and edges, then round up to the next half ton.</li>
+  </ol>
+
+  <h2 id="example">Example: a 12 × 40 ft driveway, 3 inches thick</h2>
+  <p>
+    480 × 0.25 = 120 cubic feet. With 5% extra that is {fmt(ex.ft3, 0)} cubic feet, which weighs {fmt(ex.pounds, 0)} lb at
+    {HMA} lb per cubic foot, or <strong>{fmt(ex.tons)} tons</strong>. Order {fmt(ex.orderTons)} tons.
+  </p>
+
+  <h2 id="coverage">How much does a ton of asphalt cover?</h2>
+  <p>
+    At {HMA} lb per cubic foot, a ton of compacted asphalt covers about <strong>{fmt(coverage[1].ft2, 0)} square feet at 2
+    inches</strong> and about {fmt(coverage[2].ft2, 0)} square feet at 3 inches.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Compacted thickness</th><th class="num">Sq ft per ton</th><th class="num">Sq yd per ton</th></tr></thead>
+      <tbody>{coverage.map((c) => <tr><td>{c.t} in</td><td class="num">{fmt(c.ft2, 0)}</td><td class="num">{fmt(c.ft2 / 9, 1)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="driveways">Asphalt tons for common driveways</h2>
+  <p>Hot mix at {HMA} lb per cubic foot, 5% extra.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Driveway</th><th class="num">2 in thick</th><th class="num">3 in thick</th></tr></thead>
+      <tbody>{driveways.map((d) => <tr><td>{d.name}</td><td class="num">{fmt(d.t2, 1)} tons</td><td class="num">{fmt(d.t3, 1)} tons</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="thickness">How thick should asphalt be?</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Project</th><th>Typical compacted thickness</th></tr></thead>
+      <tbody>
+        <tr><td>Overlay on a sound existing driveway</td><td>1½–2 in</td></tr>
+        <tr><td>New residential driveway</td><td>2–3 in over a compacted gravel base</td></tr>
+        <tr><td>Driveway with RVs, trucks, or heavy deliveries</td><td>3–4 in, often in two lifts</td></tr>
+        <tr><td>Gravel base under a new driveway</td><td>4–8 in of compacted crusher run</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Thickness here is <strong>after rolling</strong>. Paving crews lay the mix about 25% thicker and roll it down, but the
+    tonnage is the same: you buy by weight. For the base layer, enter its depth in the calculator or use the
+    <a href="/gravel-calculator/">gravel calculator</a> to compare stone types.
+  </p>
+
+  <h2 id="patch">Small patches: cold patch bags</h2>
+  <p>
+    For a pothole or a small repair, hot mix plants are usually not worth the trip. Cold patch comes in bags of about
+    {COLD_PATCH_BAG_LB} lb. A 4 × 4 ft patch 2 inches deep weighs about {fmt(patch.pounds, 0)} lb, or
+    {ceilCount(patch.pounds / COLD_PATCH_BAG_LB)} bags. Tamp it in layers no thicker than 2 inches.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How much does a cubic yard of asphalt weigh?</h3>
+  <p>
+    About 3,900 lb, or just under 2 tons, for compacted hot mix at {HMA} lb per cubic foot. Recycled millings are lighter,
+    around {ASPHALT_MATERIALS[1].lbPerFt3} lb per cubic foot once compacted.
+  </p>
+  <h3>How do I convert square feet of asphalt to tons?</h3>
+  <p>
+    Multiply square feet by the thickness in feet and by the weight per cubic foot, then divide by 2,000. At 2 inches, that
+    is roughly square feet ÷ {fmt(coverage[1].ft2, 0)}.
+  </p>
+  <h3>Can I use this for asphalt millings?</h3>
+  <p>
+    Yes. Choose millings, or enter your supplier's weight with Custom weight. Millings compact more than gravel, so order at
+    least 10% extra if you will roll them yourself.
+  </p>
+  <p>Pouring concrete instead? The <a href="/concrete-calculator/">concrete calculator</a> gives cubic yards and bags for the same slab.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Tons = area × compacted thickness × weight per cubic foot × (1 + extra %) ÷ 2,000.</li>
+    <li>Weights are typical values for compacted material; plants publish their own mix weights.</li>
+    <li>The optional base uses crusher run at 1.5 tons per cubic yard plus 10% for compaction. Orders round up to the next half ton.</li>
+  </ul>
+</CalcPage>

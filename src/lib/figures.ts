@@ -233,3 +233,25 @@ export function gableWallSvg(gableWidthIn: number, wallHeightIn: number, gableHe
     note(`End wall drawn to scale · shaded triangle = gable (${g === 1 ? '1 gable' : `${g} gables`} like this), measured from the eave line to the peak. Wall height runs from the foundation to the eaves.`)
   );
 }
+
+// ---- 屋面坡度：12 in 水平长度上的升高三角形 ----
+export function pitchSvg(rise: number, deg: number): string {
+  if (!ok(rise) || deg >= 89) return '';
+  const left = 30, right = 120, top = 22, bottom = 44;
+  // 按比例画 12 in 的水平长度，坡度太陡时按高度缩放
+  const s = Math.min((VW - left - right) / 12, 190 / rise);
+  const x0 = left, x1 = left + 12 * s;
+  const yb = top + rise * s;
+  const body =
+    `<polygon class="sh" points="${r1(x0)},${r1(yb)} ${r1(x1)},${r1(yb)} ${r1(x1)},${r1(top)}"/>` +
+    line('sk', x0, yb, x1, top) +
+    `<path class="sg" d="M${r1(x1 - 10)} ${r1(yb)}V${r1(yb - 10)}H${r1(x1)}"/>` +
+    `<text class="sa" x="${r1(x0 + 46)}" y="${r1(yb - 8)}">${r1(deg)}°</text>` +
+    hDim(x0, x1, yb + 14, 'Run 12 in') +
+    `<path class="sd" d="M${r1(x1 + 16)} ${r1(top)}V${r1(yb)}M${r1(x1 + 11)} ${r1(top)}h10M${r1(x1 + 11)} ${r1(yb)}h10"/>` +
+    `<text class="st" x="${r1(x1 + 26)}" y="${r1((top + yb) / 2 + 4)}">Rise ${Math.round(rise * 100) / 100} in</text>`;
+  return (
+    svg(yb + bottom, 'Roof pitch triangle drawn to scale', body) +
+    note('Drawn to scale · pitch is the rise in inches for every 12 inches of horizontal run.')
+  );
+}

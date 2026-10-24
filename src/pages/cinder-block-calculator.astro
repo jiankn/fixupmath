@@ -1,0 +1,109 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/cinder-block';
+import { BLOCKS, BLOCKS_PER_MORTAR_BAG, CORE_VOID_FRACTION, blockWall, blockCourses } from '../lib/sitework';
+import { fmt, int } from '../lib/format';
+
+const std = BLOCKS[0];
+const ex = blockWall(40 * 4, std.faceH, std.faceL, std.widthIn, 5, 0);
+const exC = blockCourses(40, 4, std.faceH, std.faceL);
+const walls = [
+  { name: '20 ft × 3 ft garden wall', l: 20, h: 3 },
+  { name: '40 ft × 4 ft retaining wall', l: 40, h: 4 },
+  { name: '20 × 20 ft shed foundation, 2 ft high', l: 80, h: 2 },
+  { name: '24 × 24 ft garage, 8 ft walls', l: 96, h: 8 },
+].map((w) => ({ ...w, r: blockWall(w.l * w.h, std.faceH, std.faceL, std.widthIn, 5, 0) }));
+const grout = BLOCKS.filter((b) => b.faceH === 8).map((b) => ({ label: b.label, ft3: (b.widthIn / 12) * CORE_VOID_FRACTION }));
+---
+
+<CalcPage
+  slug="cinder-block-calculator"
+  def={def}
+  title="Cinder Block Calculator: Blocks, Mortar & Core Fill for a Wall"
+  description="Free cinder block calculator. Enter the wall length and height to get the number of concrete blocks, courses, bags of mortar, and concrete to fill the cores."
+  h1="Cinder Block Calculator"
+  updated="2026-10-24"
+>
+  <Fragment slot="lead">
+    Count the concrete blocks for a garden wall, retaining wall, or foundation, with the mortar to lay them and the grout or
+    concrete to fill the cores.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate cinder blocks</h2>
+  <ol>
+    <li>Multiply the wall length by its height for the wall area in square feet. Subtract doors and windows.</li>
+    <li>A standard 8 × 8 × 16 block covers 8 × 16 = 128 square inches of wall including the mortar joint, so there are 144 ÷ 128 = <strong>1.125 blocks per square foot</strong>.</li>
+    <li>Multiply the wall area by 1.125 and add about 5% for broken and cut blocks.</li>
+    <li>Allow one 80-lb bag of mortar mix for roughly every {BLOCKS_PER_MORTAR_BAG} blocks.</li>
+  </ol>
+
+  <h2 id="example">Example: a 40 ft retaining wall, 4 ft high</h2>
+  <p>
+    40 × 4 = 160 square feet. At 1.125 blocks per square foot that is 180 blocks, laid as {exC.perCourse} blocks per course
+    and {exC.courses} courses. With 5% extra, buy <strong>{int(ex.blocks)} blocks</strong> and {ex.mortarBags} bags of mortar
+    mix.
+  </p>
+
+  <h2 id="table">Blocks for common walls</h2>
+  <p>8 × 8 × 16 blocks, 5% extra.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Wall</th><th class="num">Wall area</th><th class="num">Blocks</th><th class="num">Mortar bags</th></tr></thead>
+      <tbody>{walls.map((w) => <tr><td>{w.name}</td><td class="num">{int(w.l * w.h)} ft²</td><td class="num">{int(w.r.blocks)}</td><td class="num">{w.r.mortarBags}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="sizes">Cinder block sizes</h2>
+  <p>
+    Blocks are named by their nominal size, width × height × length. The actual block is ⅜ inch smaller in each direction,
+    which leaves room for the mortar joint, so an 8 × 8 × 16 block measures 7⅝ × 7⅝ × 15⅝ inches.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Nominal size</th><th class="num">Actual width</th><th class="num">Blocks per sq ft</th></tr></thead>
+      <tbody>{BLOCKS.map((b) => <tr><td>{b.label}</td><td class="num">{fmt(b.widthIn, 3)} in</td><td class="num">{fmt(144 / (b.faceH * b.faceL), 3)}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="core-fill">How much concrete to fill block cores?</h2>
+  <p>
+    Hollow cores make up roughly {fmt(CORE_VOID_FRACTION * 100, 0)}% of a standard block wall. Filling every core of an 8 in
+    wall takes about {fmt(grout[0].ft3, 2)} cubic feet of grout per square foot of wall, or about one cubic yard per
+    {fmt(27 / grout[0].ft3, 0)} square feet. Most retaining and foundation walls are only grouted in the cells that hold
+    vertical rebar, often one cell every 48 inches.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Block width</th><th class="num">Fully grouted, ft³ per sq ft</th></tr></thead>
+      <tbody>{grout.map((g) => <tr><td>{g.label}</td><td class="num">{fmt(g.ft3, 2)}</td></tr>)}</tbody>
+    </table>
+  </div>
+  <p>
+    These are estimates. Core sizes vary between manufacturers, so order a little extra grout. Placing steel too? The
+    <a href="/rebar-calculator/">rebar calculator</a> counts the bars, and the <a href="/concrete-calculator/">concrete
+    calculator</a> sizes the footing underneath.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many cinder blocks are in a pallet?</h3>
+  <p>
+    Usually 90 standard 8 × 8 × 16 blocks, but it varies by plant and block size. A pallet weighs roughly 3,000–3,500 lb,
+    so check the delivery truck can reach the site.
+  </p>
+  <h3>Is a cinder block the same as a concrete block?</h3>
+  <p>
+    In everyday use, yes. True cinder blocks were made with coal ash; almost all blocks sold today are concrete masonry
+    units (CMU) made with cement and sand or gravel. The sizes and counts are the same.
+  </p>
+  <h3>How many blocks do I need for a 100 square foot wall?</h3>
+  <p>113 standard blocks before waste (100 × 1.125), or about 119 with 5% extra.</p>
+  <p>Building with brick instead? The <a href="/brick-calculator/">brick calculator</a> handles brick sizes and joints.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Blocks = (wall area − openings) × 144 ÷ (nominal block height × length) × (1 + waste %), rounded up.</li>
+    <li>Courses and blocks per course use the nominal size, which includes the ⅜ in joint.</li>
+    <li>Mortar = blocks ÷ {BLOCKS_PER_MORTAR_BAG} per 80-lb bag, scaled by face area for half-high blocks.</li>
+    <li>Core fill = wall area × actual block width × {CORE_VOID_FRACTION} × the share of cores filled; bags use 0.6 ft³ per 80-lb bag of concrete.</li>
+  </ul>
+</CalcPage>

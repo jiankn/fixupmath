@@ -1,0 +1,109 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def, { DIRT_MATERIALS } from '../calculators/dirt';
+import { fillDirtResult } from '../lib/sitework';
+import { fmt } from '../lib/format';
+
+const ex = fillDirtResult(20 * 10 * 1, 20, 1.2, 10);
+const holes = [
+  { name: 'Low spot, 10 × 10 ft, 6 in deep', ft3: 10 * 10 * 0.5 },
+  { name: 'Yard area, 20 × 30 ft, 6 in deep', ft3: 20 * 30 * 0.5 },
+  { name: 'Pool or pond fill, 15 × 30 ft, 4 ft deep', ft3: 15 * 30 * 4 },
+  { name: 'Raise a lot, 50 × 100 ft, 1 ft', ft3: 50 * 100 },
+].map((h) => ({ ...h, r: fillDirtResult(h.ft3, 20, 1.2, 10) }));
+---
+
+<CalcPage
+  slug="dirt-calculator"
+  def={def}
+  title="Dirt Calculator: Fill Dirt in Cubic Yards, Tons & Truckloads"
+  description="Free dirt calculator. Enter the area and depth to fill and get the cubic yards of fill dirt to order, with extra for compaction, plus tons and dump truck loads."
+  h1="Dirt Calculator"
+  updated="2026-10-24"
+>
+  <Fragment slot="lead">
+    Find out how much fill dirt to order to fill a hole, level a low spot, or raise a yard. The calculator adds the extra
+    you need for compaction and turns it into tons and truckloads.
+  </Fragment>
+
+  <h2 id="how-to">How to calculate fill dirt</h2>
+  <ol>
+    <li>Measure the area in feet. For a round hole, choose Circle; for an odd yard, add several shapes to a project.</li>
+    <li>Measure the depth to fill, from the bottom of the hole to the finished grade, and convert to feet.</li>
+    <li>Multiply length × width × depth for cubic feet, then divide by 27 for cubic yards.</li>
+    <li>Add 10–25% for compaction: loose dirt shrinks when it is tamped or rolled.</li>
+    <li>Multiply cubic yards by the weight of the dirt, about 1.2 tons per yard dry, for tons.</li>
+  </ol>
+
+  <h2 id="example">Example: raising a 20 × 10 ft area by 12 inches</h2>
+  <p>
+    20 × 10 × 1 = 200 cubic feet, or {fmt(ex.compactedYd3)} cubic yards once compacted. With 20% extra for a plate
+    compactor, order <strong>{fmt(ex.cubicYards)} cubic yards</strong> of loose fill, which weighs about {fmt(ex.tons)} tons.
+    That fits in one tandem dump truck.
+  </p>
+
+  <h2 id="compaction">How much extra for compaction?</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>How the fill is placed</th><th class="num">Extra to order</th></tr></thead>
+      <tbody>
+        <tr><td>Dumped and raked, left to settle</td><td class="num">0–10%</td></tr>
+        <tr><td>Tamped by hand in layers</td><td class="num">10–15%</td></tr>
+        <tr><td>Plate compactor in 4–6 in lifts</td><td class="num">15–20%</td></tr>
+        <tr><td>Clay soil or heavy roller compaction</td><td class="num">20–25%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    The exact shrink depends on the soil and its moisture. Under a slab, shed, or patio, compact in thin lifts and use the
+    higher number; under a lawn, light tamping is enough.
+  </p>
+
+  <h2 id="weight">How much does a yard of dirt weigh?</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Material</th><th class="num">Tons per cubic yard</th><th class="num">Pounds per cubic yard</th></tr></thead>
+      <tbody>{DIRT_MATERIALS.map((m) => <tr><td>{m.label}</td><td class="num">{m.tonsPerYd3}</td><td class="num">{(m.tonsPerYd3 * 2000).toLocaleString('en-US')}</td></tr>)}</tbody>
+    </table>
+  </div>
+  <p>Wet dirt can weigh far more than dry. If your supplier sells by the ton, ask for their weight per yard and use Custom weight.</p>
+
+  <h2 id="table">Fill dirt for common jobs</h2>
+  <p>20% extra for compaction, dry fill at 1.2 tons per yard, tandem trucks of about 10 yards.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Job</th><th class="num">Cubic yards</th><th class="num">Tons</th><th class="num">Truckloads</th></tr></thead>
+      <tbody>{holes.map((h) => <tr><td>{h.name}</td><td class="num">{fmt(h.r.cubicYards, 1)}</td><td class="num">{fmt(h.r.tons, 1)}</td><td class="num">{h.r.truckloads}</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="fill-vs-topsoil">Fill dirt or topsoil?</h2>
+  <p>
+    Fill dirt is subsoil with little organic matter. It compacts well and does not rot, so it is the right choice for
+    filling holes, grading, and building up a base. It is poor for growing. Fill to within 4–6 inches of the final grade,
+    then finish with topsoil if grass or plants will go on top: the <a href="/topsoil-calculator/">topsoil calculator</a>
+    handles that layer.
+  </p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many cubic yards are in a dump truck?</h3>
+  <p>
+    A single-axle dump truck carries about 5 cubic yards and a tandem about 10, sometimes up to 14 for light material. Wet
+    dirt can hit the weight limit before the bed is full, so ask the hauler.
+  </p>
+  <h3>How much fill dirt do I need to fill a hole?</h3>
+  <p>
+    Measure the hole's width, length, and depth, multiply them, and divide by 27 for cubic yards. For a round hole use π ×
+    radius² × depth. Then add 10–20% for compaction.
+  </p>
+  <h3>Is a yard of dirt the same as a ton?</h3>
+  <p>No. A cubic yard of dry fill weighs about 1.2 tons, so one ton is roughly 0.83 cubic yards.</p>
+  <p>Mixing gravel, sand, or mulch on the same job? <a href="/cubic-yard-calculator/">Convert each area to cubic yards</a>.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Compacted volume = area × depth. Loose volume to order = compacted volume × (1 + compaction %).</li>
+    <li>Tons = loose cubic yards × weight per cubic yard, in US tons of 2,000 lb.</li>
+    <li>Orders round up to the next half yard; truckloads are counted by volume and always round up.</li>
+  </ul>
+</CalcPage>

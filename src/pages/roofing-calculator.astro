@@ -1,0 +1,112 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/roofing';
+import { roofMaterials, UNDERLAYMENTS, NAILS_PER_SQUARE, RIDGE_CAP_LF_PER_BUNDLE, STARTER_LF_PER_BUNDLE } from '../lib/roof';
+import { pitchFactor } from '../lib/finish';
+import { fmt, int } from '../lib/format';
+
+const base = { pitch: 6, wastePct: 10, bundlesPerSquare: 3, underlayCoverFt2: UNDERLAYMENTS[0].coverFt2 };
+const ex = roofMaterials({ ...base, lengthFt: 50, widthFt: 30, type: 'gable' });
+const hip = roofMaterials({ ...base, lengthFt: 50, widthFt: 30, type: 'hip' });
+const houses = [
+  { name: '1,000 sq ft ranch (40 × 25 ft)', l: 40, w: 25 },
+  { name: '1,500 sq ft (50 × 30 ft)', l: 50, w: 30 },
+  { name: '2,000 sq ft (50 × 40 ft)', l: 50, w: 40 },
+  { name: '2,500 sq ft (62.5 × 40 ft)', l: 62.5, w: 40 },
+].map((h) => ({ ...h, r4: roofMaterials({ ...base, pitch: 4, lengthFt: h.l, widthFt: h.w, type: 'gable' }), r6: roofMaterials({ ...base, lengthFt: h.l, widthFt: h.w, type: 'gable' }), r8: roofMaterials({ ...base, pitch: 8, lengthFt: h.l, widthFt: h.w, type: 'gable' }) }));
+---
+
+<CalcPage
+  slug="roofing-calculator"
+  def={def}
+  title="Roofing Calculator: Roof Squares & Full Material List"
+  description="Free roofing calculator. Enter the roof footprint, pitch, and shape to get the roof area in squares and a full list: shingles, underlayment, drip edge, starter, ridge cap, and nails."
+  h1="Roofing Calculator"
+  updated="2026-10-24"
+>
+  <Fragment slot="lead">
+    Measure your roof from the ground and get its size in squares plus everything on the material list, from shingle
+    bundles to drip edge and ridge cap. Add your roofer's price per square to check a quote.
+  </Fragment>
+
+  <h2 id="how-to">How to measure a roof</h2>
+  <ol>
+    <li>Measure the length and width of the house from outside, then add the overhangs on each side. This is the footprint.</li>
+    <li>Find the pitch (rise per 12 inches of run). The <a href="/roof-pitch-calculator/">roof pitch calculator</a> shows three ways to measure it.</li>
+    <li>Multiply the footprint by the pitch factor for the sloped roof area.</li>
+    <li>Add 10% for a gable roof or 15% for hips, valleys, and dormers, then divide by 100 for <strong>squares</strong>.</li>
+  </ol>
+
+  <h2 id="example">Example: a 50 × 30 ft gable roof at 6/12</h2>
+  <p>
+    The footprint is 1,500 square feet. At 6/12 the pitch factor is {fmt(pitchFactor(6), 3)}, so the roof is
+    {fmt(ex.sloped, 0)} square feet. With 10% waste that is <strong>{fmt(ex.squares, 1)} squares</strong>:
+  </p>
+  <ul>
+    <li>{ex.bundles} bundles of shingles at 3 per square</li>
+    <li>{ex.underlayRolls} rolls of synthetic underlayment</li>
+    <li>{ex.dripEdgePieces} pieces of drip edge for {fmt(ex.dripEdgeFt, 0)} ft of eaves and rakes</li>
+    <li>{ex.starterBundles} bundle of starter strip and {ex.ridgeCapBundles} bundles of ridge cap</li>
+    <li>about {int(ex.nails)} roofing nails</li>
+  </ul>
+  <p>
+    The same house with a hip roof has {fmt(hip.eavesFt, 0)} ft of eaves and {fmt(hip.ridgeCapFt, 0)} ft of ridge and hips,
+    so it needs {hip.starterBundles} bundles of starter and {hip.ridgeCapBundles} of ridge cap.
+  </p>
+
+  <h2 id="table">Roofing squares by house size</h2>
+  <p>Gable roof, footprint including overhangs, 10% waste.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>House</th><th class="num">4/12</th><th class="num">6/12</th><th class="num">8/12</th></tr></thead>
+      <tbody>{houses.map((h) => <tr><td>{h.name}</td><td class="num">{fmt(h.r4.squares, 1)} sq</td><td class="num">{fmt(h.r6.squares, 1)} sq</td><td class="num">{fmt(h.r8.squares, 1)} sq</td></tr>)}</tbody>
+    </table>
+  </div>
+  <p>A house's living area and its footprint are not the same: a two-story home has a much smaller roof than its square footage suggests.</p>
+
+  <h2 id="cost">Checking a roofing quote</h2>
+  <p>
+    Roofers price by the square installed. Multiply the squares from this calculator by the price per square on your quote
+    to check that the measurement matches. Tear-off of old layers, disposal, replacing rotten decking, and extra flashing
+    are often billed separately, so ask what the square price includes.
+  </p>
+
+  <h2 id="materials">What goes on the material list</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Item</th><th>How it is counted</th></tr></thead>
+      <tbody>
+        <tr><td>Shingles</td><td>3 bundles per square for most shingles, 4 for some heavy ones</td></tr>
+        <tr><td>Underlayment</td><td>By sloped area: synthetic about 10 squares per roll, #15 felt 4, #30 felt 2</td></tr>
+        <tr><td>Drip edge</td><td>Along every eave and rake, in 10 ft pieces</td></tr>
+        <tr><td>Starter strip</td><td>Along the eaves, about {STARTER_LF_PER_BUNDLE} ft per bundle</td></tr>
+        <tr><td>Ridge cap</td><td>Along ridges and hips, about {RIDGE_CAP_LF_PER_BUNDLE} ft per bundle</td></tr>
+        <tr><td>Nails</td><td>About {NAILS_PER_SQUARE} per square with four nails per shingle; six-nail patterns need half again as many</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Coverage per bundle and roll varies by brand. The wrapper states the exact number.</p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many square feet is a roofing square?</h3>
+  <p>One square is 100 square feet of roof surface, measured along the slope.</p>
+  <h3>How do I measure my roof without climbing on it?</h3>
+  <p>
+    Measure the outside of the house at ground level, add the overhangs, and use the pitch factor. That gives the sloped
+    area to within a few percent for simple gable and hip roofs.
+  </p>
+  <h3>Does a steeper roof need more shingles?</h3>
+  <p>
+    Yes. The same footprint has more surface at a steeper pitch: a 12/12 roof has about 41% more area than its footprint,
+    a 4/12 roof about 5% more.
+  </p>
+  <p>Only need the shingle count? The <a href="/shingle-calculator/">shingle calculator</a> gives bundles by pitch.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Sloped area = footprint × √(1 + (pitch ÷ 12)²); squares = area × (1 + waste %) ÷ 100.</li>
+    <li>Gable: eaves = 2 × the long side, rakes = 4 × half the short side × pitch factor, ridge = the long side.</li>
+    <li>Hip: eaves = the full perimeter, ridge = long side − short side, each hip = √(2 × (half width)² + rise²).</li>
+    <li>The roof is assumed to have one pitch throughout. Underlayment is counted on the area before waste; all counts round up.</li>
+  </ul>
+</CalcPage>

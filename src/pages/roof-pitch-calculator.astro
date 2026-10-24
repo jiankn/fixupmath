@@ -1,0 +1,92 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import def from '../calculators/roof-pitch';
+import { pitchInfo, degToPitch } from '../lib/roof';
+import { fmt } from '../lib/format';
+
+const chart = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18].map((p) => pitchInfo(p));
+const ex = pitchInfo((5 / 18) * 12);
+const deg = [15, 20, 25, 30, 35, 40, 45].map((d) => ({ d, p: degToPitch(d) }));
+---
+
+<CalcPage
+  slug="roof-pitch-calculator"
+  def={def}
+  title="Roof Pitch Calculator: Pitch, Angle & Roof Pitch Chart"
+  description="Free roof pitch calculator. Enter the rise and run, the span and ridge height, or the angle to get the roof pitch in x/12, degrees, percent grade, and the pitch factor."
+  h1="Roof Pitch Calculator"
+  updated="2026-10-24"
+>
+  <Fragment slot="lead">
+    Find your roof pitch from a quick measurement, convert it between x/12, degrees, and percent, and get the pitch factor
+    for roof area and rafters.
+  </Fragment>
+
+  <h2 id="how-to">How to find your roof pitch</h2>
+  <ol>
+    <li>Hold a level horizontally against the underside of a rafter or on the roof surface.</li>
+    <li>Mark 12 inches along the level from where it touches the roof.</li>
+    <li>Measure straight up (or down) from that mark to the roof. That number of inches is the rise.</li>
+    <li>The pitch is rise/12: a 6 inch rise is a 6/12 pitch.</li>
+  </ol>
+  <p>
+    Can't get on the roof? Measure the span between the outside walls and the ridge height above the wall top from the
+    attic or the plans, and choose <strong>Span and height</strong>. Pitch = ridge height ÷ (span ÷ 2) × 12.
+  </p>
+
+  <h2 id="example">Example: 5 inches of rise over 18 inches of run</h2>
+  <p>
+    5 ÷ 18 × 12 = {fmt(ex.rise, 2)}, so the pitch is about <strong>{fmt(ex.rise, 1)}/12</strong>, or {fmt(ex.deg, 1)}°. Roofing
+    specs are written in whole pitches, so this roof is treated as {ex.nearest}/12.
+  </p>
+
+  <h2 id="chart">Roof pitch chart</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pitch</th><th class="num">Angle</th><th class="num">Percent grade</th><th class="num">Pitch factor</th></tr></thead>
+      <tbody>{chart.map((r) => <tr><td>{r.rise}/12</td><td class="num">{fmt(r.deg, 2)}°</td><td class="num">{fmt(r.percent, 1)}%</td><td class="num">{fmt(r.factor, 3)}</td></tr>)}</tbody>
+    </table>
+  </div>
+  <p>
+    The pitch factor converts a flat footprint to the sloped roof area: footprint × factor = roof area. The
+    <a href="/roofing-calculator/">roofing calculator</a> uses it to count squares and materials.
+  </p>
+
+  <h2 id="degrees">Degrees to pitch</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Angle</th><th class="num">Pitch</th></tr></thead>
+      <tbody>{deg.map((r) => <tr><td>{r.d}°</td><td class="num">{fmt(r.p, 2)}/12</td></tr>)}</tbody>
+    </table>
+  </div>
+
+  <h2 id="what-pitch">What pitch does each roofing material need?</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pitch</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td>Under 2/12</td><td>Low slope. Membranes such as TPO, EPDM, or modified bitumen, or metal rated for low slopes. No asphalt shingles.</td></tr>
+        <tr><td>2/12 to under 4/12</td><td>Asphalt shingles allowed under the IRC only with two layers of underlayment.</td></tr>
+        <tr><td>4/12 to 9/12</td><td>Conventional pitch for shingles, metal, and most tile. Walkable for most roofers.</td></tr>
+        <tr><td>Over 9/12</td><td>Steep. Needs roof jacks or harnesses, which usually raises labor cost.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Always follow the manufacturer's minimum slope for the product you choose, and your local code.</p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>What is the most common roof pitch?</h3>
+  <p>Most homes in the US fall between 4/12 and 9/12, with 6/12 one of the most common for gable roofs.</p>
+  <h3>How do I convert roof pitch to degrees?</h3>
+  <p>Divide the rise by 12, then take the arctangent: a 6/12 pitch is arctan(0.5) = 26.57°.</p>
+  <h3>Is a 4/12 pitch the same as 4 in 12?</h3>
+  <p>Yes. Both mean 4 inches of rise for every 12 inches of horizontal run, which is 18.43° or a 33.3% grade.</p>
+  <p>Framing the roof? The <a href="/rafter-calculator/">rafter calculator</a> turns span and pitch into rafter length.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Pitch = rise ÷ run × 12, written as x/12. From the span: ridge height ÷ (span ÷ 2) × 12. From an angle: tan(angle) × 12.</li>
+    <li>Angle = arctan(pitch ÷ 12); percent grade = pitch ÷ 12 × 100.</li>
+    <li>Pitch factor = √(1 + (pitch ÷ 12)²), the length along the slope for each foot of level run.</li>
+  </ul>
+</CalcPage>
