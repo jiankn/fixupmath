@@ -1,0 +1,43 @@
+---
+// 嵌入版外壳：没有页头页脚和广告，只 noindex（不同时加 canonical，避免信号冲突）。
+// 固定浅色主题（宿主网站多为浅色）；内容高度变化时通知父页面调整 iframe 高度。
+import '../styles/global.css';
+import { SITE } from '../site';
+interface Props { title: string; slug: string; name: string }
+const { title, slug, name } = Astro.props;
+const page = new URL(`/${slug}/`, Astro.site).href;
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title} | {SITE.name}</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="/favicon-d-32.png" type="image/png" sizes="32x32" />
+</head>
+<body class="embed">
+  <main class="embed-main"><slot /></main>
+  <p class="embed-credit no-print">
+    <a href={`${page}?utm_source=embed&utm_medium=widget`} target="_blank" rel="noopener">{name}</a> by <strong>{SITE.name}</strong> · Planning estimate; confirm with your supplier.
+  </p>
+</body>
+</html>
+<script>
+  let last = 0;
+  const send = () => {
+    const h = Math.ceil(document.documentElement.scrollHeight);
+    if (h !== last && window.parent !== window) {
+      last = h;
+      window.parent.postMessage({ fixupmathHeight: h }, '*');
+    }
+  };
+  new ResizeObserver(send).observe(document.body);
+  send();
+</script>
+<style is:global>
+  body.embed { background: var(--bg); }
+  .embed-main { padding: 12px; }
+  .embed .mbar, .embed .contents { display: none !important; }
+  .embed-credit { margin: 0; padding: 8px 12px 12px; font-size: 13px; color: var(--muted); }
+  .embed-credit a { color: var(--accent); }
+</style>

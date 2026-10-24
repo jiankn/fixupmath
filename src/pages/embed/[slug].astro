@@ -1,0 +1,27 @@
+---
+// 可嵌入计算器页：/embed/<slug>/。与正式页用同一套计算器组件和引擎，结果保持一致。
+import Embed from '../../layouts/Embed.astro';
+import Calculator from '../../components/calc/Calculator.astro';
+import ConcreteCalculator from '../../components/concrete/ConcreteCalculator.astro';
+import { EMBEDS } from '../../data/embeds';
+import { CALCULATORS } from '../../data/calculators';
+import type { CalculatorDef } from '../../lib/calc-types';
+
+export async function getStaticPaths() {
+  const defs = import.meta.glob<{ default: CalculatorDef }>('../../calculators/*.ts');
+  return Promise.all(
+    EMBEDS.map(async ({ slug }) => {
+      const file = `../../calculators/${slug.replace(/-calculator$/, '')}.ts`;
+      const def = slug === 'concrete-calculator' ? undefined : (await defs[file]()).default;
+      return { params: { slug }, props: { slug, def } };
+    }),
+  );
+}
+
+const { slug, def } = Astro.props as { slug: string; def?: CalculatorDef };
+const entry = CALCULATORS.find((c) => c.slug === slug)!;
+---
+
+<Embed title={entry.name} slug={slug} name={entry.name}>
+  {def ? <Calculator def={def} /> : <ConcreteCalculator />}
+</Embed>

@@ -6,6 +6,8 @@ import AdSlot from './AdSlot.astro';
 import Calculator from './calc/Calculator.astro';
 import ArticleContents from './ArticleContents.astro';
 import Icon from './Icon.astro';
+import EmbedCode from './EmbedCode.astro';
+import { embedOf } from '../data/embeds';
 import { CALCULATORS, categoryOf } from '../data/calculators';
 import type { CalculatorDef } from '../lib/calc-types';
 
@@ -20,6 +22,7 @@ interface Props {
 const { slug, title, description, h1, updated, def } = Astro.props;
 const entry = CALCULATORS.find((c) => c.slug === slug)!;
 const cat = categoryOf(slug)!;
+const embed = embedOf(slug);
 const related = (entry.related ?? [])
   .map((s) => CALCULATORS.find((c) => c.slug === s))
   .filter((c): c is NonNullable<typeof c> => !!c && c.status === 'live');
@@ -67,6 +70,7 @@ const updatedText = new Date(updated).toLocaleDateString('en-US', { year: 'numer
           </>
         )
       }
+      {embed && <EmbedCode slug={slug} name={entry.name} height={embed.height} />}
       <p class="muted small">Last updated <time datetime={updated}>{updatedText}</time>.</p>
     </article>
     </div>

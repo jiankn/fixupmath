@@ -1,0 +1,31 @@
+---
+// 计算器页底部的“把计算器放到你的网站”区块：预览链接 + 一键复制嵌入代码。
+import { embedSnippet } from '../data/embeds';
+interface Props { slug: string; name: string; height: number }
+const { slug, name, height } = Astro.props;
+const code = embedSnippet(new URL('/', Astro.site).href, slug, name, height);
+---
+<h2 id="embed">Add this calculator to your website</h2>
+<p>
+  Garden clubs, extension offices, suppliers, and how-to sites can embed this {name.toLowerCase()} for free. Paste the
+  code into an HTML block. The small script keeps the frame's height matched to the calculator; if your site strips
+  scripts, the frame still works at a fixed height. <a href={`/embed/${slug}/`}>Preview the embed</a>.
+</p>
+<div class="embed-code no-print">
+  <textarea readonly rows="5" aria-label={`Embed code for the ${name}`} data-embed-code>{code}</textarea>
+  <button type="button" class="btn-ghost" data-embed-copy>Copy embed code</button>
+</div>
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-embed-copy]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const box = btn.parentElement!.querySelector<HTMLTextAreaElement>('[data-embed-code]')!;
+      try { await navigator.clipboard.writeText(box.value); } catch { box.select(); document.execCommand('copy'); }
+      btn.textContent = 'Copied';
+      setTimeout(() => (btn.textContent = 'Copy embed code'), 2000);
+    });
+  });
+</script>
+<style>
+  .embed-code { display: grid; gap: 8px; justify-items: start; }
+  .embed-code textarea { width: 100%; box-sizing: border-box; font: 12px/1.5 var(--mono); padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-2); color: var(--text); resize: vertical; }
+</style>

@@ -60,6 +60,16 @@ npm run deploy   # 构建并部署到 Cloudflare Workers Static Assets（首次�
 输入项类型：长度（自带单位选择，支持「英尺 + 英寸」）、面积、数字、下拉、价格；
 `showWhen` 可以让某个输入只在另一个选项为特定值时出现。
 
+## Bing IndexNow
+
+根目录验证文件随网站一起部署。`npm run deploy` 在部署成功后自动向 Bing 提交新增、修改和删除的页面，未变化的页面不会重复提交。首次运行提交站点地图中的所有可索引页面；预览构建自动跳过。成功提交的页面摘要保存在本地 `.indexnow-state.json`（不入 Git）。
+
+使用 Node.js 24.5 或更新版本（提交命令支持环境代理）。单独提交执行 `npm run indexnow`；查看待提交列表执行 `npm run indexnow -- --dry-run`；需要重新提交全部页面时执行 `npm run indexnow -- --all`。提交失败时命令返回错误，网站部署仍已完成，可单独重试提交。
+
+Cloudflare Git 自动部署的部署命令应设置为 `npx wrangler deploy && npm run indexnow`，并持久化 `.indexnow-state.json` 才能跨构建去重；未保留状态时会重新提交全部页面。
+
+官方说明：https://www.indexnow.org/documentation 。HTTP 200 表示已接收，202 表示已接收但验证尚未完成；提交不代表已经收录。
+
 ## 数据库
 
 目前全是静态页面，计算在浏览器里完成，不需要数据库。以后要做用户反馈、保存项目等功能时，再在 `wrangler.toml` 里接 Cloudflare D1。

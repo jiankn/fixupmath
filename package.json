@@ -9,7 +9,9 @@
     "preview": "astro preview",
     "test": "vitest run",
     "check": "astro check",
-    "deploy": "npm run build && wrangler deploy"
+    "indexnow": "node --use-env-proxy scripts/indexnow.mjs",
+    "backlinks:verify": "node --use-env-proxy scripts/verify-backlinks.mjs",
+    "deploy": "npm run build && wrangler deploy && npm run indexnow"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

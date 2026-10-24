@@ -9,5 +9,6 @@ export default defineConfig({
   site,
   trailingSlash: 'always',
   build: { format: 'directory' },
-  integrations: [sitemap()],
+  // 嵌入版页面不收录，也不进站点地图
+  integrations: [sitemap({ filter: (page) => !page.includes('/embed/') })],
 });
