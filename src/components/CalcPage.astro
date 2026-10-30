@@ -16,7 +16,7 @@ interface Props {
   title: string; // <title>
   description: string;
   h1: string;
-  updated: string; // YYYY-MM-DD，内容真正改动时才更新
+  updated: string; // YYYY-MM-DD，内容真正改动时才更新；要写成 updated="..." 字面量，站点地图的 lastmod 从这里读
   def?: CalculatorDef; // 通用计算器；不传则用 calc 插槽（如混凝土计算器）
 }
 const { slug, title, description, h1, updated, def } = Astro.props;

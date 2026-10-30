@@ -4,8 +4,6 @@ import AdSlot from '../components/AdSlot.astro';
 import ConcreteCalculator from '../components/concrete/ConcreteCalculator.astro';
 import { shapeVolumeFt3, concreteResult, BAG_SIZES, CONCRETE_DENSITY_LB_FT3, fmt } from '../lib/concrete';
 
-const UPDATED = '2026-09-26';
-
 // 常见板尺寸的用量表：和计算器用同一个引擎生成，数字永远一致
 const sizes: [number, number][] = [
   [4, 4],
@@ -36,7 +34,7 @@ const coverage = [3, 4, 5, 6, 8].map((t) => ({ t, sqft: 27 / (t / 12) }));
   title="Concrete Calculator: Cubic Yards & Bags for Slabs, Footings, Stairs"
   description="Free concrete calculator. Enter length, width, and thickness to get cubic yards, 40, 60, and 80-lb bag counts, and a cost estimate for slabs, footings, columns, and stairs."
   h1="Concrete Calculator"
-  updated={UPDATED}
+  updated="2026-09-26"
 >
   <Fragment slot="lead">
     Find how many cubic yards of concrete, or how many 40, 60, or 80-lb bags, you need for a slab, footing, column,
