@@ -98,20 +98,31 @@ export function initCalculator(form: HTMLFormElement, def: CalculatorDef) {
   function describe(): string {
     const s = shapeDef();
     if (!s) return 'Item';
-    const parts = s.fields.map((f) => {
+    const parts: string[] = [];
+    s.fields.forEach((f) => {
       const el = fieldEl(f, true);
-      if (!el) return '';
-      const val = q<HTMLInputElement>(el, `[name="${f.key}"]`).value;
-      const unitSel = el.querySelector<HTMLSelectElement>(`[name="${f.key}Unit"]`);
-      if (!unitSel) return val;
-      if (unitSel.value === 'ftin') {
-        const inch = q<HTMLInputElement>(el, `[name="${f.key}In"]`).value;
-        return `${val || 0} ft${inch ? ` ${inch} in` : ''}`;
+      // 下拉（如体积单位）接在前一个数字后面：「1 cubic yards」，而不是单独一项
+      if (el && f.kind === 'select' && parts.length) {
+        const sel = q<HTMLSelectElement>(el, `[name="${f.key}"]`);
+        parts[parts.length - 1] += ` ${sel.selectedOptions[0]?.textContent?.replace(/\s*\(.*\)$/, '') ?? sel.value}`;
+        return;
       }
-      const label = f.kind === 'area' ? AREA_UNITS.find((u) => u.value === unitSel.value)?.label : unitSel.value;
-      return `${val} ${label}`;
+      parts.push(partOf(f, el));
     });
     return `${s.label}: ${parts.filter(Boolean).join(' × ')}`;
+  }
+
+  function partOf(f: FieldDef, el: HTMLElement | null): string {
+    if (!el) return '';
+    const val = q<HTMLInputElement>(el, `[name="${f.key}"]`).value;
+    const unitSel = el.querySelector<HTMLSelectElement>(`[name="${f.key}Unit"]`);
+    if (!unitSel) return val;
+    if (unitSel.value === 'ftin') {
+      const inch = q<HTMLInputElement>(el, `[name="${f.key}In"]`).value;
+      return `${val || 0} ft${inch ? ` ${inch} in` : ''}`;
+    }
+    const label = f.kind === 'area' ? AREA_UNITS.find((u) => u.value === unitSel.value)?.label : unitSel.value;
+    return `${val} ${label}`;
   }
 
   function render() {

@@ -8,6 +8,8 @@ export interface EmbedEntry {
 
 export const EMBEDS: EmbedEntry[] = [
   { slug: 'concrete-calculator', height: 1920 },
+  { slug: 'concrete-slab-calculator', height: 1820 },
+  { slug: 'concrete-bag-calculator', height: 1640 },
   { slug: 'mulch-calculator', height: 1600 },
   { slug: 'gravel-calculator', height: 1920 },
   { slug: 'topsoil-calculator', height: 1950 },

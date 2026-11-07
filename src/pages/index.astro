@@ -158,7 +158,7 @@ const websiteSchema = {
       </div>
     </section>
     <section class="example" aria-labelledby="example-heading">
-      <div class="example-copy"><span class="example-label">A little math in action</span><h2 id="example-heading">A patio plan.<br />A clear shopping list.</h2><p>A 10 × 10 ft slab, 4 inches thick, with 10% extra for waste. Here’s what to plan for.</p><a class="text-link" href="/concrete-calculator/?shape=slab&length=10ft&width=10ft&thickness=4in&waste=10">Try this example <Icon name="arrow" size={18} /></a></div>
+      <div class="example-copy"><span class="example-label">A little math in action</span><h2 id="example-heading">A patio plan.<br />A clear shopping list.</h2><p>A 10 × 10 ft slab, 4 inches thick, with 10% extra for waste. Here’s what to plan for.</p><a class="text-link" href="/concrete-slab-calculator/?length=10ft&width=10ft&thickness=4in&waste=10">Try this example <Icon name="arrow" size={18} /></a></div>
       <div class="example-diagram"><ShapeDiagram shape="slab" /><span>10 ft × 10 ft × 4 in</span></div>
       <div class="example-result"><span>Concrete needed</span><strong>{fmt(example.cubicYards)} <small>yd³</small></strong><p>Includes 10% extra</p><div class="example-options"><div><b>{example.bags.find(b => b.lb === 80)!.count}</b><span>80-lb bags</span></div><span class="or">or</span><div><b>{fmt(readyMixOrder(example.cubicYards))} yd³</b><span>ready-mix order</span></div></div></div>
     </section>

@@ -1,0 +1,93 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import AdSlot from '../components/AdSlot.astro';
+import def from '../calculators/concrete-bag';
+import { BAG_YIELDS, BAG_SOURCES, bagsFor, bagsPerYard } from '../lib/concrete-bags';
+import { CUBIC_METERS_PER_CUBIC_FOOT } from '../lib/units';
+import { fmt, int } from '../lib/format';
+
+const bagsDesc = [...BAG_YIELDS].reverse();
+const perYard = bagsDesc.map((b) => ({
+  ...b,
+  ...bagsPerYard(b.ft3),
+  perM3: bagsFor(1 / CUBIC_METERS_PER_CUBIC_FOOT, b.ft3),
+}));
+// 部分立方码要几袋
+const fractions = [0.25, 0.5, 0.75, 1, 1.5, 2].map((yd) => ({ yd, counts: bagsDesc.map((b) => bagsFor(yd * 27, b.ft3)) }));
+// 柱坑：直径 × 深度，不扣除立柱体积
+const holes = [[6, 2], [8, 2], [8, 3], [10, 3], [12, 3], [12, 4]].map(([d, depth]) => {
+  const ft3 = Math.PI * (d / 24) ** 2 * depth;
+  return { d, depth, ft3, b80: bagsFor(ft3, 0.6), b60: bagsFor(ft3, 0.45), b50: bagsFor(ft3, 0.375) };
+});
+const y80 = perYard.find((b) => b.lb === 80)!;
+---
+<CalcPage slug="concrete-bag-calculator" def={def}
+  title="Concrete Bag Calculator: 40, 50, 60 & 80 lb Bags"
+  description="Concrete bag calculator: enter a volume, slab, or post holes and get how many 40, 50, 60, or 80-lb bags of concrete to buy, plus pallets, weight, and bags per yard."
+  h1="Concrete Bag Calculator" updated="2026-11-08">
+  <Fragment slot="lead">Find how many bags of concrete to buy. Enter cubic yards, cubic feet, or cubic meters, or the size of a small pad or your post holes, then pick the bag size. You also get full pallets and the weight you will be hauling.</Fragment>
+
+  <h2 id="how">How many bags of concrete do you need?</h2>
+  <p>Divide the volume in cubic feet by the yield of one bag, then round up. The yield is how much mixed concrete a bag makes, and it is printed on the bag.</p>
+  <p class="formula">bags = round up [volume (ft³) × (1 + waste ÷ 100) ÷ yield per bag (ft³)]</p>
+  <p>Example: a 4 × 4 ft pad, 4 inches thick, is 4 × 4 × 0.333 = 5.33 ft³. With 5% extra that is 5.6 ft³, and 5.6 ÷ 0.60 = 9.3, so buy <strong>10 bags at 80 lb</strong> (or 13 at 60 lb).</p>
+
+  <h2 id="bags-per-yard">How many bags of concrete in a yard?</h2>
+  <p>A cubic yard is 27 cubic feet. Using the published yields, it takes <strong>45 bags at 80 lb</strong>, 60 bags at 60 lb, 72 bags at 50 lb, or 90 bags at 40 lb.</p>
+  <div class="table-wrap fit"><table>
+    <caption>Bags per cubic yard and cubic meter, rounded up to whole bags</caption>
+    <thead><tr><th scope="col">Bag size</th><th scope="col" class="num">Yield per bag</th><th scope="col" class="num">Yards per bag</th><th scope="col" class="num">Bags per yd³</th><th scope="col" class="num">Bags per m³</th></tr></thead>
+    <tbody>{perYard.map((b) => <tr><th scope="row">{b.lb} lb</th><td class="num">{b.ft3} ft³</td><td class="num">{fmt(b.yardsPerBag, 4)}</td><td class="num">{b.bags}</td><td class="num">{b.perM3}</td></tr>)}</tbody>
+  </table></div>
+
+  <h3 id="80-lb-bags-in-a-yard">How many 80 lb bags of concrete in a yard?</h3>
+  <p>45. Each 80-lb bag makes about 0.60 ft³, and 27 ÷ 0.60 = 45 exactly. Buy a few more to cover waste: 48 bags gives you about 7% extra.</p>
+  <h3 id="60-lb-bags-in-a-yard">How many 60 lb bags of concrete in a yard?</h3>
+  <p>60. A 60-lb bag yields about 0.45 ft³, and 27 ÷ 0.45 = 60.</p>
+  <h3 id="yards-per-bag">How many yards is a bag of concrete?</h3>
+  <p>An 80-lb bag is about {fmt(y80.yardsPerBag, 3)} cubic yards (0.60 ft³), or 1/45 of a yard. A 60-lb bag is 1/60 of a yard, and a 40-lb bag is 1/90.</p>
+
+  <h2 id="fractions">Bags for part of a yard</h2>
+  <div class="table-wrap fit"><table>
+    <thead><tr><th scope="col">Volume</th>{bagsDesc.map((b) => <th scope="col" class="num">{b.lb} lb</th>)}</tr></thead>
+    <tbody>{fractions.map((f) => <tr><th scope="row">{f.yd} yd³</th>{f.counts.map((c) => <td class="num">{c}</td>)}</tr>)}</tbody>
+  </table></div>
+
+  <h2 id="post-holes">Bags of concrete per post hole</h2>
+  <p>Volume of the full hole, with nothing subtracted for the post and no waste added. A post takes up some of the hole, so these counts leave a little spare.</p>
+  <div class="table-wrap fit"><table>
+    <thead><tr><th scope="col">Hole</th><th scope="col" class="num">ft³</th><th scope="col" class="num">80 lb</th><th scope="col" class="num">60 lb</th><th scope="col" class="num">50 lb</th></tr></thead>
+    <tbody>{holes.map((h) => <tr><th scope="row">{h.d} in × {h.depth} ft</th><td class="num">{fmt(h.ft3)}</td><td class="num">{h.b80}</td><td class="num">{h.b60}</td><td class="num">{h.b50}</td></tr>)}</tbody>
+  </table></div>
+  <p>For a whole fence line, the <a href="/fence-calculator/">fence calculator</a> counts posts and the concrete for every hole.</p>
+
+  <h2 id="pallets">How many bags of concrete on a pallet?</h2>
+  <p>QUIKRETE lists these pallet quantities for its Concrete Mix. Stores can split pallets or stack differently, so confirm when you order.</p>
+  <div class="table-wrap fit"><table>
+    <thead><tr><th scope="col">Bag size</th><th scope="col" class="num">Bags per pallet</th><th scope="col" class="num">Concrete per pallet</th><th scope="col" class="num">Bag weight per pallet</th></tr></thead>
+    <tbody>{bagsDesc.map((b) => <tr><th scope="row">{b.lb} lb</th>{b.perPallet ? <><td class="num">{b.perPallet}</td><td class="num">{fmt(b.perPallet * b.ft3, 1)} ft³ ({fmt((b.perPallet * b.ft3) / 27)} yd³)</td><td class="num">{int(b.perPallet * b.lb)} lb</td></> : <><td class="num">Ask the store</td><td class="num">–</td><td class="num">–</td></>}</tr>)}</tbody>
+  </table></div>
+
+  <AdSlot />
+
+  <h2 id="which-size">40, 50, 60, or 80-lb bags: which should you buy?</h2>
+  <p>Within one product, such as QUIKRETE Concrete Mix, all four sizes are the same mix and make the same concrete per pound. Choose by price and handling. To compare prices, divide each bag's price by its yield to get the cost per cubic foot. Lighter bags cost more trips but are easier to lift and mix in a wheelbarrow. Enter your store's bag price in the calculator for a total.</p>
+  <p>Over about a yard, a ready-mix delivery is often less work than 45 or more bags. The <a href="/concrete-slab-calculator/">concrete slab calculator</a> shows the ready-mix order for a slab, and the general <a href="/concrete-calculator/">concrete calculator</a> handles footings, columns, and steps.</p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How much does a bag of concrete cover?</h3>
+  <p>At 4 inches thick, an 80-lb bag covers about 1.8 ft² (0.60 ÷ 0.333), and a 60-lb bag about 1.35 ft². At 2 inches, double those.</p>
+  <h3>Does fast-setting or high-strength mix yield the same?</h3>
+  <p>Not always. Specialty mixes can yield differently per bag. Choose <strong>Other bag</strong> in the calculator and enter the yield printed on your bag.</p>
+  <h3>How much water does an 80-lb bag need?</h3>
+  <p>QUIKRETE's data sheet starts at about 6 pints per 80-lb bag, up to about 9 pints. Follow the directions on your bag.</p>
+
+  <h2 id="method">Sources and method</h2>
+  <ul>
+    <li>Yields: <a href={BAG_SOURCES.quikreteTds} rel="nofollow">QUIKRETE Concrete Mix No. 1101 data sheet</a>, revised October 2022 (40 lb 0.30, 50 lb 0.375, 60 lb 0.45, 80 lb 0.60 ft³). <a href={BAG_SOURCES.sakrete} rel="nofollow">Sakrete High-Strength Concrete Mix</a> lists the same yields for 40, 60, and 80 lb.</li>
+    <li>Pallets: <a href={BAG_SOURCES.quikretePallets} rel="nofollow">QUIKRETE Concrete Mix product page</a> (40 lb 80, 60 lb 56, 80 lb 42 per pallet). No 50-lb pallet count is published there.</li>
+    <li>Sources checked {BAG_SOURCES.verified}. Yields are approximate and can vary by product and region.</li>
+    <li>Post-hole volume is π × (diameter ÷ 2)² × depth × number of holes. Bag counts are rounded up after the waste allowance.</li>
+    <li>This page does not list prices. Enter your own bag price for a cost estimate.</li>
+  </ul>
+</CalcPage>

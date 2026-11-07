@@ -143,7 +143,7 @@ export function shapeVolumeFt3(shape: ShapeId, dims: Record<string, Length>, ste
   }
 }
 
-// 常见美国预拌袋装混凝土：每袋出方量（立方英尺），按厂家袋上标注的产量
+// 常见美国预拌袋装混凝土：每袋出方量（立方英尺）。来源见 concrete-bags.ts 的 BAG_YIELDS（QUIKRETE 1101 数据表）
 export const BAG_SIZES = [
   { lb: 40, yieldFt3: 0.3 },
   { lb: 60, yieldFt3: 0.45 },

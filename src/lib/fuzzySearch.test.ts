@@ -82,7 +82,12 @@ describe('fuzzySearch engine', () => {
   it('handles multi-token queries', () => {
     const concreteSlab = fuzzySearch('concrete slab', tools);
     expect(concreteSlab.length).toBeGreaterThan(0);
-    expect(concreteSlab[0].item.slug).toBe('concrete-calculator');
+    expect(concreteSlab[0].item.slug).toBe('concrete-slab-calculator');
+    expect(fuzzySearch('concrete bag', tools)[0].item.slug).toBe('concrete-bag-calculator');
+    expect(fuzzySearch('concrete slab calculator', tools)[0].item.slug).toBe('concrete-slab-calculator');
+    expect(fuzzySearch('concrete bag calculator', tools)[0].item.slug).toBe('concrete-bag-calculator');
+    expect(fuzzySearch('bags of concrete', tools)[0].item.slug).toBe('concrete-bag-calculator');
+    expect(fuzzySearch('concrete calculator', tools)[0].item.slug).toBe('concrete-calculator');
   });
 
   it('produces safe HTML highlighting for matches', () => {

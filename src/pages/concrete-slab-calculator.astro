@@ -1,0 +1,104 @@
+---
+import CalcPage from '../components/CalcPage.astro';
+import AdSlot from '../components/AdSlot.astro';
+import def from '../calculators/concrete-slab';
+import { slabVolume, bagsFor, sqftPerYard, BAG_SOURCES } from '../lib/concrete-bags';
+import { readyMixOrder } from '../lib/concrete';
+import { fmt, int } from '../lib/format';
+
+// 常见板尺寸用量表：和计算器同一个引擎，不加损耗
+const sizes: [number, number][] = [[4, 4], [8, 8], [10, 10], [10, 12], [12, 12], [12, 16], [10, 20], [12, 24], [20, 20], [24, 24]];
+const row = (l: number, w: number, tIn: number) => {
+  const ft3 = slabVolume({ lengthFt: l, widthFt: w, thicknessFt: tIn / 12 }).netFt3;
+  return { l, w, yd: ft3 / 27, b80: bagsFor(ft3, 0.6), b60: bagsFor(ft3, 0.45) };
+};
+const table4 = sizes.map(([l, w]) => row(l, w, 4));
+const table6 = sizes.map(([l, w]) => row(l, w, 6));
+const coverage = [3, 4, 5, 6, 8].map((t) => ({ t, sqft: sqftPerYard(t) }));
+
+// 加厚边例子：12 × 16 ft、4 in 板，四周 12 in 宽、总深 12 in
+const shed = slabVolume({ lengthFt: 16, widthFt: 12, thicknessFt: 4 / 12, edgeDepthFt: 1, edgeWidthFt: 1 });
+const shedTotal = shed.netFt3 * 1.1;
+---
+<CalcPage slug="concrete-slab-calculator" def={def}
+  title="Concrete Slab Calculator: Cubic Yards & Bags"
+  description="Concrete slab calculator: enter length, width, and thickness, add a thickened edge if you need one, and get cubic yards, 60 or 80-lb bags, and the ready-mix to order."
+  h1="Concrete Slab Calculator" updated="2026-11-08">
+  <Fragment slot="lead">Enter the slab's length, width, and thickness to see how many cubic yards of concrete it takes, how many 60 or 80-lb bags that is, and how much ready-mix to order. Turn on a thickened edge for shed and garage slabs.</Fragment>
+
+  <h2 id="how">How to figure concrete for a slab</h2>
+  <ol>
+    <li>Measure the length and width of the slab in feet.</li>
+    <li>Convert the thickness to feet: divide inches by 12, so 4 in is 0.333 ft and 6 in is 0.5 ft.</li>
+    <li>Multiply length × width × thickness to get cubic feet.</li>
+    <li>Divide by 27 to get cubic yards.</li>
+    <li>Add 5–10% for an uneven base and form bulge, then round up when you order.</li>
+  </ol>
+  <p class="formula">cubic yards = length (ft) × width (ft) × thickness (in) ÷ 12 ÷ 27</p>
+  <p>For an L-shaped or stepped slab, split it into rectangles, enter each one, and select <strong>Add to project</strong>. The calculator adds the pieces and applies the waste allowance once to the total.</p>
+
+  <h2 id="example">Example: a 10 × 10 ft patio slab, 4 inches thick</h2>
+  <p>10 × 10 × (4 ÷ 12) = 33.33 ft³, or 1.23 cubic yards. With 10% extra that becomes 36.67 ft³ (1.36 yd³). At 0.60 ft³ per 80-lb bag that is 61.1, so buy <strong>62 bags</strong>. If you order ready-mix instead, ask for <strong>1.5 yards</strong>.</p>
+
+  <h2 id="thickened-edge">Slabs with a thickened edge</h2>
+  <p>Shed, garage, and some patio slabs are poured deeper around the perimeter. The calculator treats that strip as a rectangular band: its area is the slab area minus the inner rectangle, and its extra depth is the edge depth minus the slab thickness. Edges are often sloped on the inside, so a rectangular band slightly overestimates, which leaves you a little spare.</p>
+  <p class="formula">extra volume = [L × W − (L − 2B) × (W − 2B)] × (edge depth − slab thickness)</p>
+  <p>Example: a 12 × 16 ft shed slab, 4 in thick, with a 12 in wide edge that is 12 in deep in total. The slab is {fmt(shed.slabFt3)} ft³. The band covers 192 − (10 × 14) = {fmt(shed.bandAreaFt2)} ft² and adds 8 in of depth, or {fmt(shed.edgeFt3)} ft³. Together that is {fmt(shed.netFt3)} ft³ ({fmt(shed.netFt3 / 27)} yd³); with 10% extra, {fmt(shedTotal / 27)} yd³, so order {fmt(readyMixOrder(shedTotal / 27))} yards.</p>
+
+  <h2 id="slab-table">Concrete for common slab sizes</h2>
+  <p>Exact volumes with nothing added. Add your waste allowance before you buy.</p>
+  <h3>4-inch slab (patios, walkways, shed floors)</h3>
+  <div class="table-wrap fit"><table>
+    <thead><tr><th scope="col">Slab size</th><th scope="col" class="num">Cubic yards</th><th scope="col" class="num">80-lb bags</th><th scope="col" class="num">60-lb bags</th></tr></thead>
+    <tbody>{table4.map((r) => <tr><th scope="row">{r.l} × {r.w} ft</th><td class="num">{fmt(r.yd)}</td><td class="num">{int(r.b80)}</td><td class="num">{int(r.b60)}</td></tr>)}</tbody>
+  </table></div>
+  <h3>6-inch slab (driveways, heavier loads)</h3>
+  <div class="table-wrap fit"><table>
+    <thead><tr><th scope="col">Slab size</th><th scope="col" class="num">Cubic yards</th><th scope="col" class="num">80-lb bags</th><th scope="col" class="num">60-lb bags</th></tr></thead>
+    <tbody>{table6.map((r) => <tr><th scope="row">{r.l} × {r.w} ft</th><td class="num">{fmt(r.yd)}</td><td class="num">{int(r.b80)}</td><td class="num">{int(r.b60)}</td></tr>)}</tbody>
+  </table></div>
+
+  <h2 id="coverage">How many square feet does a yard of concrete cover?</h2>
+  <p>One cubic yard covers <strong>81 ft² at 4 inches</strong> and 54 ft² at 6 inches. Divide 27 by the thickness in feet for any other depth.</p>
+  <div class="table-wrap fit"><table>
+    <thead><tr><th scope="col">Slab thickness</th><th scope="col" class="num">Square feet per cubic yard</th></tr></thead>
+    <tbody>{coverage.map((c) => <tr><th scope="row">{c.t} in</th><td class="num">{fmt(c.sqft, 1)}</td></tr>)}</tbody>
+  </table></div>
+
+  <h2 id="thickness">How thick should a concrete slab be?</h2>
+  <p>Most patios, sidewalks, and shed floors are poured <strong>4 inches</strong> thick. Driveways and garage floors usually run 4 to 6 inches, and slabs for heavy trucks, RVs, or equipment need 6 inches or more plus reinforcement; the <a href="/rebar-calculator/">rebar calculator</a> lays out the bar grid. Your local building code and any engineered plans take priority over these rules of thumb.</p>
+  <div class="table-wrap fit"><table>
+    <thead><tr><th scope="col">Project</th><th scope="col">Typical thickness</th></tr></thead>
+    <tbody>
+      <tr><td>Sidewalk, walkway, patio</td><td>4 in</td></tr>
+      <tr><td>Shed or hot tub pad</td><td>4 in (follow the hot tub maker's pad requirement)</td></tr>
+      <tr><td>Garage floor</td><td>4–6 in</td></tr>
+      <tr><td>Residential driveway</td><td>4–6 in; 5–6 in where heavier vehicles park</td></tr>
+      <tr><td>RV pad, heavy equipment</td><td>6 in or more, reinforced</td></tr>
+    </tbody>
+  </table></div>
+
+  <AdSlot />
+
+  <h2 id="bags-or-ready-mix">Bags or a ready-mix truck?</h2>
+  <p>Under about half a yard, bags are practical. Between half a yard and a yard and a half you can still mix bags, but it is heavy work, so price a short load too. Above that, order ready-mix: one continuous pour avoids cold joints where fresh concrete meets a batch that has started to set. Many plants charge extra for small loads, so ask about minimums. To count bags of a particular size, or pallets, use the <a href="/concrete-bag-calculator/">concrete bag calculator</a>.</p>
+  <p>Most slabs sit on a compacted stone base; <a href="/gravel-calculator/">work out the gravel</a> at the same time. For footings, round columns, or poured steps, use the general <a href="/concrete-calculator/">concrete calculator</a>.</p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>How many yards of concrete for a 20 × 20 slab?</h3>
+  <p>At 4 inches thick, 20 × 20 × 0.333 = 133.3 ft³, or 4.94 cubic yards. With 10% extra, order about 5.5 yards. At 6 inches it is 7.41 yards before waste.</p>
+  <h3>How much concrete for a 24 × 24 garage slab?</h3>
+  <p>At 4 inches it takes 7.11 cubic yards; at 6 inches, 10.67 cubic yards, before waste. A thickened edge adds to that, so turn it on in the calculator if your plans show one.</p>
+  <h3>How many 80-lb bags for a 10 × 10 slab?</h3>
+  <p>A 4-inch 10 × 10 slab is 33.33 ft³, which is 56 bags at 0.60 ft³ each with no extra, or 62 bags with 10% added.</p>
+
+  <h2 id="method">How this calculator works</h2>
+  <ul>
+    <li>Volume is length × width × thickness, with every dimension converted to feet. Metric inputs are converted first.</li>
+    <li>The thickened edge is a rectangular band around the inside of the perimeter, as described above.</li>
+    <li>The waste allowance is added once, after any project pieces are summed.</li>
+    <li>Bag counts use 0.30, 0.45, and 0.60 ft³ for 40, 60, and 80-lb bags, from the <a href={BAG_SOURCES.quikreteTds} rel="nofollow">QUIKRETE Concrete Mix No. 1101 data sheet</a> (revised October 2022); <a href={BAG_SOURCES.sakrete} rel="nofollow">Sakrete High-Strength Concrete Mix</a> lists the same yields. Checked {BAG_SOURCES.verified}. Counts are rounded up.</li>
+    <li>Ready-mix is rounded up to the next quarter yard. Weight assumes about 150 lb per cubic foot.</li>
+    <li>Results are planning estimates. Confirm the order with your supplier.</li>
+  </ul>
+</CalcPage>
