@@ -5,3 +5,6 @@ dist/
 .env
 .indexnow-state.json
 .firecrawl/
+.seo/runs/*/source/
+.seo/runs/*/normalized/
+.seo/runs/*/automated/

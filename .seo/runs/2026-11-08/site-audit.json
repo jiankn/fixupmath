@@ -1,0 +1,867 @@
+{
+  "repository": "C:\\antigravity\\fixupmath",
+  "domain": "fixupmath.com",
+  "framework": "Astro",
+  "routes": [
+    {
+      "route": "/",
+      "url": "https://fixupmath.com/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\index.html",
+      "title": "Free Construction Calculators for Home Projects | FixUpMath",
+      "description": "Free construction calculators for concrete, gravel, lumber, and flooring. Estimate material quantities, bag counts, cubic yards, and project costs.",
+      "h1": "Free construction calculators for home projects",
+      "canonical": [
+        "https://fixupmath.com/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/about/",
+      "url": "https://fixupmath.com/about/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\about\\index.html",
+      "title": "About | FixUpMath",
+      "description": "What FixUpMath is, how the calculators are built, and how to reach us.",
+      "h1": "About",
+      "canonical": [
+        "https://fixupmath.com/about/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/asphalt-calculator/",
+      "url": "https://fixupmath.com/asphalt-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\asphalt-calculator\\index.html",
+      "title": "Asphalt Calculator: Tons of Asphalt for a Driveway or Patch | FixUpMath",
+      "description": "Free asphalt calculator. Enter the area and compacted thickness to get tons of hot mix asphalt, cubic yards, cold patch bags, and the gravel base for a new driveway.",
+      "h1": "Asphalt Calculator",
+      "canonical": [
+        "https://fixupmath.com/asphalt-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/board-foot-calculator/",
+      "url": "https://fixupmath.com/board-foot-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\board-foot-calculator\\index.html",
+      "title": "Board Foot Calculator: Lumber Board Feet & Cost | FixUpMath",
+      "description": "Free board foot calculator. Enter thickness, width, length, and quantity to get board feet, cubic feet, and cost. Add different boards to one lumber order.",
+      "h1": "Board Foot Calculator",
+      "canonical": [
+        "https://fixupmath.com/board-foot-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/brick-calculator/",
+      "url": "https://fixupmath.com/brick-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\brick-calculator\\index.html",
+      "title": "Brick Calculator: How Many Bricks & Mortar Bags You Need | FixUpMath",
+      "description": "Free brick calculator. Enter the wall size and brick type to get the number of bricks per square foot, total bricks with waste, and bags of mortar mix.",
+      "h1": "Brick Calculator",
+      "canonical": [
+        "https://fixupmath.com/brick-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/btu-calculator/",
+      "url": "https://fixupmath.com/btu-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\btu-calculator\\index.html",
+      "title": "BTU Calculator: Air Conditioner Size for a Room | FixUpMath",
+      "description": "Free BTU calculator. Enter room size, sun exposure, occupants, and whether it's a kitchen to get the air conditioner BTUs and tons you need, using the ENERGY STAR sizing method.",
+      "h1": "BTU Calculator",
+      "canonical": [
+        "https://fixupmath.com/btu-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/carpet-calculator/",
+      "url": "https://fixupmath.com/carpet-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\carpet-calculator\\index.html",
+      "title": "Carpet Calculator: Measure Square Feet & Yards | FixUpMath",
+      "description": "Measure carpet in square feet and yards, add rooms, and estimate roll length, padding, and cost. Choose 12, 13.5, or 15 ft rolls and your waste allowance.",
+      "h1": "Carpet Calculator",
+      "canonical": [
+        "https://fixupmath.com/carpet-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/cinder-block-calculator/",
+      "url": "https://fixupmath.com/cinder-block-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\cinder-block-calculator\\index.html",
+      "title": "Cinder Block Calculator: Blocks, Mortar & Core Fill for a Wall | FixUpMath",
+      "description": "Free cinder block calculator. Enter the wall length and height to get the number of concrete blocks, courses, bags of mortar, and concrete to fill the cores.",
+      "h1": "Cinder Block Calculator",
+      "canonical": [
+        "https://fixupmath.com/cinder-block-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/concrete-bag-calculator/",
+      "url": "https://fixupmath.com/concrete-bag-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\concrete-bag-calculator\\index.html",
+      "title": "Concrete Bag Calculator: 40, 50, 60 & 80 lb Bags | FixUpMath",
+      "description": "Concrete bag calculator: enter a volume, slab, or post holes and get how many 40, 50, 60, or 80-lb bags of concrete to buy, plus pallets, weight, and bags per yard.",
+      "h1": "Concrete Bag Calculator",
+      "canonical": [
+        "https://fixupmath.com/concrete-bag-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/concrete-calculator/",
+      "url": "https://fixupmath.com/concrete-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\concrete-calculator\\index.html",
+      "title": "Concrete Calculator: Footings, Columns & Stairs | FixUpMath",
+      "description": "Calculate concrete for footings, walls, columns, and stairs. Get cubic yards, bags, and costs for one pour or a project, with waste and rounding explained.",
+      "h1": "Concrete Calculator",
+      "canonical": [
+        "https://fixupmath.com/concrete-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/concrete-masonry/",
+      "url": "https://fixupmath.com/concrete-masonry/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\concrete-masonry\\index.html",
+      "title": "Concrete & Masonry Calculators | FixUpMath",
+      "description": "Concrete, asphalt, rebar, brick, block, retaining wall, and paver quantities for home projects.",
+      "h1": "Concrete & Masonry",
+      "canonical": [
+        "https://fixupmath.com/concrete-masonry/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/concrete-slab-calculator/",
+      "url": "https://fixupmath.com/concrete-slab-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\concrete-slab-calculator\\index.html",
+      "title": "Concrete Slab Calculator: Cubic Yards & Bags | FixUpMath",
+      "description": "Concrete slab calculator: enter length, width, and thickness, add a thickened edge if you need one, and get cubic yards, 60 or 80-lb bags, and the ready-mix to order.",
+      "h1": "Concrete Slab Calculator",
+      "canonical": [
+        "https://fixupmath.com/concrete-slab-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/conduit-fill-calculator/",
+      "url": "https://fixupmath.com/conduit-fill-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\conduit-fill-calculator\\index.html",
+      "title": "Conduit Fill Calculator: EMT & PVC | FixUpMath",
+      "description": "Calculate EMT or PVC conduit fill for THHN wires. Compare fill percentages with NEC Chapter 9 limits and see maximum wire counts by conduit size.",
+      "h1": "Conduit Fill Calculator",
+      "canonical": [
+        "https://fixupmath.com/conduit-fill-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/contact/",
+      "url": "https://fixupmath.com/contact/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\contact\\index.html",
+      "title": "Contact | FixUpMath",
+      "description": "How to contact FixUpMath about corrections, feedback, or calculator requests.",
+      "h1": "Contact",
+      "canonical": [
+        "https://fixupmath.com/contact/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/countertop-calculator/",
+      "url": "https://fixupmath.com/countertop-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\countertop-calculator\\index.html",
+      "title": "Countertop Calculator: Surface Area and Cost | FixUpMath",
+      "description": "Calculate countertop square footage for rectangular, L-shaped, or U-shaped tops. Count shared corners once, deduct optional cutouts, and add your quoted rate.",
+      "h1": "Countertop Calculator",
+      "canonical": [
+        "https://fixupmath.com/countertop-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/cubic-yard-calculator/",
+      "url": "https://fixupmath.com/cubic-yard-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\cubic-yard-calculator\\index.html",
+      "title": "Cubic Yard Calculator: Yards & Tons of Dirt, Gravel, Mulch | FixUpMath",
+      "description": "Free cubic yard calculator. Enter length, width, and depth in feet or inches to get cubic yards, cubic feet, and tons of dirt, gravel, sand, mulch, or concrete.",
+      "h1": "Cubic Yard Calculator",
+      "canonical": [
+        "https://fixupmath.com/cubic-yard-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/deck-calculator/",
+      "url": "https://fixupmath.com/deck-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\deck-calculator\\index.html",
+      "title": "Deck Calculator: Boards, Joists & Screws for Your Deck | FixUpMath",
+      "description": "Free deck calculator. Enter your deck size, board width, gap, and joist spacing to get the number of deck boards, joists, rim joists, and deck screws.",
+      "h1": "Deck Calculator",
+      "canonical": [
+        "https://fixupmath.com/deck-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/decks-fences-framing/",
+      "url": "https://fixupmath.com/decks-fences-framing/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\decks-fences-framing\\index.html",
+      "title": "Decks, Fences & Framing Calculators | FixUpMath",
+      "description": "Decking, fences, stairs, rafters, lumber, plywood sheets, and supported-span references.",
+      "h1": "Decks, Fences & Framing",
+      "canonical": [
+        "https://fixupmath.com/decks-fences-framing/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/dirt-calculator/",
+      "url": "https://fixupmath.com/dirt-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\dirt-calculator\\index.html",
+      "title": "Dirt Calculator: Fill Dirt in Cubic Yards, Tons & Truckloads | FixUpMath",
+      "description": "Free dirt calculator. Enter the area and depth to fill and get the cubic yards of fill dirt to order, with extra for compaction, plus tons and dump truck loads.",
+      "h1": "Dirt Calculator",
+      "canonical": [
+        "https://fixupmath.com/dirt-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/drywall-calculator/",
+      "url": "https://fixupmath.com/drywall-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\drywall-calculator\\index.html",
+      "title": "Drywall Calculator: Sheets for Walls & Ceilings | FixUpMath",
+      "description": "Free drywall calculator. Enter the room size, doors, and windows to get the number of 4×8, 4×10, or 4×12 drywall sheets and screws for the walls and ceiling.",
+      "h1": "Drywall Calculator",
+      "canonical": [
+        "https://fixupmath.com/drywall-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/electrical-hvac/",
+      "url": "https://fixupmath.com/electrical-hvac/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\electrical-hvac\\index.html",
+      "title": "Electrical & HVAC Calculators | FixUpMath",
+      "description": "Wire size, voltage drop, conduit fill, BTU sizing, and insulation.",
+      "h1": "Electrical & HVAC",
+      "canonical": [
+        "https://fixupmath.com/electrical-hvac/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/epoxy-calculator/",
+      "url": "https://fixupmath.com/epoxy-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\epoxy-calculator\\index.html",
+      "title": "Epoxy Calculator: Volume, Resin and Hardener | FixUpMath",
+      "description": "Estimate epoxy volume from area and layer thickness. Add waste, split resin and hardener by the product's volume ratio, and calculate combined kits to buy.",
+      "h1": "Epoxy Calculator",
+      "canonical": [
+        "https://fixupmath.com/epoxy-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/fence-calculator/",
+      "url": "https://fixupmath.com/fence-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\fence-calculator\\index.html",
+      "title": "Fence Calculator: Posts, Rails, Pickets & Concrete | FixUpMath",
+      "description": "Free fence calculator. Enter your fence length, height, post spacing, and gates to get the number of posts, rails, pickets, and bags of concrete for the post holes.",
+      "h1": "Fence Calculator",
+      "canonical": [
+        "https://fixupmath.com/fence-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/fertilizer-calculator/",
+      "url": "https://fixupmath.com/fertilizer-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\fertilizer-calculator\\index.html",
+      "title": "Fertilizer Calculator: Amount to Apply and Bags | FixUpMath",
+      "description": "Calculate how much fertilizer to apply from area, a nitrogen target or product rate, and the N-P-K label. See product weight, nutrients, and bags to buy.",
+      "h1": "Fertilizer Calculator",
+      "canonical": [
+        "https://fixupmath.com/fertilizer-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/flooring-calculator/",
+      "url": "https://fixupmath.com/flooring-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\flooring-calculator\\index.html",
+      "title": "Flooring Calculator: Square Feet & Boxes with Waste | FixUpMath",
+      "description": "Free flooring calculator for laminate, vinyl plank, and hardwood. Enter your room size and box coverage to get square feet to buy and the number of boxes, with waste.",
+      "h1": "Flooring Calculator",
+      "canonical": [
+        "https://fixupmath.com/flooring-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/flooring-walls/",
+      "url": "https://fixupmath.com/flooring-walls/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\flooring-walls\\index.html",
+      "title": "Flooring & Walls Calculators | FixUpMath",
+      "description": "Square footage, flooring, carpet, tile, grout, countertops, epoxy, drywall, and wallpaper.",
+      "h1": "Flooring & Walls",
+      "canonical": [
+        "https://fixupmath.com/flooring-walls/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/grass-seed-calculator/",
+      "url": "https://fixupmath.com/grass-seed-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\grass-seed-calculator\\index.html",
+      "title": "Grass Seed Calculator: Pounds of Seed by Grass Type | FixUpMath",
+      "description": "Free grass seed calculator. Enter your lawn size and grass type to get pounds of seed and bags for a new lawn or overseeding, using typical seeding rates.",
+      "h1": "Grass Seed Calculator",
+      "canonical": [
+        "https://fixupmath.com/grass-seed-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/gravel-calculator/",
+      "url": "https://fixupmath.com/gravel-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\gravel-calculator\\index.html",
+      "title": "Gravel Calculator: Cubic Yards, Tons & Bags for Any Area | FixUpMath",
+      "description": "Free gravel calculator. Enter the area and depth to get cubic yards, tons, and bags of pea gravel, crushed stone, crusher run, or river rock.",
+      "h1": "Gravel Calculator",
+      "canonical": [
+        "https://fixupmath.com/gravel-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/grout-calculator/",
+      "url": "https://fixupmath.com/grout-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\grout-calculator\\index.html",
+      "title": "Grout Calculator: Estimate Tile Grout and Bags | FixUpMath",
+      "description": "Calculate tile grout quantity and whole bags using published MAPEI or LATICRETE coverage, or custom tile dimensions and a product-specific yield.",
+      "h1": "Grout Calculator",
+      "canonical": [
+        "https://fixupmath.com/grout-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/insulation-calculator/",
+      "url": "https://fixupmath.com/insulation-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\insulation-calculator\\index.html",
+      "title": "Insulation Calculator: R-Value, Depth & Board Feet | FixUpMath",
+      "description": "Free insulation calculator. Enter the area, target R-value, and existing insulation to get the depth to add, volume, and board feet for batts, blown-in, spray foam, or foam board.",
+      "h1": "Insulation Calculator",
+      "canonical": [
+        "https://fixupmath.com/insulation-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/joist-span-calculator/",
+      "url": "https://fixupmath.com/joist-span-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\joist-span-calculator\\index.html",
+      "title": "Joist Span Calculator: Check a Deck Joist Span | FixUpMath",
+      "description": "Use the joist span calculator to look up deck joist spans by wood species, size, and spacing, then compare your clear span with AWC Table 2.",
+      "h1": "Joist Span Calculator",
+      "canonical": [
+        "https://fixupmath.com/joist-span-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/landscape-rock-calculator/",
+      "url": "https://fixupmath.com/landscape-rock-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\landscape-rock-calculator\\index.html",
+      "title": "Landscape Rock Calculator: Yards & Tons of Decorative Rock | FixUpMath",
+      "description": "Free landscape rock calculator. Enter your bed size and depth to get cubic yards, tons, and bags of river rock, lava rock, pea gravel, marble chips, or decomposed granite.",
+      "h1": "Landscape Rock Calculator",
+      "canonical": [
+        "https://fixupmath.com/landscape-rock-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/landscaping/",
+      "url": "https://fixupmath.com/landscaping/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\landscaping\\index.html",
+      "title": "Landscaping & Yard Calculators | FixUpMath",
+      "description": "Gravel, mulch, topsoil, fill dirt, sand, sod, grass seed, and fertilizer for beds, paths, and lawns.",
+      "h1": "Landscaping & Yard",
+      "canonical": [
+        "https://fixupmath.com/landscaping/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/mulch-calculator/",
+      "url": "https://fixupmath.com/mulch-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\mulch-calculator\\index.html",
+      "title": "Mulch Calculator: How Many Yards or Bags of Mulch You Need | FixUpMath",
+      "description": "Free mulch calculator. Enter your bed size and depth to get cubic yards of bulk mulch or the number of 2 and 3 cubic foot bags.",
+      "h1": "Mulch Calculator",
+      "canonical": [
+        "https://fixupmath.com/mulch-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/paver-calculator/",
+      "url": "https://fixupmath.com/paver-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\paver-calculator\\index.html",
+      "title": "Paver Calculator: Pavers, Gravel Base & Sand for a Patio | FixUpMath",
+      "description": "Free paver calculator. Enter your patio or walkway size and paver dimensions to get the number of pavers plus tons of gravel base and bedding sand.",
+      "h1": "Paver Calculator",
+      "canonical": [
+        "https://fixupmath.com/paver-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/plywood-calculator/",
+      "url": "https://fixupmath.com/plywood-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\plywood-calculator\\index.html",
+      "title": "Plywood Calculator: Sheets Needed for Your Area | FixUpMath",
+      "description": "Use the plywood calculator to estimate whole sheets from your project area, sheet dimensions, and waste allowance. Add a sheet price for material cost.",
+      "h1": "Plywood Calculator",
+      "canonical": [
+        "https://fixupmath.com/plywood-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/pool-calculator/",
+      "url": "https://fixupmath.com/pool-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\pool-calculator\\index.html",
+      "title": "Pool Calculator: Chlorine, Shock, Alkalinity & Stabilizer Doses | FixUpMath",
+      "description": "Free pool chemical calculator. Enter your gallons and test results to get how much liquid chlorine, shock, baking soda, stabilizer, or calcium chloride to add.",
+      "h1": "Pool Chemical Calculator",
+      "canonical": [
+        "https://fixupmath.com/pool-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/pool-volume-calculator/",
+      "url": "https://fixupmath.com/pool-volume-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\pool-volume-calculator\\index.html",
+      "title": "Pool Volume Calculator: How Many Gallons Is Your Pool? | FixUpMath",
+      "description": "Free swimming pool volume calculator. Find how many gallons are in your pool, rectangular, round, or oval, plus liters, fill time, and water weight.",
+      "h1": "Pool Volume Calculator",
+      "canonical": [
+        "https://fixupmath.com/pool-volume-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/pool/",
+      "url": "https://fixupmath.com/pool/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\pool\\index.html",
+      "title": "Pool Calculators | FixUpMath",
+      "description": "Pool volume, chemical doses, and salt for saltwater pools.",
+      "h1": "Pool",
+      "canonical": [
+        "https://fixupmath.com/pool/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/privacy-policy/",
+      "url": "https://fixupmath.com/privacy-policy/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\privacy-policy\\index.html",
+      "title": "Privacy Policy | FixUpMath",
+      "description": "How FixUpMath handles data, cookies, and advertising.",
+      "h1": "Privacy Policy",
+      "canonical": [
+        "https://fixupmath.com/privacy-policy/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/rafter-calculator/",
+      "url": "https://fixupmath.com/rafter-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\rafter-calculator\\index.html",
+      "title": "Rafter Calculator: Rafter Length from Span & Pitch | FixUpMath",
+      "description": "Free rafter length calculator. Enter the building span, roof pitch, overhang, and ridge board to get the rafter length, rise, plumb cut angle, and number of rafters.",
+      "h1": "Rafter Calculator",
+      "canonical": [
+        "https://fixupmath.com/rafter-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/rafter-span-chart/",
+      "url": "https://fixupmath.com/rafter-span-chart/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\rafter-span-chart\\index.html",
+      "title": "Rafter Span Chart: Southern Pine No. 2 Reference | FixUpMath",
+      "description": "Read the rafter span chart for Southern Pine No. 2 at 12, 16, or 24 inches on center. Compare published spans for two roof snow-load cases.",
+      "h1": "Rafter Span Chart",
+      "canonical": [
+        "https://fixupmath.com/rafter-span-chart/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/rebar-calculator/",
+      "url": "https://fixupmath.com/rebar-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\rebar-calculator\\index.html",
+      "title": "Rebar Calculator: Bars, Linear Feet & Weight for a Slab | FixUpMath",
+      "description": "Free rebar calculator for concrete slabs. Enter slab size, grid spacing, and bar size to get the number of bars, linear feet, lap splices, and weight of #3, #4, #5, or #6 rebar.",
+      "h1": "Rebar Calculator",
+      "canonical": [
+        "https://fixupmath.com/rebar-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/retaining-wall-calculator/",
+      "url": "https://fixupmath.com/retaining-wall-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\retaining-wall-calculator\\index.html",
+      "title": "Retaining Wall Calculator: Blocks, Caps and Rock | FixUpMath",
+      "description": "Estimate retaining wall blocks, caps, base aggregate, drainage rock, and material cost for a straight segmental block wall using your plan dimensions.",
+      "h1": "Retaining Wall Calculator",
+      "canonical": [
+        "https://fixupmath.com/retaining-wall-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/roof-pitch-calculator/",
+      "url": "https://fixupmath.com/roof-pitch-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\roof-pitch-calculator\\index.html",
+      "title": "Roof Pitch Calculator: Pitch, Angle & Roof Pitch Chart | FixUpMath",
+      "description": "Free roof pitch calculator. Enter the rise and run, the span and ridge height, or the angle to get the roof pitch in x/12, degrees, percent grade, and the pitch factor.",
+      "h1": "Roof Pitch Calculator",
+      "canonical": [
+        "https://fixupmath.com/roof-pitch-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/roofing-calculator/",
+      "url": "https://fixupmath.com/roofing-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\roofing-calculator\\index.html",
+      "title": "Roofing Calculator: Roof Squares & Full Material List | FixUpMath",
+      "description": "Free roofing calculator. Enter the roof footprint, pitch, and shape to get the roof area in squares and a full list: shingles, underlayment, drip edge, starter, ridge cap, and nails.",
+      "h1": "Roofing Calculator",
+      "canonical": [
+        "https://fixupmath.com/roofing-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/roofing-siding/",
+      "url": "https://fixupmath.com/roofing-siding/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\roofing-siding\\index.html",
+      "title": "Roofing & Siding Calculators | FixUpMath",
+      "description": "Roof pitch, roofing squares and materials, shingles, and siding for exterior projects.",
+      "h1": "Roofing & Siding",
+      "canonical": [
+        "https://fixupmath.com/roofing-siding/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/salt-pool-calculator/",
+      "url": "https://fixupmath.com/salt-pool-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\salt-pool-calculator\\index.html",
+      "title": "Salt Pool Calculator: How Much Salt for a Saltwater Pool | FixUpMath",
+      "description": "Free salt pool calculator. Enter your pool size or gallons and your current and target salt levels to get the pounds and 40-lb bags of salt to add.",
+      "h1": "Salt Pool Calculator",
+      "canonical": [
+        "https://fixupmath.com/salt-pool-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/sand-calculator/",
+      "url": "https://fixupmath.com/sand-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\sand-calculator\\index.html",
+      "title": "Sand Calculator: Cubic Yards, Tons & Bags for Pavers and More | FixUpMath",
+      "description": "Free sand calculator. Enter the area and depth to get cubic yards, tons, and 50-lb bags of sand for paver bedding, pool bases, sandboxes, and leveling.",
+      "h1": "Sand Calculator",
+      "canonical": [
+        "https://fixupmath.com/sand-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/shingle-calculator/",
+      "url": "https://fixupmath.com/shingle-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\shingle-calculator\\index.html",
+      "title": "Shingle Calculator: Roofing Squares & Bundles by Pitch | FixUpMath",
+      "description": "Free roofing shingle calculator. Enter the roof footprint and pitch to get the sloped roof area, squares, and bundles of shingles, with waste for hips and valleys.",
+      "h1": "Shingle Calculator",
+      "canonical": [
+        "https://fixupmath.com/shingle-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/siding-calculator/",
+      "url": "https://fixupmath.com/siding-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\siding-calculator\\index.html",
+      "title": "Siding Calculator: Squares of Siding for Your House | FixUpMath",
+      "description": "Free siding calculator. Enter wall lengths, height, gables, doors, and windows to get the square footage and number of squares of vinyl or other siding to order.",
+      "h1": "Siding Calculator",
+      "canonical": [
+        "https://fixupmath.com/siding-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/sod-calculator/",
+      "url": "https://fixupmath.com/sod-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\sod-calculator\\index.html",
+      "title": "Sod Calculator: Square Feet, Pallets & Pieces of Sod | FixUpMath",
+      "description": "Free sod calculator. Measure your lawn by shape to get the square footage, pallets, and slabs or rolls of sod to order, with extra for cuts.",
+      "h1": "Sod Calculator",
+      "canonical": [
+        "https://fixupmath.com/sod-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/square-footage-calculator/",
+      "url": "https://fixupmath.com/square-footage-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\square-footage-calculator\\index.html",
+      "title": "Square Footage Calculator: Feet & Inches, Any Shape | FixUpMath",
+      "description": "Calculate square feet from feet and inches for rectangles, circles, and triangles. Add rooms to a project and convert to square yards, meters, or acres.",
+      "h1": "Square Footage Calculator",
+      "canonical": [
+        "https://fixupmath.com/square-footage-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/stair-calculator/",
+      "url": "https://fixupmath.com/stair-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\stair-calculator\\index.html",
+      "title": "Stair Calculator: Stringers, Landings & Diagram | FixUpMath",
+      "description": "Free stair and stringer calculator. Enter the total rise to get risers, treads, total run, stringer length and count, with an optional landing and a diagram drawn to scale.",
+      "h1": "Stair Calculator",
+      "canonical": [
+        "https://fixupmath.com/stair-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/terms/",
+      "url": "https://fixupmath.com/terms/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\terms\\index.html",
+      "title": "Terms of Use | FixUpMath",
+      "description": "Terms for using the FixUpMath calculators.",
+      "h1": "Terms of Use",
+      "canonical": [
+        "https://fixupmath.com/terms/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 2
+    },
+    {
+      "route": "/tile-calculator/",
+      "url": "https://fixupmath.com/tile-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\tile-calculator\\index.html",
+      "title": "Tile Calculator: How Many Tiles & Boxes You Need | FixUpMath",
+      "description": "Free tile calculator for floors, walls, and backsplashes. Enter the area, tile size, and grout joint to get the number of tiles and boxes, with waste.",
+      "h1": "Tile Calculator",
+      "canonical": [
+        "https://fixupmath.com/tile-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/topsoil-calculator/",
+      "url": "https://fixupmath.com/topsoil-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\topsoil-calculator\\index.html",
+      "title": "Topsoil Calculator: Cubic Yards, Tons & Bags for Lawns and Beds | FixUpMath",
+      "description": "Free topsoil calculator. Enter the area and depth to get cubic yards, tons, and bags of topsoil or compost for a new lawn, garden bed, or raised bed.",
+      "h1": "Topsoil Calculator",
+      "canonical": [
+        "https://fixupmath.com/topsoil-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/voltage-drop-calculator/",
+      "url": "https://fixupmath.com/voltage-drop-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\voltage-drop-calculator\\index.html",
+      "title": "Voltage Drop Calculator: Copper & Aluminum | FixUpMath",
+      "description": "Calculate wire voltage drop in volts and percent for copper or aluminum, using wire size, amps, and one-way distance. Supports AC single/three phase and DC.",
+      "h1": "Voltage Drop Calculator",
+      "canonical": [
+        "https://fixupmath.com/voltage-drop-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/wallpaper-calculator/",
+      "url": "https://fixupmath.com/wallpaper-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\wallpaper-calculator\\index.html",
+      "title": "Wallpaper Calculator: Rolls & Pattern Repeat | FixUpMath",
+      "description": "Estimate wallpaper rolls from room size, roll dimensions, and pattern repeat. See full-height strips, cuts per roll, and the trimming allowance.",
+      "h1": "Wallpaper Calculator",
+      "canonical": [
+        "https://fixupmath.com/wallpaper-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    },
+    {
+      "route": "/wire-size-calculator/",
+      "url": "https://fixupmath.com/wire-size-calculator/",
+      "file": "C:\\antigravity\\fixupmath\\dist\\wire-size-calculator\\index.html",
+      "title": "Wire Size Calculator: AWG by Amps, Distance & Voltage Drop | FixUpMath",
+      "description": "Free wire size calculator. Enter amps, distance, and voltage to find the minimum copper or aluminum AWG wire that meets NEC ampacity and a 3% voltage drop.",
+      "h1": "Wire Size Calculator",
+      "canonical": [
+        "https://fixupmath.com/wire-size-calculator/"
+      ],
+      "robots": null,
+      "og_image": "https://fixupmath.com/images/brand/social-card.png",
+      "schema_count": 3
+    }
+  ],
+  "indexable_pages": 60,
+  "locales": [
+    "kv"
+  ],
+  "sitemap": "dist/sitemap-index.xml",
+  "robots": "dist/robots.txt",
+  "metadata_signals": {
+    "canonical": 20,
+    "hreflang": 1,
+    "schema": 7,
+    "title": 199,
+    "description": 116
+  },
+  "canonical_implementation": "detected",
+  "hreflang_implementation": "detected",
+  "structured_data": "detected",
+  "git_remote": "https://github.com/jiankn/fixupmath.git",
+  "git_branch": "main",
+  "source_route_candidates": 4,
+  "inventory_source": "Validated production sitemap and dist HTML; source parser does not support Astro routes."
+}

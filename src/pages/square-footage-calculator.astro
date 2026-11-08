@@ -20,9 +20,9 @@ const rooms: [number, number][] = [
   slug="square-footage-calculator"
   def={def}
   title="Square Footage Calculator: Feet & Inches, Any Shape"
-  description="Free square footage calculator. Enter measurements in feet and inches for rectangles, circles, and triangles, add rooms together, and convert to square yards, meters, and acres."
+  description="Calculate square feet from feet and inches for rectangles, circles, and triangles. Add rooms to a project and convert to square yards, meters, or acres."
   h1="Square Footage Calculator"
-  updated="2026-09-26"
+  updated="2026-11-08"
 >
   <Fragment slot="lead">
     Find the area of a room, floor, yard, or lot in square feet, with measurements in feet and inches. Add several areas to
@@ -51,12 +51,31 @@ const rooms: [number, number][] = [
     12 ft 3 in is 10.75 × 12.25 = <strong>131.69 square feet</strong>. In the calculator, choose <em>ft + in</em> as the
     unit and type the inches in the second box.
   </p>
+  <p>
+    Keep feet and inches separate when measuring: 10 ft 9 in is 10.75 ft, not 10.9 ft. Measure to the finished inside
+    edges for a flooring estimate, and use the same boundary for every section. This tool calculates from the dimensions
+    you enter; it does not read an uploaded floor plan or certify a home's listing area.
+  </p>
 
   <h2 id="irregular">Irregular and L-shaped rooms</h2>
   <p>
     Split the space into rectangles, work out each one, and add them. An L-shaped room made of a 12 × 15 ft section and an
     8 × 6 ft alcove is 180 + 48 = 228 square feet. Use <strong>Add to project</strong> to keep a running total, and add a
     triangle or circle for angled walls and bay windows.
+  </p>
+  <p>
+    Draw the dividing line on your sketch so the rectangles meet without overlapping. For the example above, enter
+    12 × 15 ft, select <strong>Add to project</strong>, then enter 8 × 6 ft and add that section. The project total is
+    228 ft²; do not also add the outer bounding rectangle, which would count part of the floor twice.
+  </p>
+
+  <h2 id="area-or-order">Room area or material to buy?</h2>
+  <p>
+    The measured area is the starting point for an order. A 12 × 15 ft room is 180 ft²; with an illustrative 10% cutting
+    allowance, the purchase estimate is 198 ft². If each flooring box covers 20 ft², round 198 ÷ 20 up to 10 boxes.
+    Use the <a href="/flooring-calculator/">flooring box calculator</a> with the product's actual coverage, or the
+    <a href="/carpet-calculator/">carpet measurement calculator</a> for square yards and roll-width estimates.
+    Apply waste once, after adding the measured sections.
   </p>
 
   <h2 id="room-sizes">Square footage of common room sizes</h2>

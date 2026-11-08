@@ -1,0 +1,36 @@
+{
+  "property": "sc-domain:fixupmath.com",
+  "requested_recent_window": [
+    "2026-10-09",
+    "2026-11-05"
+  ],
+  "latest_returned_final_date": "2026-11-04",
+  "recent": {
+    "clicks": 2,
+    "impressions": 5160,
+    "ctr": 0.0003875968992248062,
+    "position": 55.598643410852716
+  },
+  "previous": {
+    "clicks": 0,
+    "impressions": 552,
+    "ctr": 0,
+    "position": 51.42934782608695
+  },
+  "inspected_urls": 60,
+  "coverage": {
+    "Submitted and indexed": 1,
+    "Crawled - currently not indexed": 44,
+    "Blocked due to access forbidden (403)": 2,
+    "URL is unknown to Google": 13
+  },
+  "successful_crawls_after_2026_11_02_change": 19,
+  "historical_google_block_samples": 50,
+  "historical_block_rule_ids": {
+    "8fcb869e55804a6d94f482a0a25aa53a": 50
+  },
+  "historical_block_first_utc": "2026-10-24T12:54:37Z",
+  "historical_block_last_utc": "2026-10-31T12:03:53Z",
+  "known_query_page_rows": 1177,
+  "confidence": "Historical performance; current indexing recovery is incomplete."
+}

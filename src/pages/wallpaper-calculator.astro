@@ -15,14 +15,14 @@ const table = rooms.map(([l, w]) => ({
 <CalcPage
   slug="wallpaper-calculator"
   def={def}
-  title="Wallpaper Calculator: How Many Rolls You Need, with Pattern Repeat"
-  description="Free wallpaper calculator. Enter your room size, roll size, and pattern repeat to get the number of strips and rolls, counted strip by strip the way installers do."
+  title="Wallpaper Calculator: Rolls & Pattern Repeat"
+  description="Estimate wallpaper rolls from room size, roll dimensions, and pattern repeat. See full-height strips, cuts per roll, and the trimming allowance."
   h1="Wallpaper Calculator"
-  updated="2026-09-26"
+  updated="2026-11-08"
 >
   <Fragment slot="lead">
-    Find how many rolls of wallpaper to buy. The calculator counts full-height strips, the way installers do, and allows
-    for pattern repeat and trimming.
+    Estimate how many rolls of wallpaper to buy from room dimensions, roll size, and pattern repeat. The calculator
+    counts full-height strips and adds a conservative allowance for matching and trimming.
   </Fragment>
 
   <h2 id="how-to">How to calculate wallpaper rolls</h2>
@@ -59,6 +59,25 @@ const table = rooms.map(([l, w]) => ({
     same point in the pattern, so you lose up to one repeat per strip. Large repeats can drop a roll from four strips to
     three, which is why patterned paper often needs a roll or two more than plain.
   </p>
+  <h3>How does a 21-inch repeat change the estimate?</h3>
+  <p>
+    In the 12 × 12 ft example, an 8 ft wall with 4 in of trim allowance uses a 100 in cut for plain paper. With a
+    21 in repeat, this calculator allows 121 in per strip: 396 ÷ 121 still yields 3 full strips per 33 ft roll, so the
+    estimate remains 10 rolls. At a 9 ft wall height, the cuts become 112 in and 133 in respectively; the roll yields
+    3 plain strips but only 2 patterned strips, increasing the estimate from 10 to 14 rolls.
+  </p>
+  <p>
+    This is a conservative allowance of one full repeat per strip. It does not optimize pattern alignment or model
+    half-drop and other offset matches. Check the product's match instructions and the installer's layout; the actual
+    offcut depends on where the design starts.
+  </p>
+
+  <h2 id="roll-label">Check the roll label before ordering</h2>
+  <p>
+    Use the dimensions of the physical roll you receive, not just a listing's price unit. A 20.5 in × 33 ft double roll
+    is twice the length of a 20.5 in × 16.5 ft single roll. The calculator's cost input is per selected physical roll.
+    Confirm the package quantity with the seller, and choose rolls from the same dye lot.
+  </p>
 
   <p>
     Papering only an accent wall or around sloped ceilings? <a href="/square-footage-calculator/">Measure the wall area</a> and compare it with
@@ -74,8 +93,10 @@ const table = rooms.map(([l, w]) => ({
   </p>
   <h3>Why aren't windows subtracted?</h3>
   <p>
-    You still paper above and below a window, and those short pieces rarely come from scraps. Leaving windows in keeps
-    the estimate safe. Doors are full height, so their strips are subtracted.
+    Strips still run above and below a window, and reusable offcuts depend on the pattern. Windows therefore do not
+    reduce the roll count. The door input deducts full strip widths covered by a simplified 36 in opening; it does not
+    plan the pieces above a door or around its trim. For a conservative comparison, set doors to zero and confirm the
+    final quantity from the wall-by-wall layout.
   </p>
   <p>Patching walls before papering? The <a href="/drywall-calculator/">drywall calculator</a> covers new sheets.</p>
 

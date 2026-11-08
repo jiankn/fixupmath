@@ -74,6 +74,21 @@ Cloudflare Git 自动部署的部署命令应设置为 `npx wrangler deploy && n
 
 目前全是静态页面，计算在浏览器里完成，不需要数据库。以后要做用户反馈、保存项目等功能时，再在 `wrangler.toml` 里接 Cloudflare D1。
 
+## GSC 快照与生产 HTML 检查
+
+本轮报告见 `.seo/runs/2026-11-08/gsc-findings.md`。原始查询、URL 检查与 Cloudflare 日志只保存在本地 `source/`，不提交 Git；不要复制 OAuth 文件进仓库。
+
+```powershell
+# 使用已有 authorized-user OAuth JSON，只读拉取；--end 是 GSC 太平洋时间的请求截止日。
+python scripts/gsc-snapshot.py --output .seo/runs/YYYY-MM-DD --end YYYY-MM-DD --inspect --credentials C:\path\to\existing-oauth.json
+# 在生产构建之后检查所有 sitemap 页面；品牌图必须存在。
+python scripts/audit-seo-output.py --require-social --output .seo/runs/YYYY-MM-DD/after-build.json
+```
+
+GSC 脚本复用本机已有 Google API Python 依赖和 127.0.0.1:10808 HTTP 代理；不自动发起新登录，也不写回 OAuth 文件。报表脚本 `analyze-gsc-snapshot.py` 用于重算本轮完整快照的分析，需本轮目录中的前后构建清单和 Cloudflare 证据。
+
+共享品牌卡已保存为 `public/images/brand/social-card.png`（1200×630）及 SVG 源文件。可选执行 `node scripts/generate-social-card.mjs`，使用 Astro 安装环境中现有 Sharp 重新渲染；正常 build 直接复制 PNG，无需重新生成。
+
 ## 上线前待办
 
 - [x] 品牌 FixUpMath、正式域名 fixupmath.com
