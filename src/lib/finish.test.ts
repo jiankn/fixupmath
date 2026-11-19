@@ -34,17 +34,29 @@ describe('墙面积', () => {
 });
 
 describe('壁纸', () => {
-  it('12×12 ft 房间、8 ft 高、20.5 in × 33 ft 卷、无对花、一扇门 → 28 条、每卷 3 条、10 卷', () => {
-    const r = wallpaperRolls({ perimeterFt: 48, heightFt: 8, rollWidthIn: 20.5, rollLengthFt: 33, repeatIn: 0, doors: 1 });
-    expect(r.stripIn).toBe(100); // 96 + 0 + 4
-    expect(r.stripsPerRoll).toBe(3); // 396 / 100
-    expect(r.strips).toBe(28); // 576 / 20.5 = 28.1 → 29，门扣 1 条
-    expect(r.rolls).toBe(10);
+  const room = { wallWidthsFt: [12, 12, 12, 12], heightFt: 8, rollWidthIn: 20.5, rollLengthFt: 33, repeatIn: 0 };
+
+  it('12×12×8 ft、20.5 in × 33 ft 卷、无对花：每墙 8 条、每卷 3 条、11 卷', () => {
+    expect(wallpaperRolls(room)).toMatchObject({ stripIn: 100, stripsPerRoll: 3, strips: 32, rolls: 11 });
   });
-  it('对花 21 in 时每卷只能裁 3 条（121 in）', () => {
-    const r = wallpaperRolls({ perimeterFt: 48, heightFt: 8, rollWidthIn: 20.5, rollLengthFt: 33, repeatIn: 21, doors: 0 });
-    expect(r.stripsPerRoll).toBe(3);
-    expect(r.rolls).toBe(10);
+
+  it('9 ft 墙、21 in 直对花：预留卷首 21 in，三条至 385 in，适合 396 in 的卷', () => {
+    const inputs = { ...room, heightFt: 9, repeatIn: 21 };
+    expect(wallpaperRolls({ ...inputs, match: 'straight' })).toMatchObject({
+      stripIn: 112, spacingIn: 126, startAllowanceIn: 21, stripsPerRoll: 3, rolls: 11,
+    });
+    expect(wallpaperRolls(inputs)).toMatchObject({ stripsPerRoll: 2, rolls: 16 });
+  });
+
+  it('无对花模式忽略留在表单的循环值，并正确处理恰好装满卷的边界', () => {
+    const inputs = { ...room, rollLengthFt: 25, repeatIn: 21 };
+    expect(wallpaperRolls({ ...inputs, match: 'plain' }).stripsPerRoll).toBe(3);
+    expect(wallpaperRolls({ ...inputs, match: 'straight' }).stripsPerRoll).toBe(2);
+  });
+
+  it('裁切尺寸加对花余量超出卷长时，没有可用的整条', () => {
+    const inputs = { ...room, heightFt: 9, rollLengthFt: 10, repeatIn: 21 };
+    expect(wallpaperRolls({ ...inputs, match: 'straight' }).stripsPerRoll).toBe(0);
   });
 });
 

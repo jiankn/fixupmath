@@ -31,28 +31,38 @@ export function wallAreaFt2(perimeterFt: number, heightFt: number, doors: number
   return Math.max(0, gross - Math.floor(pos(doors)) * DOOR_FT2 - Math.floor(pos(windows)) * WINDOW_FT2);
 }
 
+export type WallpaperMatch = 'plain' | 'straight' | 'allowance';
+
 export interface WallpaperInput {
-  perimeterFt: number;
+  wallWidthsFt: readonly number[];
   heightFt: number;
   rollWidthIn: number;
   rollLengthFt: number;
-  repeatIn: number; // 花纹循环长度，0 = 不需要对花
-  doors: number;
+  repeatIn: number;
+  match?: WallpaperMatch; // 旧参数链接继续使用每条预留一整个循环的估算
   trimIn?: number; // 上下裁切余量，默认 4 in
 }
 
-/**
- * 壁纸按「条」计算：每条高 = 墙高 + 花纹循环 + 裁切余量；每卷能裁几条；一共要几条。
- * 门按整条扣除（门宽 3 ft 覆盖的完整条数）；窗户上下仍要贴，不扣，结果偏保守。
- */
+/** 每面墙分别向上取整。直对花把每条起点对齐到同一花纹位置。 */
 export function wallpaperRolls(i: WallpaperInput) {
+  const heightIn = pos(i.heightFt) * 12;
+  const stripIn = heightIn ? heightIn + pos(i.trimIn ?? 4) : 0;
+  const repeatIn = i.match === 'plain' ? 0 : pos(i.repeatIn);
+  const straight = i.match === 'straight' && repeatIn > 0;
+  const spacingIn = straight ? ceilCount(stripIn / repeatIn) * repeatIn : stripIn + repeatIn;
+  const startAllowanceIn = straight ? repeatIn : 0;
+  // 最后一条剪完就停止，不需要把卷尾留到下一个直对花起点。
+  const lastStripIn = straight ? stripIn : spacingIn;
+  const remainingIn = pos(i.rollLengthFt) * 12 - startAllowanceIn - lastStripIn;
+  const stripsPerRoll = stripIn > 0 && remainingIn >= -1e-9
+    ? 1 + Math.floor(remainingIn / spacingIn + 1e-9)
+    : 0;
   const rollW = pos(i.rollWidthIn);
-  const stripIn = pos(i.heightFt) * 12 + Math.max(0, pos(i.repeatIn)) + (i.trimIn ?? 4);
-  const stripsPerRoll = stripIn > 0 ? Math.floor((pos(i.rollLengthFt) * 12) / stripIn + 1e-9) : 0;
-  const grossStrips = rollW ? ceilCount((pos(i.perimeterFt) * 12) / rollW) : 0;
-  const doorStrips = rollW ? Math.floor((Math.floor(pos(i.doors)) * 36) / rollW) : 0;
-  const strips = Math.max(0, grossStrips - doorStrips);
-  return { stripIn, stripsPerRoll, strips, rolls: stripsPerRoll > 0 ? ceilCount(strips / stripsPerRoll) : 0 };
+  const strips = rollW && heightIn
+    ? i.wallWidthsFt.reduce((total, width) => total + ceilCount((pos(width) * 12) / rollW), 0)
+    : 0;
+  const rolls = stripsPerRoll > 0 ? ceilCount(strips / stripsPerRoll) : 0;
+  return { stripIn, spacingIn, startAllowanceIn, stripsPerRoll, strips, rolls };
 }
 
 /** 屋面坡度系数：坡度 rise/12 时，斜面面积 = 水平投影面积 × 系数 */

@@ -1,8 +1,16 @@
-// 地毯计算器：面积 → 平方码、按卷宽的延长英尺
+// 地毯计算器：分别估算面积预算和矩形房间的单块裁切长度。
 import type { CalculatorDef, ResultRow } from '../lib/calc-types';
-import { num, price } from '../lib/calc-types';
-import { fmt, money } from '../lib/format';
+import { lenFt, num, price } from '../lib/calc-types';
+import { ceilTo, fmt, money } from '../lib/format';
 import { areaShapes, areaFt2, wasteField } from './shared';
+
+const trimPerWallIn = 3; // CRI 105 §5.3
+const trimAcrossRoomFt = (2 * trimPerWallIn) / 12;
+
+function singlePieceLength(runFt: number, acrossFt: number, rollFt: number): string {
+  if (acrossFt + trimAcrossRoomFt > rollFt + 1e-9) return 'Needs a seam';
+  return `${fmt(ceilTo(runFt + trimAcrossRoomFt, 0.01))} ft`;
+}
 
 const def: CalculatorDef = {
   id: 'carpet',
@@ -20,7 +28,7 @@ const def: CalculatorDef = {
         { value: '15', label: '15 ft' },
       ],
     },
-    wasteField(10, '10% covers seams and trimming; more for odd shapes'),
+    wasteField(10, 'Applies to the area estimate. Use the cut lengths to check the roll.'),
   ],
   priceFields: [
     { kind: 'money', key: 'priceSqyd', label: 'Carpet price per square yard', placeholder: 'e.g. 25' },
@@ -35,6 +43,13 @@ const def: CalculatorDef = {
     const roll = num(v, 'roll', 12);
     const need = area * (1 + waste / 100);
     const sqyd = need / 9;
+    const length = lenFt(v, 'length');
+    const width = lenFt(v, 'width');
+    const hasRoomDimensions = total === undefined && v.shape === 'rectangle' && length > 0 && width > 0;
+    const cuts: ResultRow[] = hasRoomDimensions ? [
+      { label: 'Pile along length', value: singlePieceLength(length, width, roll) },
+      { label: 'Pile along width', value: singlePieceLength(width, length, roll) },
+    ] : [];
     const cost: ResultRow[] = [];
     const py = price(v, 'priceSqyd');
     const pp = price(v, 'pricePad');
@@ -43,22 +58,19 @@ const def: CalculatorDef = {
     if (pp) cost.push({ label: `Pad, ${fmt(area / 9, 1)} yd²`, value: money((area / 9) * pp) });
     if (ps) cost.push({ label: `Carpet, ${fmt(need, 0)} ft²`, value: money(need * ps) });
     return {
-      label: 'Carpet needed',
+      label: 'Carpet area estimate',
       value: fmt(sqyd, 1),
       unit: 'square yards',
-      sub: `${fmt(need, 1)} ft² including ${waste}% extra · room ${fmt(area, 1)} ft²`,
+      sub: `${fmt(need, 1)} ft² including ${waste}% extra · ${fmt(area, 1)} ft² of floor`,
       blocks: [
-        {
-          title: 'Off the roll',
-          rows: [{ label: `Length of ${roll} ft roll`, value: `${fmt(need / roll, 1)} ft`, note: 'Assumes pieces can be seamed; a room wider than the roll needs a seam' }],
-        },
+        { title: `Single-piece cut from a ${roll} ft roll`, rows: cuts },
         { title: 'Pad', rows: [{ label: 'Carpet pad (no waste)', value: `${fmt(area / 9, 1)} yd²` }] },
-        { title: 'Estimated cost', rows: cost },
+        { title: 'Area-based cost estimate', rows: cost },
       ],
       advice:
-        area > 0
-          ? 'Installers lay out seams and pile direction before cutting, so their measure can come in higher than this estimate, especially for rooms wider than the roll.'
-          : 'Enter your room size to see how much carpet you need.',
+        hasRoomDimensions
+          ? 'Cut lengths include 3 in of trim at each wall. Confirm pile direction, pattern matching, and seam placement with your installer.'
+          : 'Use the area for budgeting. Prepare a room-by-room cutting plan before ordering from a roll.',
       summary: `${fmt(sqyd, 1)} yd² · ${fmt(need, 0)} ft²`,
     };
   },

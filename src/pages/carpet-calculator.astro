@@ -11,13 +11,13 @@ const table = rooms.map(([l, w]) => ({ l, w, a: l * w, yd: (l * w) / 9, yd10: (l
   slug="carpet-calculator"
   def={def}
   title="Carpet Calculator: Measure Square Feet & Yards"
-  description="Measure carpet in square feet and yards, add rooms, and estimate roll length, padding, and cost. Choose 12, 13.5, or 15 ft rolls and your waste allowance."
+  description="Estimate carpet area, padding, and cost. Check single-piece cuts in both directions for rectangular rooms using 12, 13.5, or 15 ft rolls."
   h1="Carpet Calculator"
-  updated="2026-11-08"
+  updated="2026-11-19"
 >
   <Fragment slot="lead">
-    Enter room measurements to estimate carpet in square feet and square yards, plus padding and length off a 12,
-    13.5, or 15-foot roll. Add rooms to a project for a combined area estimate.
+    Estimate carpet and padding in square feet and square yards. For one rectangular room, check which direction fits
+    on your roll and how long to cut it. Add rooms to combine their areas for budgeting.
   </Fragment>
 
   <h2 id="measure">How to measure a room for carpet</h2>
@@ -25,12 +25,12 @@ const table = rooms.map(([l, w]) => ({ l, w, a: l * w, yd: (l * w) / 9, yd10: (l
     <li>Measure the finished floor's length and width, including recesses that will receive carpet. Use feet and inches or metric units.</li>
     <li>For an L-shaped room, split the floor into rectangles that do not overlap. Add closets as separate measured sections.</li>
     <li>Enter each section and select <strong>Add to project</strong>. The calculator adds the areas before applying your waste percentage.</li>
-    <li>Choose the product's roll width and check the proposed seams with the installer before ordering.</li>
+    <li>Choose the product's roll width. For a rectangle, check the cut length in the direction you want the pile to run.</li>
   </ol>
 
   <h2 id="how-to">How to calculate square footage for carpet</h2>
   <p>
-    Multiply the room's length by its width for square feet, add about 10% for seams and trimming, then divide by 9.
+    Multiply the room's length by its width for square feet, add your budgeting allowance, then divide by 9.
     A <strong>12 × 14 ft room is 168 square feet, or about 20.5 square yards</strong> with 10% extra.
   </p>
   <p class="formula">square yards = length (ft) × width (ft) × 1.10 ÷ 9</p>
@@ -43,27 +43,27 @@ const table = rooms.map(([l, w]) => ({ l, w, a: l * w, yd: (l * w) / 9, yd10: (l
   <h2 id="table">Carpet for common room sizes</h2>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Room</th><th class="num">Sq ft</th><th class="num">Sq yd (exact)</th><th class="num">Sq yd with 10%</th></tr></thead>
+      <thead><tr><th>Room</th><th class="num">Sq ft</th><th class="num">Sq yd before waste</th><th class="num">Sq yd with 10%</th></tr></thead>
       <tbody>{table.map((r) => <tr><td>{r.l} × {r.w} ft</td><td class="num">{r.a}</td><td class="num">{fmt(r.yd, 1)}</td><td class="num">{fmt(r.yd10, 1)}</td></tr>)}</tbody>
     </table>
   </div>
 
-  <h2 id="roll-width">Why roll width matters</h2>
+  <h2 id="roll-width">How long to cut carpet from a roll</h2>
   <p>
-    Broadloom carpet comes in rolls, most often 12 feet wide, sometimes 13.5 or 15 feet. A room 12 feet wide or less can
-    be covered by one piece cut to length. Wider rooms need a seam, and the installer may order extra so the pile runs the
-    same direction on both sides. That is why an installer's measure can come in higher than a simple area calculation.
+    For one rectangular room, we add 3 in of trimming allowance at each wall. To cut with the pile running along the
+    room's length, the room's width plus 6 in has to fit across the roll. The cut then runs the length of the room plus
+    6 in. The calculator checks both directions so you can compare them with the planned pile direction.
   </p>
   <p>
-    <strong>Square feet, square yards, and linear feet measure different things.</strong> Using the same 184.8 ft²
-    purchase estimate, divide by 9 for 20.53 square yards, or by a 12 ft roll width for 15.4 linear feet. A linear foot
-    is a one-foot-long cut across the full roll width; it is not one square foot.
+    A 10 × 10 ft room needs a <strong>10 ft 6 in cut</strong> from a 12 ft roll with the trim allowance. A seller who
+    supplies the full width would cut 12 × 10.5 ft, or 126 ft² (14 yd²). The area estimate with 10% extra is
+    110 ft² (12.2 yd²). Dividing that by the roll width gives only 9.17 linear ft, which is too short for a single cut.
   </p>
   <p>
-    The roll-length result is an area-based allowance, not a cutting plan. For example, a 10 × 10 ft room cut as one
-    unseamed piece from a 12 ft roll needs a piece at least 10 ft long: 120 ft² before trimming. Dividing the room's
-    100 ft² by 12 gives only 8.33 ft, which cannot cover that room in one piece. Matching patterns, pile direction,
-    and offcuts between rooms can change the final order even when a waste percentage is included.
+    Check the actual usable width with your supplier. When a cut needs a seam, or when you have several rooms, use the
+    area for budgeting and measure the pieces separately with your installer. The
+    <a href="https://carpet-rug.org/wp-content/uploads/2019/03/CRI-105-STANDARD-For-INSTALLATION-of-RESIDENTIAL-CARPET.pdf">CRI 105 residential carpet installation standard</a>
+    covers seams, pile direction, and trimming in sections 5.1–5.3. Patterned carpet can need extra material for matching.
   </p>
 
   <h2 id="pad">How much carpet pad do you need?</h2>
@@ -92,8 +92,8 @@ const table = rooms.map(([l, w]) => ({ l, w, a: l * w, yd: (l * w) / 9, yd10: (l
 
   <h2 id="method">How this calculator works</h2>
   <ul>
-    <li>Carpet = area × (1 + waste %) ÷ 9 for square yards.</li>
-    <li>Roll length = carpet square feet ÷ roll width, assuming pieces can be seamed.</li>
+    <li>Budget area = measured area × (1 + waste percentage ÷ 100). Divide square feet by 9 for square yards.</li>
+    <li>Single-piece cuts add 6 in to the room length and width, then check each direction against the roll width.</li>
     <li>Pad = room area ÷ 9, with no waste added.</li>
   </ul>
 </CalcPage>

@@ -1,75 +1,72 @@
 ---
 import CalcPage from '../components/CalcPage.astro';
-import def from '../calculators/wallpaper';
+import def, { ROLLS } from '../calculators/wallpaper';
 import { wallpaperRolls } from '../lib/finish';
 
 const rooms: [number, number][] = [[10, 10], [10, 12], [12, 12], [12, 14], [14, 16], [16, 20]];
-const table = rooms.map(([l, w]) => ({
-  l,
-  w,
-  plain: wallpaperRolls({ perimeterFt: 2 * (l + w), heightFt: 8, rollWidthIn: 20.5, rollLengthFt: 33, repeatIn: 0, doors: 1 }).rolls,
-  rep: wallpaperRolls({ perimeterFt: 2 * (l + w), heightFt: 8, rollWidthIn: 20.5, rollLengthFt: 33, repeatIn: 21, doors: 1 }).rolls,
-}));
+const table = rooms.map(([l, w]) => {
+  const room = { wallWidthsFt: [l, w, l, w], heightFt: 8, rollWidthIn: ROLLS[0].w, rollLengthFt: ROLLS[0].l };
+  return {
+    l,
+    w,
+    plain: wallpaperRolls({ ...room, repeatIn: 0, match: 'plain' }).rolls,
+    straight: wallpaperRolls({ ...room, repeatIn: 21, match: 'straight' }).rolls,
+  };
+});
 ---
 
 <CalcPage
   slug="wallpaper-calculator"
   def={def}
   title="Wallpaper Calculator: Rolls & Pattern Repeat"
-  description="Estimate wallpaper rolls from room size, roll dimensions, and pattern repeat. See full-height strips, cuts per roll, and the trimming allowance."
+  description="Estimate wallpaper rolls from room size, roll dimensions, and pattern repeat. Compare plain and straight-match cuts, strips per roll, and trim."
   h1="Wallpaper Calculator"
-  updated="2026-11-08"
+  updated="2026-11-19"
 >
   <Fragment slot="lead">
-    Estimate how many rolls of wallpaper to buy from room dimensions, roll size, and pattern repeat. The calculator
-    counts full-height strips and adds a conservative allowance for matching and trimming.
+    Estimate how many rolls of wallpaper you need. Enter the room and roll dimensions, then choose the pattern match
+    from the roll label to see how many full-height strips you can cut.
   </Fragment>
 
   <h2 id="how-to">How to calculate wallpaper rolls</h2>
   <p>
-    Dividing wall area by roll area underestimates, because every strip wastes its offcut and patterned paper wastes more
-    to line up the design. Count strips instead:
+    Count the strips each wall needs, then count how many fit on a roll after trimming and matching the design.
   </p>
   <ol>
-    <li><strong>Strips needed:</strong> room perimeter in inches ÷ roll width, rounded up. Subtract strips for full-height openings like doors.</li>
-    <li><strong>Cut length:</strong> wall height + pattern repeat + about 4 inches for trimming top and bottom.</li>
-    <li><strong>Strips per roll:</strong> roll length ÷ cut length, rounded down.</li>
-    <li><strong>Rolls:</strong> strips needed ÷ strips per roll, rounded up.</li>
+    <li>Divide each wall's width by the roll width and round up separately. This estimate starts each wall with a fresh strip.</li>
+    <li>Add 4 inches to the wall height for trimming. Use the roll label to choose how to align the cuts.</li>
+    <li>Divide the total number of strips by the number that fit on a roll, then round up to a whole roll.</li>
   </ol>
 
   <h2 id="example">Example: a 12 × 12 ft room with 8 ft walls</h2>
   <p>
-    The perimeter is 48 feet, or 576 inches. With 20.5-inch paper that is 28.1, so 29 strips, minus one for the door:
-    28. Each strip is cut 96 + 4 = 100 inches, and a 33-foot roll (396 inches) yields 3 strips. 28 ÷ 3 = 9.3, so buy
-    <strong>10 rolls</strong>.
+    Each 12 ft wall is 144 in wide. With 20.5 in paper it takes 8 strips per wall, or 32 for the room. With plain paper,
+    each strip is 96 + 4 = 100 in long. A 33 ft roll gives 3 full strips, so 32 ÷ 3 rounds up to <strong>11 rolls</strong>.
   </p>
 
   <h2 id="table">Rolls for common room sizes</h2>
-  <p>8 ft walls, 20.5 in × 33 ft rolls, one door.</p>
+  <p>8 ft walls and 20.5 in × 33 ft rolls. The estimate counts full-height strips on each wall.</p>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Room</th><th class="num">Plain paper</th><th class="num">21 in pattern repeat</th></tr></thead>
-      <tbody>{table.map((r) => <tr><td>{r.l} × {r.w} ft</td><td class="num">{r.plain}</td><td class="num">{r.rep}</td></tr>)}</tbody>
+      <thead><tr><th>Room</th><th class="num">Plain paper</th><th class="num">21 in straight match</th></tr></thead>
+      <tbody>{table.map((r) => <tr><td>{r.l} × {r.w} ft</td><td class="num">{r.plain}</td><td class="num">{r.straight}</td></tr>)}</tbody>
     </table>
   </div>
 
-  <h2 id="repeat">What is pattern repeat?</h2>
+  <h2 id="repeat">How pattern match changes the cuts</h2>
   <p>
-    It is the vertical distance before the design starts over, printed on the roll label. Each strip must start at the
-    same point in the pattern, so you lose up to one repeat per strip. Large repeats can drop a roll from four strips to
-    three, which is why patterned paper often needs a roll or two more than plain.
+    The pattern repeat is the vertical distance between matching points in the design. With a straight match, each
+    strip starts at the same point in that repeat. For a random match, you can start the next strip right after the previous cut.
+    For a drop match or an unknown match, the calculator budgets one full repeat per strip. Check the product's layout
+    instructions for alternating patterns. See the match types in
+    <a href="https://yorkwallcoverings.com/pages/installation-guide">York's wallpaper installation guide</a>.
   </p>
-  <h3>How does a 21-inch repeat change the estimate?</h3>
+  <h3>Three straight-match strips from one roll</h3>
   <p>
-    In the 12 × 12 ft example, an 8 ft wall with 4 in of trim allowance uses a 100 in cut for plain paper. With a
-    21 in repeat, this calculator allows 121 in per strip: 396 ÷ 121 still yields 3 full strips per 33 ft roll, so the
-    estimate remains 10 rolls. At a 9 ft wall height, the cuts become 112 in and 133 in respectively; the roll yields
-    3 plain strips but only 2 patterned strips, increasing the estimate from 10 to 14 rolls.
-  </p>
-  <p>
-    This is a conservative allowance of one full repeat per strip. It does not optimize pattern alignment or model
-    half-drop and other offset matches. Check the product's match instructions and the installer's layout; the actual
-    offcut depends on where the design starts.
+    For a 9 ft wall, a strip with trim measures 112 in. With a 21 in straight repeat, the next matching start can be
+    126 in away (6 repeats). Allow 21 in at the start of the roll to find the first match. You could then start cuts at
+    21, 147, and 273 in. The third ends at 385 in, inside a 396 in roll. Choose <strong>Straight match</strong> and enter
+    a 21 in repeat to see 3 strips per roll.
   </p>
 
   <h2 id="roll-label">Check the roll label before ordering</h2>
@@ -87,23 +84,21 @@ const table = rooms.map(([l, w]) => ({
   <h2 id="faq">Frequently asked questions</h2>
   <h3>How much does a roll of wallpaper cover?</h3>
   <p>
-    A standard US double roll of 20.5 inches by 33 feet is about 56 square feet, but only about 45–50 square feet are
-    usable after trimming, and less with a large repeat. Check the label: many papers are sold priced per single roll but
-    packaged as double rolls.
+    A 20.5 in × 33 ft double roll is about 56 square feet before trimming. For an 8 ft wall and 4 in of trim, that roll
+    gives three plain strips, covering about 41 ft² of wall. The actual coverage depends on the height and match.
   </p>
-  <h3>Why aren't windows subtracted?</h3>
+  <h3>Should I subtract doors and windows?</h3>
   <p>
-    Strips still run above and below a window, and reusable offcuts depend on the pattern. Windows therefore do not
-    reduce the roll count. The door input deducts full strip widths covered by a simplified 36 in opening; it does not
-    plan the pieces above a door or around its trim. For a conservative comparison, set doors to zero and confirm the
-    final quantity from the wall-by-wall layout.
+    Door and window counts reduce the displayed net wall area. The roll estimate counts full strips because you still
+    need paper above doors and around windows. If you plan to reuse offcuts or skip a full-height opening, draw its
+    position on the wall and check which cuts it actually replaces.
   </p>
   <p>Patching walls before papering? The <a href="/drywall-calculator/">drywall calculator</a> covers new sheets.</p>
 
   <h2 id="method">How this calculator works</h2>
   <ul>
-    <li>Strips = perimeter ÷ roll width, rounded up, minus the full strips covered by 36-inch doors.</li>
-    <li>Cut length = wall height + pattern repeat + 4 inches; strips per roll are rounded down.</li>
+    <li>Strips per wall = wall width ÷ roll width, rounded up. The widths are measured in the same unit.</li>
+    <li>For straight matches, round the distance from one cut start to the next up to a whole repeat. The last strip only needs its cut length.</li>
     <li>Rolls = strips ÷ strips per roll, rounded up.</li>
   </ul>
 </CalcPage>

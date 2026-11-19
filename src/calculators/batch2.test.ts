@@ -23,6 +23,22 @@ describe('第二批关键数字', () => {
   it('地毯：14×12 = 168 ft² + 10% = 184.8 ft² = 20.5 yd²', () => {
     expect(run(carpet).value).toBe('20.5');
   });
+  it('地毯：10×10 ft 用 12 ft 卷裁一整块，预算 110 ft²，裁长 10.5 ft', () => {
+    const room = { length: { value: 10, unit: 'ft' }, width: { value: 10, unit: 'ft' } };
+    expect(run(carpet, room).value).toBe('12.2');
+    expect(row(carpet, 'Single-piece cut from a 12 ft roll', 'Pile along length', room)).toBe('10.5 ft');
+    expect(row(carpet, 'Single-piece cut from a 12 ft roll', 'Pile along width', room)).toBe('10.5 ft');
+  });
+  it('地毯：11 ft 6 in × 15 ft 只在转向后可裁一块，含修边刚好跨 12 ft 卷宽', () => {
+    const room = { length: { value: 138, unit: 'in' }, width: { value: 15, unit: 'ft' } };
+    expect(row(carpet, 'Single-piece cut from a 12 ft roll', 'Pile along length', room)).toBe('Needs a seam');
+    expect(row(carpet, 'Single-piece cut from a 12 ft roll', 'Pile along width', room)).toBe('15.5 ft');
+  });
+  it('地毯：已知面积和多房间合计都不生成单块裁切长度', () => {
+    const title = 'Single-piece cut from a 12 ft roll';
+    expect(row(carpet, title, 'Pile along length', { shape: 'area' })).toBeUndefined();
+    expect(carpet.compute(defaultValues(carpet), 200).blocks.find((b) => b.title === title)?.rows).toEqual([]);
+  });
   it('瓷砖：10×8 = 80 ft² + 10% = 88 ft²，12 in 砖 1/8 缝 → 87 块', () => {
     expect(run(tile).value).toBe('87'); // 88 / 1.0209 = 86.2
   });
@@ -39,8 +55,16 @@ describe('第二批关键数字', () => {
     expect(run(drywall).value).toBe('17'); // 541.2 / 32 = 16.9
     expect(run(drywall, { ceiling: 'no' }).value).toBe('12'); // 382.8 / 32 = 11.96
   });
-  it('壁纸：12×12×8 房间、标准双卷、一扇门 → 10 卷', () => {
-    expect(run(wallpaper).value).toBe('10');
+  it('壁纸：12×12×8 房间逐墙计算需要 32 条、11 卷，门窗仅扣净面积', () => {
+    expect(run(wallpaper).value).toBe('11');
+    const openings = { doors: 3, windows: 2 };
+    expect(run(wallpaper, openings).value).toBe('11');
+    expect(row(wallpaper, 'Wall area', 'Net wall area', openings)).toBe('291 ft²');
+  });
+  it('壁纸：同一输入在直对花模式下可裁 3 条；未选择模式的旧输入按 2 条估算', () => {
+    const room = { height: { value: 9, unit: 'ft' }, repeat: { value: 21, unit: 'in' } };
+    expect(run(wallpaper, room).value).toBe('16');
+    expect(run(wallpaper, { ...room, match: 'straight' }).value).toBe('11');
   });
   it('外墙挂板：1,068 ft² 墙 + 240 ft² 山墙 = 1,308 ft² + 10% → 14.4 平方、8 箱', () => {
     expect(run(siding).value).toBe('14.4');
