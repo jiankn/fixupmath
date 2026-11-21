@@ -30,6 +30,7 @@ export function initConcreteCalculator() {
   if (!maybeForm) return;
   const form: HTMLFormElement = maybeForm;
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const results = $('cc-results');
 
   let project: ProjectItem[] = loadProject();
 
@@ -68,7 +69,7 @@ export function initConcreteCalculator() {
 
   const waste = () => num(form.querySelector('[name="waste"]'), 10);
 
-  function render() {
+  function render(updateUrl = true) {
     if (!validateInputs(form)) return;
     const piece = currentPiece();
     const w = waste();
@@ -83,7 +84,7 @@ export function initConcreteCalculator() {
     pieceLine.textContent = `This pour: ${fmt(concreteResult(piece.netFt3, w).cubicYards)} yd³ (not yet added)`;
     renderFigure(piece);
     renderProject(r);
-    syncUrl(piece);
+    if (updateUrl) syncUrl(piece);
   }
 
   // 台阶按比例画侧面剖面；其他形状尺寸一目了然，不出图。已有项目时结果是合计，也不画单块的图
@@ -245,6 +246,7 @@ export function initConcreteCalculator() {
   });
   $('copy-link').addEventListener('click', async (e) => {
     const btn = e.currentTarget as HTMLButtonElement;
+    if (results.dataset.invalid !== 'true') syncUrl(currentPiece());
     try {
       await navigator.clipboard.writeText(location.href);
       btn.textContent = 'Link copied';
@@ -257,7 +259,6 @@ export function initConcreteCalculator() {
 
   // 悬浮摘要：用户在填表（输入区在屏幕内）但结果面板不在屏幕内时才显示
   const mbar = $('mbar');
-  const results = $('cc-results');
   const inputs = form.querySelector('.cc-inputs') as HTMLElement;
   // 露出至少 120px（能看到大数字）才算「看得到」，只露一条边不算
   const onScreen = (el: HTMLElement, minPx = 0) => {
@@ -275,5 +276,6 @@ export function initConcreteCalculator() {
 
   restoreFromUrl();
   showShape();
-  render();
+  // Preserve the landing URL until the user edits the calculation or shares it.
+  render(false);
 }

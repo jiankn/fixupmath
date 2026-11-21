@@ -125,7 +125,7 @@ export function initCalculator(form: HTMLFormElement, def: CalculatorDef) {
     return `${val} ${label}`;
   }
 
-  function render() {
+  function render(updateUrl = true) {
     syncSelectDisplays(form);
     const v = read();
     updateVisibility(v);
@@ -141,7 +141,7 @@ export function initCalculator(form: HTMLFormElement, def: CalculatorDef) {
       pieceLine.textContent = `This one: ${def.project.format(def.measure(v))} (not yet added)`;
       renderProject();
     }
-    syncUrl();
+    if (updateUrl) syncUrl();
   }
 
   function renderProject() {
@@ -263,6 +263,7 @@ export function initCalculator(form: HTMLFormElement, def: CalculatorDef) {
   });
   form.querySelector('[data-copy]')?.addEventListener('click', async (e) => {
     const btn = e.currentTarget as HTMLButtonElement;
+    if (results.dataset.invalid !== 'true') syncUrl();
     try {
       await navigator.clipboard.writeText(location.href);
       btn.textContent = 'Link copied';
@@ -292,7 +293,8 @@ export function initCalculator(form: HTMLFormElement, def: CalculatorDef) {
 
   restoreFromUrl();
   showShape();
-  render();
+  // Preserve the landing URL until the user edits the calculation or shares it.
+  render(false);
   updateBar();
 }
 

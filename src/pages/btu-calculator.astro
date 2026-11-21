@@ -12,28 +12,38 @@ const rows = ENERGY_STAR_BTU.map(([max, btu], i) => ({ from: i === 0 ? 100 : ENE
   title="BTU Calculator: Air Conditioner Size for a Room"
   description="Free BTU calculator. Enter room size, sun exposure, occupants, and whether it's a kitchen to get the air conditioner BTUs and tons you need, using the ENERGY STAR sizing method."
   h1="BTU Calculator"
-  updated="2026-09-26"
+  updated="2026-11-21"
 >
   <Fragment slot="lead">
-    Size a window, portable, or mini-split air conditioner for a room using the ENERGY STAR method, with a rough heating
-    estimate for your climate.
+    Estimate the cooling capacity for a room air conditioner using the ENERGY STAR sizing chart. Enter the room
+    dimensions or floor area, then adjust for sunlight, occupants, and kitchen use.
   </Fragment>
 
   <h2 id="how-to">How many BTUs do I need?</h2>
   <p>
-    Start from the room's square footage in the table below, then adjust: take off 10% for a heavily shaded room, add 10%
-    for a very sunny one, add 600 BTU for each regular occupant beyond two, and add 4,000 BTU for a kitchen. A
-    <strong>400 sq ft room with normal sun needs about 9,000 BTU</strong>.
+    Find the room's base capacity in the table below. For a <strong>20 × 20 ft room with an 8 ft ceiling</strong>,
+    the 400 ft² base is <strong>9,000 BTU/h</strong>. If that room gets strong sun and usually has four people,
+    add 900 BTU/h for sunlight and 1,200 BTU/h for the two extra people. The estimate comes to <strong>11,100 BTU/h</strong>.
+    Compare that result with the rated cooling capacity on the models you are considering.
   </p>
 
   <h2 id="table">Air conditioner size by room size</h2>
-  <p>ENERGY STAR guidance for room air conditioners.</p>
+  <p>
+    The <a href="https://www.energystar.gov/products/room_air_conditioners">ENERGY STAR room air conditioner sizing chart</a>
+    covers 100–2,500 ft² and assumes an 8 ft ceiling. At a shared cutoff, the calculator uses the lower band.
+    For example, exactly 400 ft² uses 9,000 BTU/h, and an area just above 400 ft² uses 10,000 BTU/h.
+  </p>
   <div class="table-wrap">
     <table>
       <thead><tr><th>Room area</th><th class="num">Cooling capacity</th></tr></thead>
       <tbody>{rows.map((r) => <tr><td>{r.from}–{r.max.toLocaleString('en-US')} sq ft</td><td class="num">{r.btu.toLocaleString('en-US')} BTU/h</td></tr>)}</tbody>
     </table>
   </div>
+  <p>
+    The calculator takes off 10% for heavy shade, adds 10% for strong sun, adds 600 BTU/h for each regular occupant
+    beyond two, and adds 4,000 BTU/h for a kitchen. For a room with a high ceiling, confirm the size with the
+    manufacturer or installer before buying.
+  </p>
 
   <h2 id="tons">BTUs and tons</h2>
   <p>
@@ -58,10 +68,11 @@ const rows = ENERGY_STAR_BTU.map(([max, btu], i) => ({ from: i === 0 ? 100 : ENE
     No. An oversized unit cools the air quickly and shuts off before it removes much humidity, leaving the room cold and
     damp, and it cycles more often. Choose the size that matches the room.
   </p>
-  <h3>What about whole-house systems?</h3>
+  <h3>Can I size a mini-split or central system with this chart?</h3>
   <p>
-    Central systems should be sized with a Manual J load calculation, which accounts for insulation, windows, air leakage,
-    and orientation. A contractor can run one; square-footage rules often oversize.
+    Ask the installer for an <a href="https://www.acca.org/standards/technical-manuals/manual-j">ACCA Manual J load calculation</a>
+    for the rooms the system will serve. It accounts for factors such as insulation, windows, and air leakage that the
+    room air conditioner chart does not model.
   </p>
   <p>
     Improving the room instead? Better attic insulation cuts the load; see the
@@ -70,8 +81,7 @@ const rows = ENERGY_STAR_BTU.map(([max, btu], i) => ({ from: i === 0 ? 100 : ENE
 
   <h2 id="method">How this calculator works</h2>
   <ul>
-    <li>Base capacity from the ENERGY STAR room air conditioner sizing table; rooms over 2,500 sq ft are extrapolated.</li>
-    <li>Adjustments: −10% shaded, +10% sunny, +600 BTU per person over two, +4,000 BTU for a kitchen.</li>
-    <li>Heating range = area × 30–60 BTU per sq ft depending on climate. Rough estimate only.</li>
+    <li>Below 100 ft², the calculator uses the smallest cooling band. Above 2,500 ft², it extrapolates the chart's final band.</li>
+    <li>The separate heating estimate multiplies floor area by a rough climate-based range of 30–60 BTU/h per ft².</li>
   </ul>
 </CalcPage>
