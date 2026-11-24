@@ -69,7 +69,7 @@ def main():
             print(name, label, len(rows), flush=True)
     save(args.output / 'source/sitemaps.json', service.sitemaps().list(siteUrl=property_name).execute(num_retries=2))
     if args.inspect:
-        tree = ET.parse(root / 'dist/sitemap-0.xml')
+        tree = ET.parse(root / 'dist/sitemap.xml')
         urls = [n.text for n in tree.iter() if n.tag.endswith('}loc') and n.text]
         results = []
         for i, url in enumerate(urls):

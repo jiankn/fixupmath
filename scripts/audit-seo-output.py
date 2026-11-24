@@ -45,7 +45,7 @@ class Page(HTMLParser):
 
 def inventory(root, require_social):
     dist = root / 'dist'
-    urls = [n.text for n in ET.parse(dist / 'sitemap-0.xml').iter() if n.tag.endswith('}loc')]
+    urls = [n.text for n in ET.parse(dist / 'sitemap.xml').iter() if n.tag.endswith('}loc')]
     pages, errors = [], []
     for url in urls:
         route = urlparse(url).path

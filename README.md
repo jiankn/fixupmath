@@ -93,6 +93,6 @@ GSC 脚本复用本机已有 Google API Python 依赖和 127.0.0.1:10808 HTTP �
 
 - [x] 品牌 FixUpMath、正式域名 fixupmath.com
 - [x] 联系邮箱 hello@fixupmath.com
-- [ ] 在 Cloudflare Worker `fixupmath` 绑定域名，在 Search Console 提交站点地图 `/sitemap-index.xml`
+- [ ] 在 Cloudflare Worker `fixupmath` 绑定域名，在 Search Console 提交站点地图 `/sitemap.xml`
 - [ ] 页面满约 20 个后申请 AdSense，拿到 ID 后设置 `PUBLIC_ADSENSE_CLIENT`
 - [ ] 面向欧盟 / 英国访客的广告同意弹窗（在 AdSense 后台开启 Google 的同意管理）

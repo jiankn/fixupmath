@@ -5,6 +5,6 @@ import { IS_PREVIEW } from '../site';
 export const GET: APIRoute = ({ site }) => {
   const body = IS_PREVIEW
     ? ['User-agent: *', 'Disallow: /', '']
-    : ['User-agent: *', 'Allow: /', '', `Sitemap: ${new URL('/sitemap-index.xml', site).href}`, ''];
+    : ['User-agent: *', 'Allow: /', '', `Sitemap: ${new URL('/sitemap.xml', site).href}`, ''];
   return new Response(body.join('\n'), { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };

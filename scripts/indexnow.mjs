@@ -11,16 +11,11 @@ const request = (url, options = {}) => fetch(url, { ...options, signal: AbortSig
 
 async function main() {
   const robots = await read('dist/robots.txt');
-  if (/Disallow:\s*\//i.test(robots) || !robots.includes(`${origin}/sitemap-index.xml`)) {
+  if (/Disallow:\s*\//i.test(robots) || !robots.includes(`${origin}/sitemap.xml`)) {
     console.log('IndexNow skipped: this build does not allow production indexing.');
     return;
   }
-  const urls = new Set();
-  for (const sitemap of locs(await read('dist/sitemap-index.xml'))) {
-    const location = new URL(sitemap);
-    if (location.origin !== origin) throw new Error('Unexpected sitemap host.');
-    for (const url of locs(await read(`dist${location.pathname}`))) urls.add(url);
-  }
+  const urls = new Set(locs(await read('dist/sitemap.xml')));
   const current = {};
   for (const url of urls) {
     const location = new URL(url);

@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { readdir, rename, unlink } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { readPageDates, buildLastmodMap } from './src/lib/sitemap-lastmod';
 
@@ -23,5 +24,21 @@ export default defineConfig({
         return date ? { ...item, lastmod: date } : item;
       },
     }),
+    {
+      name: 'fixupmath:single-sitemap',
+      hooks: {
+        async 'astro:build:done'({ dir, logger }) {
+          // Astro always writes an index, even when all URLs fit in one file.
+          const files = await readdir(dir);
+          if (files.filter((file) => /^sitemap-\d+\.xml$/.test(file)).length !== 1) {
+            throw new Error('Expected one numbered sitemap from @astrojs/sitemap.');
+          }
+
+          await rename(new URL('sitemap-0.xml', dir), new URL('sitemap.xml', dir));
+          await unlink(new URL('sitemap-index.xml', dir));
+          logger.info('`sitemap.xml` created.');
+        },
+      },
+    },
   ],
 });
